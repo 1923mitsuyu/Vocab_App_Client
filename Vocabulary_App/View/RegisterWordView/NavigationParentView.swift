@@ -1,10 +1,3 @@
-//
-//  NavigationParentView.swift
-//  Vocabulary_App
-//
-//  Created by Ikufumi Mitsuyu on 7/11/2024.
-//
-
 import SwiftUI
 
 struct NavigationParentView: View {

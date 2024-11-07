@@ -3,6 +3,7 @@ import SwiftUI
 struct WordListView: View {
     
     let deck: Deck
+    @State private var isWordInputActive = false
     
     var body: some View {
         NavigationStack {
@@ -13,6 +14,18 @@ struct WordListView: View {
                 }
             }
             .navigationTitle("All Words")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // Jump to the page to create a deck
+                        isWordInputActive = true
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                    .padding(.trailing,10)
+                    .navigationDestination(isPresented: $isWordInputActive) { NavigationParentView() }
+                }
+            }
         }
     }
 }

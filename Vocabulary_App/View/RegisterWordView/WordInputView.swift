@@ -1,14 +1,10 @@
 import SwiftUI
 
-// TO DO List
-// Make a delete button in the text field and text editor
-
 struct WordInputView: View {
     
     @Binding var newWord: String
     @Binding var newWordTranslation: String
     @Binding var currentStep: Int
-    @State private var isExampleInputActive: Bool = false
     @State private var activeAlert: Bool = false
     @FocusState var isFocused: Bool
     
@@ -57,7 +53,7 @@ struct WordInputView: View {
                     .focused($isFocused)
             
                 Spacer().frame(height: 40)
-                            
+                         
                 Button {
                     if newWord.isEmpty || newWordTranslation.isEmpty {
                         activeAlert = true
@@ -84,7 +80,7 @@ struct WordInputView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
-            .navigationBarBackButtonHidden()
+//            .navigationBarBackButtonHidden()
             .onTapGesture {
                 isFocused = false
             }

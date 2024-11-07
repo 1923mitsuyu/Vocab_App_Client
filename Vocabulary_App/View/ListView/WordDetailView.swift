@@ -1,5 +1,10 @@
 import SwiftUI
 
+// TO DO List (8/11)
+// Users select "edit" and then they can edit the word in the modal (Put)
+// Users select "delete" and then they can delete the word in the view (DELETE)
+// Users can see the word info in the list
+
 struct WordDetailView: View {
     let word: Word
     

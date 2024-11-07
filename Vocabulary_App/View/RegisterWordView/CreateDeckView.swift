@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct DeckView: View {
+struct CreateDeckView: View {
     
     @State private var deckName: String = ""
     @State private var activeAlert: Bool = false
+    @State private var isDeckListActive: Bool = false
     
     var body: some View {
         NavigationStack {
             VStack {
-              
                 Text("Create a new deck!")
                     .padding(.vertical,30)
                     .fontWeight(.bold)
@@ -26,7 +26,6 @@ struct DeckView: View {
                         )
                         .padding(.leading)
                       
-                    
                     Button(action: {
                         deckName = ""
                     }) {
@@ -43,18 +42,22 @@ struct DeckView: View {
                     if deckName.isEmpty {
                         activeAlert = true
                     }
-//                    let newDeck = Deck(name: deckName)
-//                    Save the new deck to the database
-//                    saveDeckToDatabase(newDeck) { success in
-//                        if success {
-//                     refresh the local deck list from the server or update the UI
-//                            fetchDecksFromDatabase()
-//                            print("Deck saved successfully.")
-//                        } else {
-//                            print("Failed to save deck.")
-//                        }
-//                    }
-                    deckName = ""
+                    else {
+                        //    let newDeck = Deck(name: deckName)
+                        //    Save the new deck to the database
+                        //    saveDeckToDatabase(newDeck) { success in
+                        //    if success {
+                        //     refresh the local deck list from the server or update the UI
+                        //    fetchDecksFromDatabase()
+                        //    print("Deck saved successfully.")
+                        //     } else {
+                        //     print("Failed to save deck.")
+                        //     }
+                        //  }
+                        
+                        deckName = ""
+                        isDeckListActive = true
+                    }
                     
                 } label: {
                     Text("Create")
@@ -70,14 +73,17 @@ struct DeckView: View {
                         message: Text("Please fill in the blank")
                     )
                 }
+                .navigationDestination(isPresented: $isDeckListActive) { DeckListView() }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
+//            .navigationBarBackButtonHidden()
         }
     }
 }
 
+
 #Preview {
-    DeckView()
+    CreateDeckView()
 }
