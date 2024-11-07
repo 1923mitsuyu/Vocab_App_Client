@@ -14,6 +14,8 @@ struct WordListView: View {
                 }
             }
             .navigationTitle("All Words")
+            .background(.blue.gradient)
+            .scrollContentBackground(.hidden)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {

@@ -17,6 +17,8 @@ struct WordDetailView: View {
                 Text(word.translation)
             }
             .navigationTitle("Word Details")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.blue.gradient)
         }
     }
 }
