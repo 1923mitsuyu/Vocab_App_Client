@@ -133,8 +133,6 @@ struct Login: View {
                 
                 Text("Login with Google Account")
                     .padding(.top)
-                
-                
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)

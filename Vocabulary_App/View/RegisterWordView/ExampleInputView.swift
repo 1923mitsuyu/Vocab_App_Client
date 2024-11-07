@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ExampleInputView: View {
+    
     @Binding var example: String
     @Binding var exampleTranslation: String
     @Binding var note: String

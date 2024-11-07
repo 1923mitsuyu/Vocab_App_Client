@@ -5,7 +5,7 @@ struct Vocabulary_AppApp: App {
     var network = Network()
     var body: some Scene {
         WindowGroup {
-            NavigationParentView()
+            DeckListView()
                 .environmentObject(network)
         }
     }
