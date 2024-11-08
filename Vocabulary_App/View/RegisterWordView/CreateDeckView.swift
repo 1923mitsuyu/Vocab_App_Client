@@ -1,5 +1,8 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. Users cannnot make the two decks with the same name
+
 struct CreateDeckView: View {
     
     @State private var deckName: String = ""

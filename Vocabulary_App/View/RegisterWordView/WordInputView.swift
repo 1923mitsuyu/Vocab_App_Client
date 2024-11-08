@@ -1,7 +1,7 @@
 import SwiftUI
 
 // TO DO LIST
-// Implement a function to check if the word has already existed in the list through a view model
+// 1. Users cannnot add a new word that has already existed
 
 struct WordInputView: View {
     

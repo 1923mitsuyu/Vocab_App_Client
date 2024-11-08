@@ -1,7 +1,10 @@
 import SwiftUI
 
 // TO DO LIST
-// Implement a pagination for increased number of decks
+// 1. Users turn to the next page to see more decks (pagination)
+// 2. Users see the alert and then can delete a deck
+// 3. Users can sort the list of decks by date added or in alphabetical order, in either ascending or descending order.
+// 4. Users can drag and drop the deck to change the order of the decks.
 
 struct DeckListView: View {
     @Binding var decks: [Deck]
@@ -50,20 +53,22 @@ struct DeckListView: View {
             }
             .sheet(isPresented: $showSheet) {
                 VStack {
-                    Spacer().frame(height:20)
+                    Spacer()
                     Text("Edit the Deck Name")
                         .fontWeight(.semibold)
                         .font(. system(size: 23))
                         .padding(.top,25)
                     
-                    List {
-                        Section(header: Text("Deck Name").font(.headline)) {
-                            TextField("", text: $newDeckName)
-                                .font(.body)
-                                .padding(.vertical, 4)
-                        }
-                    }
-                    
+                    TextField("", text: $newDeckName)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(5)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.gray, lineWidth: 2)
+                        )
+                        .padding(.horizontal)
+                   
                     Button("Save") {
                         // Find the deck index using deckToEdit
                         if let deckToEdit = deckToEdit,
@@ -71,16 +76,22 @@ struct DeckListView: View {
                             // Update the deck name with newDeckName
                             decks[index].name = newDeckName
                         }
+                        
+                        // Call a http request to update the deck name here
+                        
+                        // Dismiss the sheet
                         showSheet = false
                     }
                     .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
-                    Spacer().frame(height:500)
+                    
+                    Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scrollContentBackground(.hidden)
+                .padding(.bottom,30)
                 .background(.blue.opacity(0.5))
             }
         }

@@ -1,8 +1,5 @@
 import SwiftUI
 
-// TO DO List (8/11)
-// Make a button that includes a function to delete all info about the word
-
 struct WordDetailView: View {
     
     let word: Word
@@ -105,7 +102,6 @@ struct WordDetailView: View {
                 .background(Color.white)
                 .foregroundColor(.red)
                 .cornerRadius(8)
-                .toolbar(.hidden, for: .tabBar)
                 .alert(isPresented: $showAlert) {
                     Alert(
                         title: Text("Are you sure you want to delete?"),
