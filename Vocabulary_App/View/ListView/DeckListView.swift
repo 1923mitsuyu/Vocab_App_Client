@@ -1,37 +1,36 @@
 import SwiftUI
 
-// TO DO LIST (8/11)
-// Users can edit the name of the deck when pushing and holding the row (PUT)
-// Users can delete the deck by swiping the row (DELETE)
+// TO DO LIST
+// Implement a pagination for increased number of decks
 
 struct DeckListView: View {
-    
-    let decks = sampleDecks
+    @Binding var decks: [Deck]
     @State private var isCreateDeckActive = false
-    @State private var isPressed = false
-    @State private var isAlertVisible = false
-    @State private var deckToDelete: Deck?
-        
+    @State private var deckToEdit: UUID?
+    @State private var newDeckName: String = ""
+    @State private var showSheet: Bool = false
+    
     var body: some View {
         NavigationStack {
-            List(decks) { deck in
-                NavigationLink(destination: WordListView(deck: deck)) {
-                    Text(deck.name)
-                        .fontWeight(.bold)
-                        .padding(.vertical, 4)
-                      
+            List {
+                ForEach($decks) { $deck in
+                    NavigationLink(destination: WordListView(deck: deck)) {
+                        HStack {
+                            Text(deck.name)
+                                .fontWeight(.bold)
+                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .gesture(
+                                    LongPressGesture(minimumDuration: 1.0)
+                                        .onEnded { _ in
+                                            deckToEdit = deck.id
+                                            newDeckName = deck.name
+                                            showSheet = true
+                                        }
+                                )
+                        }
+                    }
                 }
-                .gesture(
-                    LongPressGesture(minimumDuration: 1.0)
-                        .onChanged { _ in
-                            isPressed = true
-                        }
-                        .onEnded { _ in
-                            isPressed = false
-                            deckToDelete = deck
-                            isAlertVisible = true
-                        }
-                )
             }
             .background(.blue.gradient)
             .scrollContentBackground(.hidden)
@@ -43,31 +42,60 @@ struct DeckListView: View {
                     }) {
                         Image(systemName: "plus")
                     }
-                    .padding(.trailing,10)
+                    .foregroundStyle(.white)
+                    .padding(.trailing, 10)
                     .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView() }
                     .navigationBarBackButtonHidden()
                 }
             }
-            .alert(isPresented: $isAlertVisible) {
-                Alert(
-                    title: Text("Delete Deck?"),
-                    message: Text("Are you sure you want to delete this deck?"),
-                    primaryButton: .destructive(Text("Delete")) {
-                        if let deckToDelete = deckToDelete {
-                            deleteDeck(deckToDelete)
+            .sheet(isPresented: $showSheet) {
+                VStack {
+                    Spacer().frame(height:20)
+                    Text("Edit the Deck Name")
+                        .fontWeight(.semibold)
+                        .font(. system(size: 23))
+                        .padding(.top,25)
+                    
+                    List {
+                        Section(header: Text("Deck Name").font(.headline)) {
+                            TextField("", text: $newDeckName)
+                                .font(.body)
+                                .padding(.vertical, 4)
                         }
-                    },
-                    secondaryButton: .cancel()
-                )
+                    }
+                    
+                    Button("Save") {
+                        // Find the deck index using deckToEdit
+                        if let deckToEdit = deckToEdit,
+                           let index = decks.firstIndex(where: { $0.id == deckToEdit }) {
+                            // Update the deck name with newDeckName
+                            decks[index].name = newDeckName
+                        }
+                        showSheet = false
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    Spacer().frame(height:500)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .scrollContentBackground(.hidden)
+                .background(.blue.opacity(0.5))
             }
         }
     }
 }
 
-func deleteDeck(_ deck: Deck) {
-    print("Deleted deck: \(deck.name)")
-}
-
-#Preview {
-    DeckListView()
+struct CreateDeckView_Previews: PreviewProvider {
+    @State static var decks: [Deck] = [
+        Deck(name: "Sample Deck1", words: [
+            Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。"),
+            Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある")
+        ])
+    ]
+    
+    static var previews: some View {
+        DeckListView(decks: $decks)
+    }
 }

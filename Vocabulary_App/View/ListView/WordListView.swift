@@ -1,7 +1,12 @@
 import SwiftUI
 
+// TO DO LIST
+// Implement a pagination for increased number of words
+// Check boxes show up when tapping one of the words in the list
+// Then, the delete button shows up at the bottom
+
 struct WordListView: View {
-    
+
     let deck: Deck
     @State private var isWordInputActive = false
     
@@ -24,17 +29,19 @@ struct WordListView: View {
                     }) {
                         Image(systemName: "plus")
                     }
+                    .foregroundStyle(.white)
                     .padding(.trailing,10)
                     .navigationDestination(isPresented: $isWordInputActive) { NavigationParentView() }
                 }
             }
+            .toolbar(.hidden, for: .tabBar)
         }
     }
 }
 
 #Preview {
     WordListView(deck:  Deck(name: "Sample Deck1", words: [
-        Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments.", translation: "私は課題を後回しにした。"),
+        Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。"),
         Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある")
     ]))
 }

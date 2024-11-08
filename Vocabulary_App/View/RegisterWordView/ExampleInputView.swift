@@ -3,7 +3,7 @@ import SwiftUI
 struct ExampleInputView: View {
     
     @Binding var example: String
-    @Binding var exampleTranslation: String
+    @Binding var translation: String
     @Binding var note: String
     @Binding var currentStep: Int
     @State private var isReviewAndAddActive: Bool = false
@@ -96,13 +96,13 @@ struct ExampleInputView: View {
                 Spacer().frame(height: 20)
                 
                 HStack {
-                    TextEditor(text: $exampleTranslation)
+                    TextEditor(text: $translation)
                         .frame(width: 330, height: 80)
                         .cornerRadius(5)
                         .padding(.leading,10)
                         .focused($isFocused)
                         .overlay(alignment: .topLeading) {
-                            if exampleTranslation.isEmpty {
+                            if translation.isEmpty {
                                 Text("Example translation here")
                                     .allowsHitTesting(false)
                                     .foregroundColor(Color(uiColor: .placeholderText))
@@ -112,13 +112,13 @@ struct ExampleInputView: View {
                         }
                     
                     Button(action: {
-                        exampleTranslation = ""
+                        translation = ""
                     }) {
                         Image(systemName: "delete.left")
                             .foregroundColor(Color(UIColor.opaqueSeparator))
                     }
                     .padding(.top, 4)
-                    .opacity(exampleTranslation.isEmpty ? 0 : 1)
+                    .opacity(translation.isEmpty ? 0 : 1)
                     
                 }
                 
@@ -185,7 +185,7 @@ struct ExampleInputView: View {
                     Spacer().frame(width: 30)
                     
                     Button {
-                        if example.isEmpty || exampleTranslation.isEmpty {
+                        if example.isEmpty || translation.isEmpty {
                             activeAlert = true
                         } else {
                             currentStep = 3
@@ -222,7 +222,7 @@ struct ExampleInputView: View {
 #Preview {
     ExampleInputView(
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
-        exampleTranslation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
+        translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         note: .constant("りんごはおいしいよ"),
         currentStep: .constant(3)
     )

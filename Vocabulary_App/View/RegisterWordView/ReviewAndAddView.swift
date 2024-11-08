@@ -2,10 +2,10 @@ import SwiftUI
 
 struct ReviewAndAddView: View {
     
-    @Binding var newWord: String
-    @Binding var newWordTranslation: String
+    @Binding var word: String
+    @Binding var definition: String
     @Binding var example: String
-    @Binding var exampleTranslation: String
+    @Binding var translation: String
     @Binding var note: String
     @Binding var currentStep: Int
     
@@ -46,11 +46,11 @@ struct ReviewAndAddView: View {
                 
                 Form {
                     Section(header: Text("Word Details")) {
-                        Text(newWord)
+                        Text(word)
                             .foregroundColor(.blue)
                             .fontWeight(.semibold)
                         
-                        Text(newWordTranslation)
+                        Text(definition)
                             .foregroundColor(.black)
                             .fontWeight(.semibold)
                     }
@@ -60,7 +60,7 @@ struct ReviewAndAddView: View {
                             .foregroundColor(.blue)
                             .fontWeight(.semibold)
                         
-                        Text(exampleTranslation)
+                        Text(translation)
                             .foregroundColor(.black)
                             .fontWeight(.semibold)
                     }
@@ -111,12 +111,12 @@ struct ReviewAndAddView: View {
 
 #Preview {
     ReviewAndAddView(
-               newWord: .constant("Procrastinate"),
-               newWordTranslation: .constant("後回しにする"),
-               example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
-               exampleTranslation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
-               note:.constant("Procrastinator: 後回しにする人"),
-               currentStep: .constant(3)
-           )
+        word: .constant("Procrastinate"),
+        definition: .constant("後回しにする"),
+        example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
+        translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
+        note:.constant("Procrastinator: 後回しにする人"),
+        currentStep: .constant(3)
+    )
 }
 

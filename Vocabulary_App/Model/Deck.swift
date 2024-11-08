@@ -47,6 +47,11 @@ let sampleDecks = [
         Word(word: "Euphoria", definition: "幸福感", example: "Winning the championship filled him with euphoria.", translation: "チャンピオンシップに勝利したことで彼は幸福感で満たされた"),
         Word(word: "Quixotic", definition: "空想的な", example: "His quixotic ideas often led to unrealistic expectations.", translation: "彼の空想的な考えはしばしば現実的でない期待を生んだ"),
         Word(word: "Camaraderie", definition: "仲間意識", example: "The camaraderie among teammates was remarkable.", translation: "チームメイト間の仲間意識は素晴らしかった")
+    ]),
+    Deck(name: "Deck5", words: [
+        Word(word: "Tenacity", definition: "粘り強さ、執念", example: "Her tenacity helped her achieve her goals.", translation: "彼女の粘り強さが目標達成を助けた。"),
+        Word(word: "Eloquent", definition: "雄弁な", example: "The speaker was eloquent and persuasive.", translation: "スピーカーは雄弁で説得力があった。"),
+        Word(word: "Meticulous", definition: "細心の注意を払う", example: "She is meticulous in her work, never missing a detail.", translation: "彼女は仕事において細心の注意を払い、細部を見逃すことはない。")
     ])
 ]
 

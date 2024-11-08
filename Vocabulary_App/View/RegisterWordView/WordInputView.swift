@@ -1,9 +1,12 @@
 import SwiftUI
 
+// TO DO LIST
+// Implement a function to check if the word has already existed in the list through a view model
+
 struct WordInputView: View {
     
-    @Binding var newWord: String
-    @Binding var newWordTranslation: String
+    @Binding var word: String
+    @Binding var definition: String
     @Binding var currentStep: Int
     @State private var activeAlert: Bool = false
     @FocusState var isFocused: Bool
@@ -42,20 +45,20 @@ struct WordInputView: View {
                 }
                 .frame(maxWidth: .infinity).padding()
 
-                TextField("New Word", text: $newWord)
-                    .modifier(TextFieldModifier(height: 30, text: $newWord))
+                TextField("New Word", text: $word)
+                    .modifier(TextFieldModifier(height: 30, text: $word))
                     .focused($isFocused)
                 
                 Spacer().frame(height: 40)
                 
-                TextField("Translation here", text: $newWordTranslation)
-                    .modifier(TextFieldModifier(height: 30, text: $newWordTranslation))
+                TextField("Translation here", text: $definition)
+                    .modifier(TextFieldModifier(height: 30, text: $definition))
                     .focused($isFocused)
             
                 Spacer().frame(height: 40)
                          
                 Button {
-                    if newWord.isEmpty || newWordTranslation.isEmpty {
+                    if word.isEmpty || definition.isEmpty {
                         activeAlert = true
                     }
                     else {
@@ -123,9 +126,9 @@ struct TextFieldModifier: ViewModifier {
 }
 #Preview {
     WordInputView(
-        newWord: .constant("Procrastinate"),
-        newWordTranslation: .constant("後回しにする"),
-        currentStep: .constant(3)
+        word: .constant("Procrastinate"),
+        definition: .constant("後回しにする"),
+        currentStep: .constant(1)
     )
 }
 

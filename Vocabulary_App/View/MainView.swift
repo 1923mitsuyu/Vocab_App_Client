@@ -2,17 +2,23 @@ import SwiftUI
 
 struct MainView: View {
     
+    @State private var decks: [Deck] = sampleDecks
+    
     init() {
         // Customize the unselected tab icon color
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
+        let appearance: UITabBarAppearance = UITabBarAppearance()
+        appearance.backgroundColor = .white
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().standardAppearance = appearance
     }
     
     var body: some View {
         TabView {
-            DeckListView()
+            DeckListView(decks: $decks)
                 .tabItem {
                     Label("Deck", systemImage: "list.dash")
-                        .foregroundColor(.green)
+                       
                 }
            
             StudyHomeView()
@@ -25,7 +31,7 @@ struct MainView: View {
                     Label("Setting", systemImage: "gearshape")
                 }
         }
-        .accentColor(.white)
+        .accentColor(.black)
     }
 }
 

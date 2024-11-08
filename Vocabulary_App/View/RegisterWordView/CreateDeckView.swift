@@ -5,6 +5,7 @@ struct CreateDeckView: View {
     @State private var deckName: String = ""
     @State private var activeAlert: Bool = false
     @State private var isDeckListActive: Bool = false
+    @State private var decks: [Deck] = sampleDecks
     
     var body: some View {
         NavigationStack {
@@ -43,7 +44,9 @@ struct CreateDeckView: View {
                         activeAlert = true
                     }
                     else {
-                        //    let newDeck = Deck(name: deckName)
+                        let newDeck = Deck(name: deckName)
+                        // Temporary method to create a new deck
+                        decks.append(newDeck)
                         //    Save the new deck to the database
                         //    saveDeckToDatabase(newDeck) { success in
                         //    if success {
@@ -73,16 +76,14 @@ struct CreateDeckView: View {
                         message: Text("Please fill in the blank")
                     )
                 }
-                .navigationDestination(isPresented: $isDeckListActive) { DeckListView() }
+                .navigationDestination(isPresented: $isDeckListActive) { DeckListView(decks: $decks) }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
-//            .navigationBarBackButtonHidden()
         }
     }
 }
-
 
 #Preview {
     CreateDeckView()
