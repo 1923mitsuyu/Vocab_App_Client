@@ -6,6 +6,7 @@ import SwiftUI
 // Deckの中の単語を全部順に出題されるようにする : decksから順に取り出して、0になったらおしまい??
 // 正解かどうかの判定をできるようにする : words[~].wordと一致していたら正解??
 // 正解ならCorrect!みたいなポップアップを表示 : Bool値使って、正解なら toggle()??
+
 struct PlayStudyView: View {
     
  
@@ -13,6 +14,9 @@ struct PlayStudyView: View {
     @Binding var selectedDeck: Int
     @State private var writtenAnswer: String = ""
     @State private var progress = 0.1
+    @State private var isStudyHomeViewActive: Bool = false
+    @State private var isResuktViewActive: Bool = false
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -31,7 +35,7 @@ struct PlayStudyView: View {
                     .padding(.bottom,30)
                     .padding(.leading, 10)
                 
-                Text(decks[selectedDeck].words[1].example)
+                Text(decks[selectedDeck].words[0].example)
                     .fontWeight(.semibold)
                     .font( .system(size: 15))
                     .frame(maxWidth: 360, alignment: .leading)
@@ -67,7 +71,7 @@ struct PlayStudyView: View {
                 
                 HStack{
                     Button {
-                        print("Check answer!")
+                        isStudyHomeViewActive = true
                     } label: {
                         Text("Quit")
                             .fontWeight(.semibold)
@@ -77,9 +81,12 @@ struct PlayStudyView: View {
                     .foregroundStyle(.black)
                     .background(.white)
                     .cornerRadius(20)
+                    .navigationDestination(isPresented: $isStudyHomeViewActive) {
+                        StudyHomeView()
+                    }
                     Spacer().frame(width: 25)
                     Button {
-                        print("Check answer!")
+                        isResuktViewActive = true
                     } label: {
                         Text("Check")
                             .fontWeight(.semibold)
@@ -89,13 +96,16 @@ struct PlayStudyView: View {
                     .foregroundStyle(.black)
                     .background(.white)
                     .cornerRadius(20)
-                    
+                    .navigationDestination(isPresented: $isResuktViewActive) {
+                        ResultView(selectedDeck: $selectedDeck)
+                    }
                 }
                 Spacer().frame(height: 30)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
         }
+        .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
     }
 }

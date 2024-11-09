@@ -50,6 +50,7 @@ struct StudyHomeView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
+            .navigationBarBackButtonHidden()
         }
     }
 }
