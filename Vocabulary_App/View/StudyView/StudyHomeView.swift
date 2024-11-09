@@ -1,11 +1,9 @@
 import SwiftUI
 
-// TO DO LIST
-//
 struct StudyHomeView: View {
     
+    @StateObject var viewModel: PlayStudyViewModel
     @State private var decks: [Deck] = sampleDecks
-    @State var selectionDeck = 0
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]
     
@@ -23,7 +21,7 @@ struct StudyHomeView: View {
                     .fontWeight(.semibold)
                     .padding(.bottom,20)
                 
-                Picker("Choose a deck", selection: $selectionDeck) {
+                Picker("Choose a deck", selection: $viewModel.selectionDeck) {
                     ForEach(decks.indices, id: \.self) { index in
                         Text(decks[index].name).tag(index)
                     }
@@ -43,7 +41,7 @@ struct StudyHomeView: View {
                 .background(.white)
                 .cornerRadius(10)
                 .navigationDestination(isPresented: $isPlayStudyActive) {
-                    PlayStudyView(selectedDeck: $selectionDeck)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck)
                 }
                 Spacer()
 
@@ -112,5 +110,5 @@ struct MonthlyCalendarView: View {
 
 
 #Preview {
-    StudyHomeView()
+    StudyHomeView(viewModel: PlayStudyViewModel())
 }

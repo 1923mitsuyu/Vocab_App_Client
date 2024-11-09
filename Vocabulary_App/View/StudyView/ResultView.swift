@@ -48,7 +48,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical,20)
                 .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                    StudyHomeView()
+                    StudyHomeView(viewModel: PlayStudyViewModel())
                 }
                 
                 Spacer().frame(width:30)
@@ -66,7 +66,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical,20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    PlayStudyView(selectedDeck: $selectedDeck)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck)
                 }
             }
         }

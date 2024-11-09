@@ -1,23 +1,47 @@
 import SwiftUI
 
 // TO DO LIST
-// ターゲットの単語の部分を空欄or見えなくする : 条件分岐(words[~].wordと一致していたら見えなくする??)
-// Deckの中の単語からランダムで選ぶようにする : let randomInt = Int.random(in: 1..<5)使えるかな??
-// Deckの中の単語を全部順に出題されるようにする : decksから順に取り出して、0になったらおしまい??
-// 正解かどうかの判定をできるようにする : words[~].wordと一致していたら正解??
-// 正解ならCorrect!みたいなポップアップを表示 : Bool値使って、正解なら toggle()??
+// １. 空欄ならCheckを押せなくする
+// 2. 正解ならポップアップを表示
 
 struct PlayStudyView: View {
     
     @StateObject var viewModel: PlayStudyViewModel
     @State private var decks: [Deck] = sampleDecks
     @Binding var selectedDeck: Int
-    @State private var writtenAnswer: String = ""
     @State private var progress = 0.1
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isResuktViewActive: Bool = false
-
+    @State private var isAnswerCorrect: Bool = false
+    @State private var totalPoints: Int = 0
+    @State private var showAlert : Bool = false
+    
+    func hideTargetWordInExample(_ example: String) -> String {
+            // 正規表現で {{}} 内の部分を見つける
+            let regex = try! NSRegularExpression(pattern: "\\{\\{([^}]+)\\}\\}", options: [])
+            let range = NSRange(location: 0, length: example.utf16.count)
+            
+            // マッチする部分を動的に処理
+            var modifiedExample = example
+            regex.enumerateMatches(in: example, options: [], range: range) { match, flags, stop in
+                guard let matchRange = match?.range(at: 1) else { return }
+                let word = (example as NSString).substring(with: matchRange)
+                
+                // 単語の長さに合わせたアンダースコアを生成
+                let underscore = String(repeating: "_", count: word.count)
+                
+                // {{}} の部分をアンダースコアで置き換え
+                modifiedExample = (modifiedExample as NSString).replacingCharacters(in: match!.range, with: underscore)
+                
+            }
+        
+            return modifiedExample
+        }
+    
     var body: some View {
+        let example = decks[selectedDeck].words[viewModel.randomInt].example
+        let modifiedExample = hideTargetWordInExample(example)
+        
         NavigationStack {
             VStack {
                 
@@ -35,15 +59,16 @@ struct PlayStudyView: View {
                     .padding(.bottom,30)
                     .padding(.leading, 10)
                 
-                Text(decks[selectedDeck].words[0].example)
+                Text(modifiedExample)
                     .fontWeight(.semibold)
-                    .font( .system(size: 15))
+                    .font( .system(size: 18))
                     .frame(maxWidth: 360, alignment: .leading)
                     .padding(.leading, 10)
                     .padding(.vertical,25)
                     .background(.white)
                     .cornerRadius(10)
                     .multilineTextAlignment(.leading)
+                
                 
                 Spacer().frame(height: 30)
                 Text("Complete the sentence!")
@@ -53,7 +78,7 @@ struct PlayStudyView: View {
                     .padding(.vertical, 5)
                     .padding(.leading, 10)
                 
-                TextField("Write your answer here!", text: $writtenAnswer)
+                TextField("Write your answer here!", text: $viewModel.writtenAnswer)
                     .padding()
                     .background(Color.white)
                     .frame(width:300)
@@ -64,9 +89,7 @@ struct PlayStudyView: View {
                     )
                     .padding(.horizontal)
                     .padding(.vertical,10)
-                    .onChange(of: writtenAnswer) {
-                        print("\(writtenAnswer) is entered")
-                    }
+                
                 Spacer()
                 
                 HStack{
@@ -82,18 +105,36 @@ struct PlayStudyView: View {
                     .background(.white)
                     .cornerRadius(20)
                     .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                        StudyHomeView()
+                        StudyHomeView(viewModel: PlayStudyViewModel())
                     }
                     
                     Spacer().frame(width: 25)
                     
                     Button {
+                        // Check if the inputted answer is correct
+                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect()
+                        print("Correct Answer?: \(isAnswerCorrect)")
+                        if isAnswerCorrect {
+                            totalPoints += 1
+                            showAlert = true
+                        }
+                        
                         // Check of all all words in the deck has been used
-                        // if checkIfAllWordsUsed() == true {
+                        if viewModel.checkIfAllWordsUsed() == true {
+                            print("Finished all the words in the deck")
+                            // Jump to the result view
                             isResuktViewActive = true
-                        // }
-                        // if the game continues, reset the text field
-                        viewModel.resetTextField()
+                        }
+                        else {
+                            // Remove the text in the text field
+                            viewModel.resetTextField()
+                            // Generate a new integer for the next question
+                            viewModel.randomInt = viewModel.generateRandomQuestion()
+                            // Assign the new integer to the array
+                            viewModel.usedWordsIndex.append(viewModel.randomInt)
+                            // print("Newly Generated Number: \(randomWordNumber)")
+                            // print("Used Number: \(viewModel.usedWordsIndex)")
+                        }
                     } label: {
                         Text("Check")
                             .fontWeight(.semibold)
@@ -123,5 +164,4 @@ struct PlayStudyView: View {
     // Pass the sample ViewModel and selectedDeck binding to the preview
     PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0))
 }
-
 
