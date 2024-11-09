@@ -29,9 +29,9 @@ struct Word: Identifiable {
 
 let sampleDecks = [
     Deck(name: "Deck1", words: [
-        Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments.", translation: "私は課題を後回しにした。"),
-        Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある"),
-        Word(word: "Serenity", definition: "静けさ", example: "The serenity of the countryside is refreshing.", translation: "田舎の静けさは癒しである")
+        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をした。"),
+        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。"),
+        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。")
     ]),
     Deck(name: "Deck2", words: [
         Word(word: "Enigmatic", definition: "謎めいた", example: "The enigmatic smile of the Mona Lisa has intrigued people for centuries.", translation: "モナリザの謎めいた微笑みは何世代にもわたり人々を魅了してきた"),

@@ -20,7 +20,7 @@ struct MainView: View {
                     Label("Deck", systemImage: "list.dash")
                 }
            
-            StudyHomeView()
+            StudyHomeView(viewModel: PlayStudyViewModel())
                 .tabItem {
                     Label("Study", systemImage: "brain.head.profile")
                 }
