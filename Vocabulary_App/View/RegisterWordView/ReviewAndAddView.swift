@@ -18,7 +18,6 @@ struct ReviewAndAddView: View {
                     .font(. system(size: 25))
                     .padding(.bottom,10)
                 
-                // Progress bar
                 HStack {
                     ForEach(1...3, id: \.self) { step in
                         HStack {

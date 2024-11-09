@@ -18,7 +18,6 @@ struct MainView: View {
             DeckListView(decks: $decks)
                 .tabItem {
                     Label("Deck", systemImage: "list.dash")
-                       
                 }
            
             StudyHomeView()

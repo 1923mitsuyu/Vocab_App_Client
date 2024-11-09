@@ -83,7 +83,6 @@ struct WordInputView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
-//            .navigationBarBackButtonHidden()
             .onTapGesture {
                 isFocused = false
             }
