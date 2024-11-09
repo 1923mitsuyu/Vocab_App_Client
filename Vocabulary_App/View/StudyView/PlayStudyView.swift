@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PlayStudyView: View {
     
- 
+    @StateObject var viewModel: PlayStudyViewModel
     @State private var decks: [Deck] = sampleDecks
     @Binding var selectedDeck: Int
     @State private var writtenAnswer: String = ""
@@ -84,9 +84,16 @@ struct PlayStudyView: View {
                     .navigationDestination(isPresented: $isStudyHomeViewActive) {
                         StudyHomeView()
                     }
+                    
                     Spacer().frame(width: 25)
+                    
                     Button {
-                        isResuktViewActive = true
+                        // Check of all all words in the deck has been used
+                        // if checkIfAllWordsUsed() == true {
+                            isResuktViewActive = true
+                        // }
+                        // if the game continues, reset the text field
+                        viewModel.resetTextField()
                     } label: {
                         Text("Check")
                             .fontWeight(.semibold)
@@ -111,7 +118,10 @@ struct PlayStudyView: View {
 }
 
 #Preview {
-    PlayStudyView(selectedDeck: .constant(0))
+    // Create a sample instance of PlayStudyViewModel with a sample deck index
+    let sampleViewModel = PlayStudyViewModel()
+    // Pass the sample ViewModel and selectedDeck binding to the preview
+    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0))
 }
 
 
