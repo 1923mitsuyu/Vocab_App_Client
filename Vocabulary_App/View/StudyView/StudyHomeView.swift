@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StudyHomeView: View {
     
-    @StateObject var viewModel: PlayStudyViewModel
+    @ObservedObject var viewModel: PlayStudyViewModel
     @State private var decks: [Deck] = sampleDecks
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]

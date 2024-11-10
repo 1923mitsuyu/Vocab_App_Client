@@ -1,8 +1,10 @@
 import SwiftUI
 
 // TO DO LIST
-// １. 空欄ならCheckを押せなくする
-// 2. 正解ならポップアップを表示
+// 1. Disable the button when the textfield is empty
+// 2. Show the pop up if the answer is correct
+// 3. Put all incorrect words into the array and pass it to the next view
+// 4. Put a Japanese translation of the example sentence as a hint to the user
 
 struct PlayStudyView: View {
     
@@ -15,32 +17,10 @@ struct PlayStudyView: View {
     @State private var isAnswerCorrect: Bool = false
     @State private var totalPoints: Int = 0
     @State private var showAlert : Bool = false
-    
-    func hideTargetWordInExample(_ example: String) -> String {
-            // 正規表現で {{}} 内の部分を見つける
-            let regex = try! NSRegularExpression(pattern: "\\{\\{([^}]+)\\}\\}", options: [])
-            let range = NSRange(location: 0, length: example.utf16.count)
-            
-            // マッチする部分を動的に処理
-            var modifiedExample = example
-            regex.enumerateMatches(in: example, options: [], range: range) { match, flags, stop in
-                guard let matchRange = match?.range(at: 1) else { return }
-                let word = (example as NSString).substring(with: matchRange)
-                
-                // 単語の長さに合わせたアンダースコアを生成
-                let underscore = String(repeating: "_", count: word.count)
-                
-                // {{}} の部分をアンダースコアで置き換え
-                modifiedExample = (modifiedExample as NSString).replacingCharacters(in: match!.range, with: underscore)
-                
-            }
         
-            return modifiedExample
-        }
-    
     var body: some View {
         let example = decks[selectedDeck].words[viewModel.randomInt].example
-        let modifiedExample = hideTargetWordInExample(example)
+        let modifiedExample = viewModel.hideTargetWordInExample(example)
         
         NavigationStack {
             VStack {

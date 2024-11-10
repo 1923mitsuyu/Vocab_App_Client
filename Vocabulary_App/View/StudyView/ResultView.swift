@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ResultView: View {
     
-    // Declare an array to store all the words they answered incorrectly
     @State private var incorrectWords: [String] = [
         "Apple", "Grape", "Banana", "Pineapple", "Strawberry",
         "Orange", "Watermelon", "Blueberry", "Mango", "Peach",
