@@ -2,8 +2,8 @@ import SwiftUI
 
 // TO DO LIST
 // 1. Show the pop up if the answer is correct : Priority 4
-// 2. Users write the word three times if they do not answer correctly
-// 3. Users can see how many words are left in the deck through the progress bar
+// 2. Users write the word three times if they do not answer correctly : Priority 2
+// 3. Users can see how many words are left in the deck through the progress bar : Priority 4
 
 struct PlayStudyView: View {
     
