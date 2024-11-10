@@ -1,7 +1,7 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Users turn to the next page to see more decks (pagination)
+// 1. Users turn to the next page to see more decks (pagination) : Priority 2
 
 struct DeckListView: View {
     

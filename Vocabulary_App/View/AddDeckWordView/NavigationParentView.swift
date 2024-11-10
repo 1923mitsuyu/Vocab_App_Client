@@ -27,7 +27,7 @@ struct NavigationParentView: View {
                         ExampleInputView(example: $example, translation: $translation, note: $note, currentStep: $currentStep)
                     } else {
                         ReviewAndAddView(
-                            word: $word,
+                            viewModel: DeckViewModel(), word: $word,
                             definition: $definition,
                             example: $example,
                             translation: $translation,

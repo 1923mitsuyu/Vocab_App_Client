@@ -1,10 +1,10 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Disable the button when the textfield is empty
-// 2. Show the pop up if the answer is correct
-// 3. Put all incorrect words into the array and pass it to the next view
-// 4. Put a Japanese translation of the example sentence as a hint to the user
+// 1. Disable the button when the textfield is empty : Priority 4
+// 2. Show the pop up if the answer is correct : Priority 4
+// 3. Put all incorrect words into the array and pass it to the next view : Priority 5
+// 4. Put a Japanese translation of the example sentence as a hint to the user : Priority 5
 
 struct PlayStudyView: View {
     

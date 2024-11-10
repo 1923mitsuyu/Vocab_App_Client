@@ -1,10 +1,11 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Users can edit the word and example when the screen is tapped
+// 1. Users can edit the word and example when the screen is tapped : Priority 1
 
 struct ReviewAndAddView: View {
     
+    @ObservedObject var viewModel : DeckViewModel
     @Binding var word: String
     @Binding var definition: String
     @Binding var example: String
@@ -94,9 +95,13 @@ struct ReviewAndAddView: View {
                     Spacer().frame(width: 30)
                     
                     Button {
-                        print("Add the word and example")
+                        print("Add the word and example into.....")
                         print("Adding the word into Deck ID \(deckId)")
                         print("Adding the word into Deck Name \(deckName)")
+                        
+                        // Find the deck with the name and append the word info into the deck
+                        viewModel.addWordToDeck(word, definition, example, translation, deckName)
+                    
                     } label: {
                         Text("Add")
                             .foregroundStyle(.black)
@@ -106,7 +111,8 @@ struct ReviewAndAddView: View {
                     .background(.white)
                     .cornerRadius(10)
                 }
-                Spacer()
+    
+                Spacer().frame(height: 100)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
@@ -117,7 +123,7 @@ struct ReviewAndAddView: View {
 
 #Preview {
     ReviewAndAddView(
-        word: .constant("Procrastinate"),
+        viewModel: DeckViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),

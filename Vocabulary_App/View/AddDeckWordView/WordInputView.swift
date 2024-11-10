@@ -1,7 +1,6 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Users cannnot add a new word that has already existed
 
 struct WordInputView: View {
     
