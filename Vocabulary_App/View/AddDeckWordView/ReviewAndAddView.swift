@@ -11,6 +11,8 @@ struct ReviewAndAddView: View {
     @Binding var translation: String
     @Binding var note: String
     @Binding var currentStep: Int
+    @Binding var deckId: UUID
+    @Binding var deckName: String
     
     var body: some View {
         NavigationStack {
@@ -93,6 +95,8 @@ struct ReviewAndAddView: View {
                     
                     Button {
                         print("Add the word and example")
+                        print("Adding the word into Deck ID \(deckId)")
+                        print("Adding the word into Deck Name \(deckName)")
                     } label: {
                         Text("Add")
                             .foregroundStyle(.black)
@@ -118,7 +122,10 @@ struct ReviewAndAddView: View {
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         note:.constant("Procrastinator: 後回しにする人"),
-        currentStep: .constant(3)
+        currentStep: .constant(3),
+        deckId: .constant(UUID()),
+        deckName: .constant("Deck1")
     )
 }
+
 

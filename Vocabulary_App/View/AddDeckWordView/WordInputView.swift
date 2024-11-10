@@ -63,7 +63,7 @@ struct WordInputView: View {
                         activeAlert = true
                     }
                     else if viewModel.checkIfWordExists(word){
-                        
+                        print("The word \(word) already exists.")
                     }
                     else {
                         currentStep = 2

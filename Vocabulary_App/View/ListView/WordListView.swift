@@ -32,7 +32,7 @@ struct WordListView: View {
                     }
                     .foregroundStyle(.white)
                     .padding(.trailing,10)
-                    .navigationDestination(isPresented: $isWordInputActive) { NavigationParentView() }
+                    .navigationDestination(isPresented: $isWordInputActive) { NavigationParentView(deck:deck) }
                 }
             }
             .toolbar(.hidden, for: .tabBar)

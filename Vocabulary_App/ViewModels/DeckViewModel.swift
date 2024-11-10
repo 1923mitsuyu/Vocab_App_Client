@@ -3,8 +3,7 @@ import Foundation
 class DeckViewModel : ObservableObject {
     
     @Published var decks: [Deck] = sampleDecks
-    @Published var emptyDecks: [Deck] = []
-        
+ 
     func checkIfNameExists (_ name: String) -> Bool {
         for deck in decks {
             if deck.name == name {
@@ -15,13 +14,16 @@ class DeckViewModel : ObservableObject {
     }
     
     func checkIfWordExists (_ targetWord: String) -> Bool {
+        
         for deck in decks {
             for word in deck.words {
-                if word.word == targetWord {
-                    return true
-                }
+                let wordInDeck = word.word.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let targetNewWord = targetWord.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                
+                if wordInDeck == targetNewWord { return true }
             }
         }
+        
         return false
     }
 }
