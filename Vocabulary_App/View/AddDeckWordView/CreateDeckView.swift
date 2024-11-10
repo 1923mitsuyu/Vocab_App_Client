@@ -103,5 +103,3 @@ struct CreateDeckView: View {
     let sampleViewModel = DeckViewModel()
     CreateDeckView(viewModel: sampleViewModel)
 }
-
-

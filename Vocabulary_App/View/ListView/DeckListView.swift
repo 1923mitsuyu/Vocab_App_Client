@@ -5,7 +5,7 @@ import SwiftUI
 
 struct DeckListView: View {
     
-    @ObservedObject var viewModel: DeckViewModel
+    @StateObject var viewModel = DeckViewModel()
     @State private var isCreateDeckActive = false
     @State private var deckToEdit: UUID?
     @State private var deckToDelete: UUID?
