@@ -2,8 +2,7 @@ import SwiftUI
 
 struct StudyHomeView: View {
     
-    @ObservedObject var viewModel: PlayStudyViewModel
-    @State private var decks: [Deck] = sampleDecks
+    @StateObject var viewModel = PlayStudyViewModel()
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]
     
@@ -22,8 +21,8 @@ struct StudyHomeView: View {
                     .padding(.bottom,20)
                 
                 Picker("Choose a deck", selection: $viewModel.selectionDeck) {
-                    ForEach(decks.indices, id: \.self) { index in
-                        Text(decks[index].name).tag(index)
+                    ForEach(viewModel.decks.indices, id: \.self) { index in
+                        Text(viewModel.decks[index].name).tag(index)
                     }
                 }
                 .cornerRadius(8)

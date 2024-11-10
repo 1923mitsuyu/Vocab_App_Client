@@ -2,17 +2,11 @@ import SwiftUI
 
 struct ResultView: View {
     
-    @State private var incorrectWords: [String] = [
-        "Apple", "Grape", "Banana", "Pineapple", "Strawberry",
-        "Orange", "Watermelon", "Blueberry", "Mango", "Peach",
-        "Lemon", "Lime", "Cherry", "Coconut", "Papaya",
-        "Pear", "Plum", "Apricot", "Kiwi", "Fig",
-        "Guava", "Pomegranate", "Cranberry", "Date", "Jackfruit", "Durian", "Nectarine"
-    ]
-    
+    @ObservedObject var viewModel : PlayStudyViewModel
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @Binding var selectedDeck: Int
+    @Binding var wrongWordIndex: [Int]
     
     var body: some View {
         
@@ -25,8 +19,8 @@ struct ResultView: View {
             
             // Put a list here to dislay the array of words
             List {
-                ForEach(incorrectWords, id: \.self) { word in
-                    Text(word)
+                ForEach(wrongWordIndex, id: \.self) { index in
+                    Text(viewModel.decks[selectedDeck].words[index].word)
                 }
             }
             .padding(.top, -10)
@@ -76,5 +70,5 @@ struct ResultView: View {
 }
 
 #Preview {
-    ResultView(selectedDeck: .constant(2))
+    ResultView(viewModel: PlayStudyViewModel(), selectedDeck: .constant(2), wrongWordIndex: .constant([2]))
 }

@@ -2,8 +2,8 @@ import SwiftUI
 
 struct MainView: View {
     
-    @StateObject var deckViewModel = DeckViewModel()
-    @StateObject var playStudyViewModel = PlayStudyViewModel()
+//    @StateObject var deckViewModel = DeckViewModel()
+//    @StateObject var playStudyViewModel = PlayStudyViewModel()
     
     init() {
         // Customize the unselected tab icon color
@@ -16,12 +16,12 @@ struct MainView: View {
     
     var body: some View {
         TabView {
-            DeckListView(viewModel: DeckViewModel())
+            DeckListView()
                 .tabItem {
                     Label("Deck", systemImage: "list.dash")
                 }
            
-            StudyHomeView(viewModel: PlayStudyViewModel())
+            StudyHomeView()
                 .tabItem {
                     Label("Study", systemImage: "brain.head.profile")
                 }

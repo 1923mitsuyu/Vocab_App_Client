@@ -82,6 +82,7 @@ struct WordInputView: View {
                            dismissButton: .default(Text("OK"))
                        )
                 }
+                
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

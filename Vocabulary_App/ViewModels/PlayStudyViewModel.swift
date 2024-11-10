@@ -8,11 +8,16 @@ class PlayStudyViewModel : ObservableObject {
     @Published var selectionDeck = 0
     @Published var randomInt : Int = 0
     @Published var usedWordsIndex : [Int] = [0]
+    @Published var wrongWordsIndex : [Int] = []
     
     func hideTargetWordInExample(_ example: String) -> String {
         // 正規表現で {{}} 内の部分を見つける
+        print("Trying to make a blank in \(example)")
         let regex = try! NSRegularExpression(pattern: "\\{\\{([^}]+)\\}\\}", options: [])
         let range = NSRange(location: 0, length: example.utf16.count)
+        
+        print("regex:\(regex))")
+        print("range:\(range))")
         
         // マッチする部分を動的に処理
         var modifiedExample = example
@@ -29,6 +34,30 @@ class PlayStudyViewModel : ObservableObject {
         }
         
         return modifiedExample
+    }
+    
+
+    func extractWordFromBrackets(example: String) -> String? {
+        // 正規表現パターン：{{}}内の単語を抽出
+        let pattern = "\\{\\{(.*?)\\}\\}"
+        
+        do {
+            // 正規表現を作成
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            
+            // 文字列内で一致する部分を検索
+            let range = NSRange(location: 0, length: example.utf16.count)
+            if let match = regex.firstMatch(in: example, options: [], range: range) {
+                // {{}}内の単語を抽出
+                if let range = Range(match.range(at: 1), in: example) {
+                    return String(example[range])  // 単語を返す
+                }
+            }
+        } catch {
+            print("正規表現が無効です")
+        }
+        
+        return nil  // 一致が見つからなかった場合
     }
     
     func isRandomNumberUsed() -> Bool {
@@ -68,13 +97,19 @@ class PlayStudyViewModel : ObservableObject {
     func checkIfAnswerIsCorrect() -> Bool {
         
         let trimmedAnswer = writtenAnswer.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        let correctAnswer = decks[selectionDeck].words[randomInt].word.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        
+        // 正しい単語を取得するために extractWordFromBrackets を呼び出す
+        guard let correctAnswer = extractWordFromBrackets(example: decks[selectionDeck].words[randomInt].example) else {
+            return false
+        }
+        
         print(trimmedAnswer)
         print(correctAnswer)
+        
+        // 答えが正しいかどうかを比較
         if trimmedAnswer == correctAnswer {
             return true
-        }
-        else {
+        } else {
             return false
         }
     }
@@ -89,3 +124,4 @@ class PlayStudyViewModel : ObservableObject {
         writtenAnswer = ""
     }
 }
+
