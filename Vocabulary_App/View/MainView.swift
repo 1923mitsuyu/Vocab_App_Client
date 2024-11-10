@@ -2,7 +2,8 @@ import SwiftUI
 
 struct MainView: View {
     
-    @State private var decks: [Deck] = sampleDecks
+    @StateObject var deckViewModel = DeckViewModel()
+    @StateObject var playStudyViewModel = PlayStudyViewModel()
     
     init() {
         // Customize the unselected tab icon color
@@ -15,7 +16,7 @@ struct MainView: View {
     
     var body: some View {
         TabView {
-            DeckListView(decks: $decks)
+            DeckListView(viewModel: DeckViewModel())
                 .tabItem {
                     Label("Deck", systemImage: "list.dash")
                 }

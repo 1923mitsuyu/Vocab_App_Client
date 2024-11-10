@@ -1,5 +1,8 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. Users can edit the word and example when the screen is tapped
+
 struct ReviewAndAddView: View {
     
     @Binding var word: String

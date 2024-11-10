@@ -1,14 +1,11 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Users cannnot make the two decks with the same name
-
 struct CreateDeckView: View {
     
+    @ObservedObject var viewModel: DeckViewModel
     @State private var deckName: String = ""
     @State private var activeAlert: Bool = false
     @State private var isDeckListActive: Bool = false
-    @State private var decks: [Deck] = sampleDecks
     
     var body: some View {
         NavigationStack {
@@ -46,10 +43,21 @@ struct CreateDeckView: View {
                     if deckName.isEmpty {
                         activeAlert = true
                     }
+                    else if viewModel.checkIfNameExists(deckName) {
+                        print("It has already existed")
+                        // Clear the text field
+                        deckName = ""
+                    }
                     else {
-                        let newDeck = Deck(name: deckName)
-                        // Temporary method to create a new deck
-                        decks.append(newDeck)
+                        // Create a new deck
+                        let newDeck = Deck(name: deckName, words:[], listOrder: viewModel.decks.count)
+                        
+                        // Add the new deck to the deck array
+                        viewModel.decks.append(newDeck)
+                        
+                        // print("Deck added: \(newDeck.name)")
+                        // print("Updated decks list: \(viewModel.decks.map { $0.name })")
+                        
                         //    Save the new deck to the database
                         //    saveDeckToDatabase(newDeck) { success in
                         //    if success {
@@ -61,10 +69,13 @@ struct CreateDeckView: View {
                         //     }
                         //  }
                         
+                        // Clear the text field
                         deckName = ""
+                        
+                        // Jump back to the word list
                         isDeckListActive = true
                     }
-                    
+                
                 } label: {
                     Text("Create")
                         .foregroundStyle(.black)
@@ -79,7 +90,7 @@ struct CreateDeckView: View {
                         message: Text("Please fill in the blank")
                     )
                 }
-                .navigationDestination(isPresented: $isDeckListActive) { DeckListView(decks: $decks) }
+                .navigationDestination(isPresented: $isDeckListActive) { DeckListView(viewModel: DeckViewModel()) }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -89,5 +100,8 @@ struct CreateDeckView: View {
 }
 
 #Preview {
-    CreateDeckView()
+    let sampleViewModel = DeckViewModel()
+    CreateDeckView(viewModel: sampleViewModel)
 }
+
+

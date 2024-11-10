@@ -2,42 +2,63 @@ import SwiftUI
 
 // TO DO LIST
 // 1. Users turn to the next page to see more decks (pagination)
-// 2. Users see the alert and then can delete a deck
-// 3. Users can sort the list of decks by date added or in alphabetical order, in either ascending or descending order.
-// 4. Users can drag and drop the deck to change the order of the decks.
 
 struct DeckListView: View {
-    @Binding var decks: [Deck]
+    
+    @ObservedObject var viewModel: DeckViewModel
     @State private var isCreateDeckActive = false
     @State private var deckToEdit: UUID?
+    @State private var deckToDelete: UUID?
     @State private var newDeckName: String = ""
-    @State private var showSheet: Bool = false
+    @State private var showEditSheet: Bool = false
+    @State private var isPickerPresented = false
+    @State private var selectedSortOption = "Name"
+    @State private var showDeleteAlert : Bool = false
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach($decks) { $deck in
-                    NavigationLink(destination: WordListView(deck: deck)) {
-                        HStack {
-                            Text(deck.name)
-                                .fontWeight(.bold)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .gesture(
-                                    LongPressGesture(minimumDuration: 1.0)
-                                        .onEnded { _ in
-                                            deckToEdit = deck.id
-                                            newDeckName = deck.name
-                                            showSheet = true
-                                        }
-                                )
+            List($viewModel.decks, editActions: .move) { $deck in
+                NavigationLink(destination: WordListView(deck: deck)) {
+                    HStack {
+                        Text(deck.name)
+                            .fontWeight(.bold)
+                            .padding(.vertical, 4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .swipeActions {
+                        Button(role: .destructive, action: {
+                            deckToDelete = deck.id
+                            showDeleteAlert = true
+                        }) {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        
+                        Button(action: {
+                            deckToEdit = deck.id
+                            newDeckName = deck.name
+                            showEditSheet = true
+                        }) {
+                            Label("Edit", systemImage: "pencil")
                         }
                     }
                 }
             }
+            .onAppear {
+                print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
+            }
+            .onChange(of: viewModel.decks) { oldValue, newValue in
+                print("The view changed!")
+                var counter = 0
+                for index in viewModel.decks.indices {
+                    viewModel.decks[index].listOrder = counter
+                    print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].listOrder)")
+                    counter += 1
+                }
+                print("--------------------------------")
+            }
+            .navigationTitle("All Decks")
             .background(.blue.gradient)
             .scrollContentBackground(.hidden)
-            .navigationTitle("All Decks")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -47,17 +68,61 @@ struct DeckListView: View {
                     }
                     .foregroundStyle(.white)
                     .padding(.trailing, 10)
-                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView() }
+                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel) }
                     .navigationBarBackButtonHidden()
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isPickerPresented.toggle()
+                    }) {
+                        Image(systemName: "list.bullet")
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.trailing, 10)
+                }
             }
-            .sheet(isPresented: $showSheet) {
+            .actionSheet(isPresented: $isPickerPresented) {
+                ActionSheet(
+                    title: Text("Select Sorting Option"),
+                    buttons: [
+                        .default(Text("By Name(Ascending)")) {
+                            selectedSortOption = "Name"
+                            viewModel.decks.sort { $0.name < $1.name }
+                        },
+                        .default(Text("By Name (Descending)")) {
+                            selectedSortOption = "Name"
+                            viewModel.decks.sort { $0.name > $1.name }
+                        },
+                        .default(Text("By Date Added")) {
+                            selectedSortOption = "Date Added"
+                            viewModel.decks.sort { $0.listOrder < $1.listOrder }
+                        },
+                        .cancel()
+                    ]
+                )
+            }
+            .alert(isPresented: $showDeleteAlert) {
+                Alert(
+                    title: Text("Delete Deck"),
+                    message: Text("Are you sure you want to delete this deck?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        if let deckToDelete = deckToDelete {
+                            if let index = viewModel.decks.firstIndex(where: { $0.id == deckToDelete }) {
+                                viewModel.decks.remove(at: index)
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+            .sheet(isPresented: $showEditSheet) {
                 VStack {
                     Spacer()
                     Text("Edit the Deck Name")
                         .fontWeight(.semibold)
-                        .font(. system(size: 23))
-                        .padding(.top,25)
+                        .font(.system(size: 23))
+                        .padding(.top, 25)
                     
                     TextField("", text: $newDeckName)
                         .padding()
@@ -70,17 +135,25 @@ struct DeckListView: View {
                         .padding(.horizontal)
                    
                     Button("Save") {
-                        // Find the deck index using deckToEdit
-                        if let deckToEdit = deckToEdit,
-                           let index = decks.firstIndex(where: { $0.id == deckToEdit }) {
-                            // Update the deck name with newDeckName
-                            decks[index].name = newDeckName
+
+                        guard let deckToEdit = deckToEdit else {
+                            print("Error: deckToEdit is nil")
+                            return
                         }
                         
-                        // Call a http request to update the deck name here
+                        // 編集するデッキのインデックスを取得
+                        if let index = viewModel.decks.firstIndex(where: { $0.id == deckToEdit }) {
+                            // 編集した名前でデッキ名を更新
+                            viewModel.decks[index].name = newDeckName
+                            
+                            print("DeckToEdit: \(String(describing: deckToEdit))")
+                            print("New Name: \(viewModel.decks[index].name)")
+                        } else {
+                            print("Error: Deck not found")
+                        }
                         
-                        // Dismiss the sheet
-                        showSheet = false
+                        // 編集シートを閉じる
+                        showEditSheet = false
                     }
                     .padding()
                     .background(Color.blue)
@@ -91,7 +164,7 @@ struct DeckListView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scrollContentBackground(.hidden)
-                .padding(.bottom,30)
+                .padding(.bottom, 30)
                 .background(.blue.opacity(0.5))
             }
         }
@@ -100,13 +173,32 @@ struct DeckListView: View {
 
 struct CreateDeckView_Previews: PreviewProvider {
     @State static var decks: [Deck] = [
-        Deck(name: "Sample Deck1", words: [
-            Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。"),
-            Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある")
-        ])
-    ]
+           Deck(name: "Sample Deck1", words: [
+               Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。"),
+               Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある")], listOrder: 0),
+           
+           Deck(name: "Sample Deck2", words: [
+               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。"),
+               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。")], listOrder: 1),
+           
+           Deck(name: "Sample Deck3", words: [
+               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。"),
+               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。")], listOrder: 2),
+           
+           Deck(name: "Sample Deck4", words: [
+               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。"),
+               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。")], listOrder: 3),
+           
+           Deck(name: "Sample Deck5", words: [
+               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。"),
+               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。")], listOrder: 4),
+           
+           Deck(name: "Sample Deck6", words: [
+               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。"),
+               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。")], listOrder: 5),
+       ]
     
     static var previews: some View {
-        DeckListView(decks: $decks)
+        DeckListView(viewModel: DeckViewModel())
     }
 }

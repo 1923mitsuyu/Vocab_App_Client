@@ -5,6 +5,7 @@ import SwiftUI
 
 struct WordInputView: View {
     
+    @ObservedObject var viewModel: DeckViewModel
     @Binding var word: String
     @Binding var definition: String
     @Binding var currentStep: Int
@@ -60,6 +61,9 @@ struct WordInputView: View {
                 Button {
                     if word.isEmpty || definition.isEmpty {
                         activeAlert = true
+                    }
+                    else if viewModel.checkIfWordExists(word){
+                        
                     }
                     else {
                         currentStep = 2
@@ -125,7 +129,7 @@ struct TextFieldModifier: ViewModifier {
 }
 #Preview {
     WordInputView(
-        word: .constant("Procrastinate"),
+        viewModel: DeckViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
         currentStep: .constant(1)
     )

@@ -1,5 +1,9 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. Make a button to encapsulate the word in {{}}
+// 2. Call an API of AI
+
 struct ExampleInputView: View {
     
     @Binding var example: String
