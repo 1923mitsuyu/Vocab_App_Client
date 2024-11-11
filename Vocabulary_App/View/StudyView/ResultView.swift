@@ -1,5 +1,9 @@
 import SwiftUI
 
+// TO DO LIST
+// wrongWordIndexの中で、重複したIndex(=単語)がないようにする
+// 全問正解の時に祝福の文を表示するようにする
+
 struct ResultView: View {
     
     @ObservedObject var viewModel : PlayStudyViewModel
@@ -13,14 +17,14 @@ struct ResultView: View {
         VStack {
             // Put a text here
             Text("Check the Result")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.system(size: 25, weight: .semibold, design: .rounded))
                 .padding(.vertical,10)
             
             // Put a list here to dislay the array of words
             List {
                 ForEach(wrongWordIndex, id: \.self) { index in
                     Text(viewModel.decks[selectedDeck].words[index].word)
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
                 }
             }
             .padding(.top, -10)
@@ -32,8 +36,9 @@ struct ResultView: View {
                     isStudyHomeViewActive = true
                 } label: {
                     Text("Home")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
+                       
                 }
                 .frame(width: 100, height: 20)
                 .padding()
@@ -50,10 +55,11 @@ struct ResultView: View {
                     isPlayStudyViewActive = true
                 } label: {
                     Text("Study Again")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
+                       
                 }
-                .frame(width: 100, height: 20)
+                .frame(width: 120, height: 20)
                 .padding()
                 .background(.white)
                 .cornerRadius(10)

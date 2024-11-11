@@ -16,8 +16,7 @@ struct StudyHomeView: View {
                     .padding(.bottom,30)
                 
                 Text("Choose a deck and study!")
-                    .font(.title)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
                     .padding(.bottom,20)
                 
                 Picker("Choose a deck", selection: $viewModel.selectionDeck) {
@@ -32,9 +31,9 @@ struct StudyHomeView: View {
                     isPlayStudyActive = true
                 } label: {
                     Text("Start")
+                        .font(.system(size: 23, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
-                        .font(.title3)
+                       
                 }
                 .frame(width: 150, height: 50)
                 .background(.white)
@@ -42,6 +41,7 @@ struct StudyHomeView: View {
                 .navigationDestination(isPresented: $isPlayStudyActive) {
                     PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck)
                 }
+                
                 Spacer()
 
             }
@@ -78,12 +78,11 @@ struct MonthlyCalendarView: View {
     var body: some View {
         VStack {
             Text("Monthly Study Tracker")
-                .font(.headline)
-                .fontWeight(.bold)
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .padding(.bottom, 10)
             
             Text(monthName)
-                .fontWeight(.semibold)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .padding(.bottom, 10)
             
             let columns = Array(repeating: GridItem(.flexible()), count: 7)

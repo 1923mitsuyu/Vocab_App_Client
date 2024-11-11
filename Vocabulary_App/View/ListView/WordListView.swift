@@ -18,7 +18,7 @@ struct WordListView: View {
                 ForEach(deck.words.sorted(by: { $0.wordOrder < $1.wordOrder })) { word in
                     NavigationLink(destination: WordDetailView(word: word)) {
                         Text(word.word)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                     }
                 }
                 .onMove(perform: moveWords)

@@ -29,12 +29,12 @@ struct Login: View {
         NavigationStack{
             VStack{
                 Text("Vocab!")
-                    .font(. system(size: 60))
-                    .fontWeight(.bold)
+                    .font(.system(size: 60, weight: .semibold, design: .rounded))
                     .foregroundStyle(.black)
                     .padding(.bottom,30)
                 
                 TextField("Phone number, user name, or email address", text: $userName)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5)
@@ -50,6 +50,7 @@ struct Login: View {
                 Spacer().frame(height: 30)
                 
                 SecureField("Password",text: $password)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5)
@@ -67,8 +68,9 @@ struct Login: View {
                     print("Reset the password")
                 }) {
                     Text("Forgot your password? Tap here!")
-                        .underline()
                         .foregroundStyle(.black)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .underline()
                         .padding(15)
                 }
                 
@@ -86,12 +88,12 @@ struct Login: View {
                     }
                 }, label: {
                     Text("Login")
-                        .fontWeight(.semibold)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width: UIScreen.main.bounds.size.width / 6 * 3,height: UIScreen.main.bounds.size.width / 17 * 1)
                 })
                 .padding()
-                .foregroundStyle(Color.white)
-                .background(Color.black)
+                .foregroundStyle(.black)
+                .background(Color.white)
                 .cornerRadius(20)
                 .alert(item: $activeAlert) { alert in
                     switch alert {
@@ -106,10 +108,13 @@ struct Login: View {
                 
                 HStack {
                     Text("Don't have an account?")
+                        .foregroundStyle(.black)
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
                     Button {
                         isSignUpActive = true
                     } label: {
                         Text("Sign Up")
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                             .underline()
                     }
                     .foregroundStyle(.black)
@@ -122,9 +127,10 @@ struct Login: View {
                         .background(Color.black)
                     
                     Text("OR")
-                        .padding(.horizontal, 8)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                    
+                        .padding(.horizontal, 8)
+                       
                     Divider()
                         .frame(maxWidth: .infinity, maxHeight: 1)
                         .background(Color.black)
@@ -132,6 +138,8 @@ struct Login: View {
                 .padding(.horizontal)
                 
                 Text("Login with Google Account")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.black)
                     .padding(.top)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

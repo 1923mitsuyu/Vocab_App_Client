@@ -21,7 +21,7 @@ struct DeckListView: View {
                 NavigationLink(destination: WordListView(deck: deck)) {
                     HStack {
                         Text(deck.name)
-                            .fontWeight(.bold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .padding(.vertical, 4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -121,11 +121,11 @@ struct DeckListView: View {
                 VStack {
                     Spacer()
                     Text("Edit the Deck Name")
-                        .fontWeight(.semibold)
-                        .font(.system(size: 23))
+                        .font(.system(size: 25, weight: .semibold, design: .rounded))
                         .padding(.top, 25)
                     
                     TextField("", text: $newDeckName)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5)
@@ -135,8 +135,8 @@ struct DeckListView: View {
                         )
                         .padding(.horizontal)
                    
-                    Button("Save") {
-
+                    Spacer().frame(height:25)
+                    Button {
                         guard let deckToEdit = deckToEdit else {
                             print("Error: deckToEdit is nil")
                             return
@@ -153,9 +153,11 @@ struct DeckListView: View {
                             print("Error: Deck not found")
                         }
                         
-                        // 編集シートを閉じる
                         showEditSheet = false
+                    } label: {
+                        Text("Save")
                     }
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)

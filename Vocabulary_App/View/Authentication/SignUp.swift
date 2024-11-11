@@ -29,14 +29,14 @@ struct SignUp: View {
         NavigationStack {
             VStack{
                 Text("Vocab!")
-                    .font(. system(size: 60))
-                    .fontWeight(.bold)
+                    .font(.system(size: 60, weight: .semibold, design: .rounded))
                     .foregroundStyle(.black)
                     .padding(.bottom,30)
                 
                 TextField("Phone number, user name, or email address", text: $userName)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .padding()
-                    .background(Color.white)
+                    .background(.white)
                     .cornerRadius(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
@@ -50,8 +50,9 @@ struct SignUp: View {
                 Spacer().frame(height: 30)
                 
                 SecureField("Password",text: $password)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .padding()
-                    .background(Color.white)
+                    .background(.white)
                     .cornerRadius(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
@@ -81,12 +82,12 @@ struct SignUp: View {
                     }
                 }, label: {
                     Text("Sign Up")
-                        .fontWeight(.semibold)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width: UIScreen.main.bounds.size.width / 6 * 3,height: UIScreen.main.bounds.size.width / 17 * 1)
                 })
                 .padding()
-                .foregroundStyle(Color.white)
-                .background(Color.black)
+                .foregroundStyle(.black)
+                .background(.white)
                 .cornerRadius(20)
                 .alert(item: $activeAlert) { alert in
                     switch alert {
@@ -101,10 +102,12 @@ struct SignUp: View {
                 
                 HStack {
                     Text("Has already an account?")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                     Button {
                         isLoginViewActive = true
                     } label: {
                         Text("Log In")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
                             .underline()
                     }
                     .foregroundStyle(.black)

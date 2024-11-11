@@ -11,12 +11,13 @@ struct CreateDeckView: View {
         NavigationStack {
             VStack {
                 Text("Create a new deck!")
+                    .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.vertical,30)
-                    .fontWeight(.bold)
-                    .font(. system(size: 25))
+                    
                 
                 HStack {
                     TextField("Deck name here", text: $deckName)
+                        .font(.system(size: 24, weight: .semibold, design: .rounded))
                         .frame(width: 280, height: 30)
                         .padding()
                         .background(Color.white)
@@ -79,7 +80,7 @@ struct CreateDeckView: View {
                 } label: {
                     Text("Create")
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(maxWidth: 200, minHeight: 40)
                 }
                 .background(.white)

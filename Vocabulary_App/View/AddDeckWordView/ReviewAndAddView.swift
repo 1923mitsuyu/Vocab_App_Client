@@ -15,10 +15,11 @@ struct ReviewAndAddView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer().frame(height:10)
+                
+                Spacer().frame(height:15)
+                
                 Text("Review and Add")
-                    .fontWeight(.semibold)
-                    .font(. system(size: 25))
+                    .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.bottom,10)
                 
                 HStack {
@@ -30,6 +31,7 @@ struct ReviewAndAddView: View {
                                 .frame(width: 40, height: 40)
                                 .overlay(
                                     Text("\(step)")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .foregroundColor(step == currentStep ? Color.white : Color.gray)
                                         .font(.headline)
                                 )
@@ -50,28 +52,27 @@ struct ReviewAndAddView: View {
                     Section(header: Text("Word Details")) {
                         Text(word)
                             .foregroundColor(.blue)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 25, weight: .semibold, design: .rounded))
                         
                         Text(definition)
                             .foregroundColor(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                     }
                     
                     Section(header: Text("Example Sentence")) {
                         Text(example)
                             .foregroundColor(.blue)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                         
                         Text(translation)
                             .foregroundColor(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                     }
                     
                     Section(header: Text("Note")) {
-                        
                         Text(note)
                             .foregroundColor(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
                     }
                 }
                 .scrollContentBackground(.hidden)
@@ -83,7 +84,7 @@ struct ReviewAndAddView: View {
                     } label: {
                         Text("Previous")
                             .foregroundStyle(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
                     .background(.white)
@@ -102,7 +103,7 @@ struct ReviewAndAddView: View {
                     } label: {
                         Text("Add")
                             .foregroundStyle(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
                     .background(.white)

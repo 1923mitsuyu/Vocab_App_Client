@@ -13,9 +13,9 @@ struct WordInputView: View {
         NavigationStack {
             VStack {
                 Spacer().frame(height:10)
+                
                 Text("Add a New Word")
-                    .fontWeight(.semibold)
-                    .font(. system(size: 25))
+                    .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.bottom,5)
                 
                 HStack {
@@ -27,6 +27,7 @@ struct WordInputView: View {
                                 .frame(width: 40, height: 40)
                                 .overlay(
                                     Text("\(step)")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .foregroundColor(step == currentStep ? Color.white : Color.gray)
                                         .font(.headline)
                                 )
@@ -68,7 +69,7 @@ struct WordInputView: View {
                 } label: {
                      Text("Next")
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                 }
                 .background(.white)
@@ -99,6 +100,7 @@ struct TextFieldModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
+            .font(.system(size: 20, weight: .semibold, design: .rounded))
             .frame(width: 300, height: height)
             .padding()
             .background(Color.white)

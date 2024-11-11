@@ -17,10 +17,11 @@ struct ExampleInputView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                
                 Spacer().frame(height:10)
+                
                 Text("Add an Example")
-                    .fontWeight(.semibold)
-                    .font(. system(size: 25))
+                    .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.bottom,5)
                 
                 // Progress bar
@@ -33,6 +34,7 @@ struct ExampleInputView: View {
                                 .frame(width: 40, height: 40)
                                 .overlay(
                                     Text("\(step)")
+                                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                                         .foregroundColor(step == currentStep ? Color.white : Color.gray)
                                         .font(.headline)
                                 )
@@ -53,6 +55,7 @@ struct ExampleInputView: View {
                 
                 HStack {
                     TextEditor(text: $example)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .frame(width: 330, height: 80)
                         .cornerRadius(5)
                         .focused($isFocused)
@@ -69,29 +72,24 @@ struct ExampleInputView: View {
                     
                     Spacer().frame(width: 10)
                     
-                    VStack {
-                        Text("Button")
-                        
-                        Button(action: {
-                            example = ""
-                        }) {
-                            Image(systemName: "delete.left")
-                                .foregroundColor(Color(UIColor.opaqueSeparator))
-                        }
-                        .padding(.top, 4)
-                        .opacity(example.isEmpty ? 0 : 1)
+                    Button(action: {
+                        example = ""
+                    }) {
+                        Image(systemName: "delete.left")
+                            .foregroundColor(Color(UIColor.opaqueSeparator))
                     }
+                    .padding(.top, 4)
+                    .opacity(example.isEmpty ? 0 : 1)
                 }
-
+                
                 Spacer().frame(height: 10)
                 
                 Button {
                     print("Button tapped")
                 } label: {
                     Text("Generate an example sentence")
-                        .font(. system(size: 15))
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
                         .frame(width: 250)
                         .padding(.vertical,5)
                 }
@@ -105,6 +103,7 @@ struct ExampleInputView: View {
                 
                 HStack {
                     TextEditor(text: $translation)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .frame(width: 330, height: 80)
                         .cornerRadius(5)
                         .padding(.leading,10)
@@ -136,9 +135,8 @@ struct ExampleInputView: View {
                     print("Button tapped")
                 } label: {
                     Text("Generate a translation")
-                        .font(. system(size: 15))
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                        .fontWeight(.semibold)
                         .frame(width: 250)
                         .padding(.vertical,5)
                 }
@@ -152,6 +150,7 @@ struct ExampleInputView: View {
                 
                 HStack {
                     TextEditor(text: $note)
+                        .font(.system(size: 15, weight: .light, design: .rounded))
                         .frame(width: 330, height: 100)
                         .cornerRadius(5)
                         .padding(.leading,10)
@@ -184,7 +183,7 @@ struct ExampleInputView: View {
                     } label: {
                         Text("Previous")
                             .foregroundStyle(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
                     .background(.white)
@@ -201,7 +200,7 @@ struct ExampleInputView: View {
                     } label: {
                         Text("Next")
                             .foregroundStyle(.black)
-                            .fontWeight(.semibold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
                     .background(.white)

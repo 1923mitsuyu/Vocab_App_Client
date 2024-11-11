@@ -16,25 +16,25 @@ struct WordDetailView: View {
                 List {
                     Section(header: Text("Word").font(.headline)) {
                         Text(word.word)
-                            .font(.title)
-                            .fontWeight(.bold)
+                            .font(.system(size: 25, weight: .bold, design: .rounded))
                             .padding(.vertical, 4)
                     }
                     
                     Section(header: Text("Definition").font(.headline)) {
                         Text(word.definition)
-                            .font(.body)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .padding(.vertical, 4)
                     }
                     
                     Section(header: Text("Example").font(.headline)) {
                         Text(word.example)
                             .padding(.vertical, 4)
-                            .fontWeight(.bold)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                     }
                     
                     Section(header: Text("Translation").font(.headline)) {
                         Text(word.translation)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .padding(.vertical, 4)
                     }
                 }
@@ -43,43 +43,44 @@ struct WordDetailView: View {
                 .sheet(isPresented: $showSheet) {
                     VStack {
                         Text("Edit the Word")
-                            .fontWeight(.semibold)
-                            .font(. system(size: 23))
+                            .font(.system(size: 23, weight: .semibold, design: .rounded))
                             .padding(.top,25)
                         
                         List {
                             Section(header: Text("Word").font(.headline)) {
                                 TextField(word.word, text: $newWord)
-                                    .font(.body)
+                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
                             }
                             
                             Section(header: Text("Definition").font(.headline)) {
                                 TextField(word.definition, text: $newDefinition)
-                                    .font(.body)
+                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
                             }
                             
                             Section(header: Text("Example").font(.headline)) {
                                 TextField(word.example, text: $newExample)
+                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
-                                    .fontWeight(.bold)
+                                    
                             }
                             
                             Section(header: Text("Translation").font(.headline)) {
                                 TextField(word.translation, text: $newTranslation)
+                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
                             }
                         }
-                        
-                        Button("Save") {
-                            // Add a function to update the word data in the db
+                        Button {
                             showSheet = false
+                        } label: {
+                            Text("Save")
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
                         }
                         .padding()
                         .background(.blue)
                         .foregroundColor(.white)
-                        .fontWeight(.semibold)
                         .cornerRadius(8)
 
                         Spacer().frame(height:200)
@@ -96,6 +97,7 @@ struct WordDetailView: View {
                     showAlert = true
                 } label: {
                     Text("Delete")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
                 .padding()
                 .fontWeight(.semibold)
