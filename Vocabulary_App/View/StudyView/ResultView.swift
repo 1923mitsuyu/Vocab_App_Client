@@ -15,12 +15,10 @@ struct ResultView: View {
     var body: some View {
         
         VStack {
-            // Put a text here
             Text("Check the Result")
                 .font(.system(size: 25, weight: .semibold, design: .rounded))
                 .padding(.vertical,10)
             
-            // Put a list here to dislay the array of words
             List {
                 ForEach(wrongWordIndex, id: \.self) { index in
                     Text(viewModel.decks[selectedDeck].words[index].word)
