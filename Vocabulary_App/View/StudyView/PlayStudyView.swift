@@ -1,8 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Fix the problem that the first word in the deck is always the first one to be on the question
-
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
@@ -291,6 +288,9 @@ struct PlayStudyView: View {
                 }
                 
                 Spacer()
+            }
+            .onAppear {
+                viewModel.randomInt = viewModel.generateRandomQuestion()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
