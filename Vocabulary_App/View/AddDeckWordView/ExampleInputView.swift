@@ -1,7 +1,7 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Make a button to encapsulate the word in {{}} : Priority 5
+// 1. Make a button to encapsulate the word in {{}} using UI kit : Priority 5
 // 2. Call an API of AI : 3
 
 struct ExampleInputView: View {
@@ -69,14 +69,18 @@ struct ExampleInputView: View {
                     
                     Spacer().frame(width: 10)
                     
-                    Button(action: {
-                        example = ""
-                    }) {
-                        Image(systemName: "delete.left")
-                            .foregroundColor(Color(UIColor.opaqueSeparator))
+                    VStack {
+                        Text("Button")
+                        
+                        Button(action: {
+                            example = ""
+                        }) {
+                            Image(systemName: "delete.left")
+                                .foregroundColor(Color(UIColor.opaqueSeparator))
+                        }
+                        .padding(.top, 4)
+                        .opacity(example.isEmpty ? 0 : 1)
                     }
-                    .padding(.top, 4)
-                    .opacity(example.isEmpty ? 0 : 1)
                 }
 
                 Spacer().frame(height: 10)
