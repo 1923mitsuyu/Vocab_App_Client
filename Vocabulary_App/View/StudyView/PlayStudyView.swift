@@ -1,9 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Make the Check button colour gray when the text field is empty (if else)
-// 2. Make the uderline of the target word blue : Priority 1
-
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
@@ -58,10 +54,15 @@ struct PlayStudyView: View {
                 .padding(.bottom,20)
                 .padding(.trailing,10)
                 
+                Text("Complete the sentence")
+                    .font(.system(size: 23, weight: .bold, design: .rounded))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 10)
+                    .padding(.leading, 17)
+                
                 // Question with a blank to fill in
                 Text(modifiedExample)
-                    .fontWeight(.semibold)
-                      .font(.system(size: 18))
+                      .font(.system(size: 20, weight: .bold, design: .rounded))
                       .frame(maxWidth: 360, alignment: .leading)
                       .padding(.leading, 10)
                       .padding(.vertical, 25)
@@ -72,32 +73,33 @@ struct PlayStudyView: View {
                       .fixedSize(horizontal: false, vertical: true)
                 
                 // Japanese Translation as a hint
-                Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].translation)
-                    .fontWeight(.semibold)
-                    .padding(.top,10)
-                    .padding(.horizontal)
-                    .frame(maxWidth: 360, alignment: .leading)
-                    .lineLimit(nil)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                VStack {
+                    
+                    Text("日本語訳:")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .frame(maxWidth: 360, alignment: .leading)
+                        .padding(.top,10)
+                  
+                    Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].translation)
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .padding(.top,2)
+                        .frame(maxWidth: 360, alignment: .leading)
+                        .lineLimit(nil)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 
                 Spacer().frame(height: 30)
                 
-                Text("Complete the sentence!")
-                    .font( .system(size: 23))
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 5)
-                    .padding(.leading, 10)
-                
                 TextField("Write your answer here!", text: $viewModel.writtenAnswer)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .padding()
                     .background(Color.white)
                     .frame(width:300)
                     .cornerRadius(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
-                            .stroke(Color.gray, lineWidth: 2)
+                            .stroke(Color.gray, lineWidth: 3)
                     )
                     .padding(.horizontal)
                     .padding(.top,10)
@@ -114,8 +116,7 @@ struct PlayStudyView: View {
                                 .font(.title)
                             
                             Text("Good Job!")
-                                .font(.title)
-                                .fontWeight(.bold)
+                                .font(.system(size: 23, weight: .semibold, design: .rounded))
                         }
                         .frame(maxWidth: .infinity)
                         .cornerRadius(15)
@@ -153,7 +154,7 @@ struct PlayStudyView: View {
                             }
                         } label: {
                             Text("Continue")
-                                .fontWeight(.semibold)
+                                .font(.system(size: 23, weight: .semibold, design: .rounded))
                                 .frame(maxWidth: 200, maxHeight: 60)
                                 .background(.white)
                                 .cornerRadius(20)
@@ -183,8 +184,7 @@ struct PlayStudyView: View {
                                      .font(.title)
                                  
                                  Text("Good Try!")
-                                     .font(.title)
-                                     .fontWeight(.bold)
+                                     .font(.system(size: 23, weight: .semibold, design: .rounded))
                              }
                              .frame(maxWidth: .infinity)
                              .cornerRadius(15)
@@ -193,9 +193,9 @@ struct PlayStudyView: View {
                              
                              HStack {
                                  Text("Correct Answer:")
+                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                                  Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].word)
-                                     .fontWeight(.semibold)
-                                     .font(.title3)
+                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                              }
                                  
                              Button {
@@ -213,7 +213,7 @@ struct PlayStudyView: View {
                                  
                              } label: {
                                  Text("Got it")
-                                     .fontWeight(.semibold)
+                                     .font(.system(size: 23, weight: .semibold, design: .rounded))
                                      .frame(maxWidth: 200, maxHeight: 60)
                                      .background(.white)
                                      .cornerRadius(20)
@@ -273,14 +273,14 @@ struct PlayStudyView: View {
                         }
                     } label: {
                         Text("Check")
-                            .fontWeight(.semibold)
+                            .font(.system(size: 23, weight: .semibold, design: .rounded))
                             .frame(width: 300, height:30)
                         
                     }
                     .disabled(viewModel.writtenAnswer.isEmpty)
                     .padding()
                     .foregroundStyle(.black)
-                    .background(.white)
+                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .white)
                     .cornerRadius(20)
                 }
                 
