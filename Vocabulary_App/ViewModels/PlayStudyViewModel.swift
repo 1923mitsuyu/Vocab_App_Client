@@ -3,22 +3,24 @@ import Foundation
 class PlayStudyViewModel : ObservableObject {
     
     @Published var decks: [Deck] = sampleDecks
-    @Published var progress: Double = 0.1
     @Published var writtenAnswer: String = ""
     @Published var selectionDeck = 0
     @Published var randomInt : Int = 0
     @Published var usedWordsIndex : [Int] = [0]
     @Published var wrongWordsIndex : [Int] = []
     
+    func calculateProgress(_ chosenDeck : Int )-> Double {
+        let totalNumberOfWords = decks[chosenDeck].words.count
+        let numberOfUsedWords = usedWordsIndex.count - 1
+        return totalNumberOfWords > 0 ? (Double(numberOfUsedWords) / Double(totalNumberOfWords) * 100) : 0
+    }
+    
     func hideTargetWordInExample(_ example: String) -> String {
         // 正規表現で {{}} 内の部分を見つける
         print("Trying to make a blank in \(example)")
         let regex = try! NSRegularExpression(pattern: "\\{\\{([^}]+)\\}\\}", options: [])
         let range = NSRange(location: 0, length: example.utf16.count)
-        
-        print("regex:\(regex))")
-        print("range:\(range))")
-        
+            
         // マッチする部分を動的に処理
         var modifiedExample = example
         regex.enumerateMatches(in: example, options: [], range: range) { match, flags, stop in

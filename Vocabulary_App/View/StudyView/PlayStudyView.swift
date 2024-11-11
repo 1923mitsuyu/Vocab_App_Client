@@ -1,61 +1,86 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Show the pop up if the answer is correct : Priority 4
-// 2. Users write the word three times if they do not answer correctly : Priority 2
-// 3. Users can see how many words are left in the deck through the progress bar : Priority 4
+// 1. Show the pop-up (Good Job [green]vs Good try[red]) with a right answer in it : Priority 4
+// 2. Users tap "continue" button to proceed : Priority 5
+// 3. Users will see the same questions if they have answered incorrectly : Priority 5
+// 4. Make the uderline of the target word blue : Priority 1
 
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
     @Binding var selectedDeck: Int
-    @State private var progress = 0.1
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isResuktViewActive: Bool = false
     @State private var isAnswerCorrect: Bool = false
     @State private var totalPoints: Int = 0
     @State private var showAlert : Bool = false
-        
+    @State private var showPopup : Bool = false
+    @State private var progress : Double = 0.00
+    @State private var moveToNewWord : Bool = false
+    @FocusState var focus: Bool
+    
     var body: some View {
         
         // Generate a sentence with a blank for questions
         let example = viewModel.decks[selectedDeck].words[viewModel.randomInt].example
         let modifiedExample = viewModel.hideTargetWordInExample(example)
-        
+       
         NavigationStack {
             VStack {
-                
                 Spacer().frame(height: 30)
                 
-                ProgressView(value: progress)
+                HStack{
+                    Button {
+                        isStudyHomeViewActive = true
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.white)
+                    }
+                    .navigationDestination(isPresented: $isStudyHomeViewActive) {
+                        StudyHomeView(viewModel: PlayStudyViewModel())
+                    }
+                    
+                    Spacer().frame(width:20)
+                    
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 300, height: 15)
+                        
+                        Rectangle()
+                            .fill(Color.blue)
+                            .frame(width: CGFloat(progress) * 3, height: 20)
+                    }
+                    .cornerRadius(10)
                     .frame(width: 320)
-                    .accentColor(.white)
-                    .padding(.bottom,20)
-                
-                Text("Read and answer the question")
-                    .font( .system(size: 23))
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.bottom,30)
-                    .padding(.leading, 10)
+                                
+                }
+                .padding(.bottom,20)
+                .padding(.trailing,10)
                 
                 // Question with a blank to fill in
                 Text(modifiedExample)
                     .fontWeight(.semibold)
-                    .font( .system(size: 18))
-                    .frame(maxWidth: 360, alignment: .leading)
-                    .padding(.leading, 10)
-                    .padding(.vertical,25)
-                    .background(.white)
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.leading)
+                      .font(.system(size: 18))
+                      .frame(maxWidth: 360, alignment: .leading)
+                      .padding(.leading, 10)
+                      .padding(.vertical, 25)
+                      .background(.white)
+                      .cornerRadius(10)
+                      .multilineTextAlignment(.leading)
+                      .lineLimit(nil)
+                      .fixedSize(horizontal: false, vertical: true)
                 
                 // Japanese Translation as a hint
                 Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].translation)
                     .fontWeight(.semibold)
                     .padding(.top,10)
                     .padding(.horizontal)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: 360, alignment: .leading)
+                    .lineLimit(nil)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 
                 Spacer().frame(height: 30)
                 
@@ -76,68 +101,101 @@ struct PlayStudyView: View {
                             .stroke(Color.gray, lineWidth: 2)
                     )
                     .padding(.horizontal)
-                    .padding(.vertical,10)
-                
-                Spacer()
-                
-                HStack{
-                    Button {
-                        isStudyHomeViewActive = true
-                    } label: {
-                        Text("Quit")
-                            .fontWeight(.semibold)
-                            .frame(width: 80, height:30)
+                    .padding(.top,10)
+                    .padding(.bottom,40)
+                    .focused(self.$focus)
+                    .keyboardType(.alphabet)
+                            
+                if showPopup {
+                    VStack {
+                        HStack {
+                            Image(systemName: "checkmark.circle")
+                                .font(.title)
+                            
+                            Text("Good Job!")
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                        .padding(.vertical, 20)
+                        
+                        Button {
+                            // Check of all all words in the deck has been used
+                            if viewModel.checkIfAllWordsUsed() {
+                                print("Finished all the words in the deck")
+                                // Jump to the result view
+                                isResuktViewActive = true
+                            }
+                            else {
+                                
+                                // Remove the text in the text field
+                                print("Empying the text field...")
+                                viewModel.resetTextField()
+                                // Generate a new integer for the next question
+                                print("Generating a new word...")
+                                viewModel.randomInt = viewModel.generateRandomQuestion()
+                                
+                                // Assign the new integer to the array
+                                viewModel.usedWordsIndex.append(viewModel.randomInt)
+                                progress = viewModel.calculateProgress(selectedDeck)
+                                withAnimation {
+                                    showPopup = false // Animated disappearance
+                                }
+                                
+                                isAnswerCorrect = false
+                            }
+                        } label: {
+                            Text("Continue")
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: 200, maxHeight: 60)
+                                .background(.white)
+                                .cornerRadius(20)
+                        }
+                        .padding(.bottom, 20)
+                        .navigationDestination(isPresented: $isResuktViewActive) {
+                            ResultView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                        }
+                        
                     }
-                    .padding()
-                    .foregroundStyle(.black)
-                    .background(.white)
-                    .cornerRadius(20)
-                    .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                        StudyHomeView(viewModel: PlayStudyViewModel())
-                    }
-                    
-                    Spacer().frame(width: 25)
-                    
+                    .background(Color.green.opacity(0.9))
+                    .transition(
+                            .asymmetric(
+                                insertion: .opacity.combined(with: .move(edge: .bottom)),
+                                removal: .opacity.combined(with: .move(edge: .bottom))
+                            )
+                        )
+                    .animation(.easeInOut(duration: 0.3), value: showPopup)
+                    .zIndex(1)
+                }
+             
+                if !isAnswerCorrect {
                     Button {
                         // Check if the inputted answer is correct
                         isAnswerCorrect = viewModel.checkIfAnswerIsCorrect()
-                        print("Correct Answer?: \(isAnswerCorrect)")
+                        
+                        // Dismiss the keyboard
+                        self.focus = false
                         
                         if isAnswerCorrect {
                             totalPoints += 1
-                            showAlert = true
+                            withAnimation {
+                                showPopup = true
+                            }
                         }
                         else {
                             // Assign the word into the array
                             viewModel.wrongWordsIndex.append(viewModel.randomInt)
-                            
                             print("The wrong words are:")
                             for index in viewModel.wrongWordsIndex {
                                 print("\(viewModel.decks[selectedDeck].words[index].word)")
                             }
                         }
-                        
-                        // Check of all all words in the deck has been used
-                        if viewModel.checkIfAllWordsUsed() {
-                            print("Finished all the words in the deck")
-                            // Jump to the result view
-                            isResuktViewActive = true
-                        }
-                        // The game will continue
-                        else {
-                            // Remove the text in the text field
-                            viewModel.resetTextField()
-                            // Generate a new integer for the next question
-                            viewModel.randomInt = viewModel.generateRandomQuestion()
-                            // Assign the new integer to the array
-                            viewModel.usedWordsIndex.append(viewModel.randomInt)
-                            // print("Newly Generated Number: \(randomWordNumber)")
-                            // print("Used Number: \(viewModel.usedWordsIndex)")
-                        }
                     } label: {
                         Text("Check")
                             .fontWeight(.semibold)
-                            .frame(width: 80, height:30)
+                            .frame(width: 300, height:30)
                         
                     }
                     .disabled(viewModel.writtenAnswer.isEmpty)
@@ -145,11 +203,9 @@ struct PlayStudyView: View {
                     .foregroundStyle(.black)
                     .background(.white)
                     .cornerRadius(20)
-                    .navigationDestination(isPresented: $isResuktViewActive) {
-                        ResultView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
-                    }
                 }
-                Spacer().frame(height: 30)
+                
+                Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
@@ -157,8 +213,8 @@ struct PlayStudyView: View {
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
     }
-}
 
+}
 #Preview {
     // Create a sample instance of PlayStudyViewModel with a sample deck index
     let sampleViewModel = PlayStudyViewModel()
