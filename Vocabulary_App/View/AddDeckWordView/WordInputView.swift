@@ -1,7 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-
 struct WordInputView: View {
     
     @ObservedObject var viewModel: DeckViewModel

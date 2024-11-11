@@ -1,8 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Users can edit the word and example when the screen is tapped : Priority 1
-
 struct ReviewAndAddView: View {
     
     @ObservedObject var viewModel : DeckViewModel
