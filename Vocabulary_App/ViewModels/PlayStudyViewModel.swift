@@ -28,7 +28,7 @@ class PlayStudyViewModel : ObservableObject {
             let word = (example as NSString).substring(with: matchRange)
             
             // 単語の長さに合わせたアンダースコアを生成
-            let underscore = String(repeating: "_", count: word.count)
+            let underscore = String(repeating: ".", count: word.count)
             
             // {{}} の部分をアンダースコアで置き換え
             modifiedExample = (modifiedExample as NSString).replacingCharacters(in: match!.range, with: underscore)
