@@ -1,10 +1,8 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Show the pop-up (Good Job [green]vs Good try[red]) with a right answer in it : Priority 4
-// 2. Users tap "continue" button to proceed : Priority 5
-// 3. Users will see the same questions if they have answered incorrectly : Priority 5
-// 4. Make the uderline of the target word blue : Priority 1
+// 1. Make the Check button colour gray when the text field is empty (if else)
+// 2. Make the uderline of the target word blue : Priority 1
 
 struct PlayStudyView: View {
     
@@ -18,6 +16,7 @@ struct PlayStudyView: View {
     @State private var showPopup : Bool = false
     @State private var progress : Double = 0.00
     @State private var moveToNewWord : Bool = false
+    @State private var showCheckButton : Bool = true
     @FocusState var focus: Bool
     
     var body: some View {
@@ -105,8 +104,10 @@ struct PlayStudyView: View {
                     .padding(.bottom,40)
                     .focused(self.$focus)
                     .keyboardType(.alphabet)
-                            
+                    
                 if showPopup {
+                    // When the answer is correct
+                    if isAnswerCorrect {
                     VStack {
                         HStack {
                             Image(systemName: "checkmark.circle")
@@ -122,26 +123,30 @@ struct PlayStudyView: View {
                         .padding(.vertical, 20)
                         
                         Button {
-                            // Check of all all words in the deck has been used
+                            // Assign the new integer to the array
+                            viewModel.usedWordsIndex.append(viewModel.randomInt)
+                            
+                            // Check if all the words in the deck have been used
                             if viewModel.checkIfAllWordsUsed() {
                                 print("Finished all the words in the deck")
                                 // Jump to the result view
                                 isResuktViewActive = true
                             }
                             else {
+                                for index in viewModel.usedWordsIndex {
+                                    print("The used word's index is: \(index)")
+                                }
                                 
                                 // Remove the text in the text field
-                                print("Empying the text field...")
                                 viewModel.resetTextField()
                                 // Generate a new integer for the next question
-                                print("Generating a new word...")
                                 viewModel.randomInt = viewModel.generateRandomQuestion()
-                                
-                                // Assign the new integer to the array
-                                viewModel.usedWordsIndex.append(viewModel.randomInt)
+                                // Calculate the progress percentage
                                 progress = viewModel.calculateProgress(selectedDeck)
+                                
                                 withAnimation {
-                                    showPopup = false // Animated disappearance
+                                    showPopup = false
+                                    showCheckButton = true
                                 }
                                 
                                 isAnswerCorrect = false
@@ -168,25 +173,99 @@ struct PlayStudyView: View {
                         )
                     .animation(.easeInOut(duration: 0.3), value: showPopup)
                     .zIndex(1)
+                    
+                     }
+                     // When the answer is incorrect
+                     else {
+                         VStack {
+                             HStack {
+                                 Image(systemName: "xmark.circle")
+                                     .font(.title)
+                                 
+                                 Text("Good Try!")
+                                     .font(.title)
+                                     .fontWeight(.bold)
+                             }
+                             .frame(maxWidth: .infinity)
+                             .cornerRadius(15)
+                             .padding(.horizontal)
+                             .padding(.vertical, 20)
+                             
+                             HStack {
+                                 Text("Correct Answer:")
+                                 Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].word)
+                                     .fontWeight(.semibold)
+                                     .font(.title3)
+                             }
+                                 
+                             Button {
+                                 // Remove the text in the text field
+                                 viewModel.resetTextField()
+                                 // Generate a new integer for the next question
+                                 viewModel.randomInt = viewModel.generateRandomQuestion()
+                                  
+                                 withAnimation {
+                                     showPopup = false // Animated disappearance
+                                     showCheckButton = true
+                                 }
+                                 
+                                 isAnswerCorrect = false
+                                 
+                             } label: {
+                                 Text("Got it")
+                                     .fontWeight(.semibold)
+                                     .frame(maxWidth: 200, maxHeight: 60)
+                                     .background(.white)
+                                     .cornerRadius(20)
+                             }
+                             .padding(.bottom, 20)
+                             .navigationDestination(isPresented: $isResuktViewActive) {
+                                 ResultView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                             }
+                             
+                         }
+                         .background(Color.red.opacity(0.9))
+                         .transition(
+                                 .asymmetric(
+                                     insertion: .opacity.combined(with: .move(edge: .bottom)),
+                                     removal: .opacity.combined(with: .move(edge: .bottom))
+                                 )
+                             )
+                         .animation(.easeInOut(duration: 0.3), value: showPopup)
+                         .zIndex(1)
+                     }
                 }
              
-                if !isAnswerCorrect {
+                // Show "Check" button by default
+                if showCheckButton {
                     Button {
                         // Check if the inputted answer is correct
-                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect()
+                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect(selectedDeck)
                         
                         // Dismiss the keyboard
                         self.focus = false
                         
+                        // When the answer is correct
                         if isAnswerCorrect {
                             totalPoints += 1
+                            
+                            // Show the pop up and hide the check button
                             withAnimation {
                                 showPopup = true
+                                showCheckButton = false
                             }
                         }
+                        // When the answer is incorrect
                         else {
                             // Assign the word into the array
                             viewModel.wrongWordsIndex.append(viewModel.randomInt)
+                            
+                            // Show the pop up and hide the check button
+                            withAnimation {
+                                showPopup = true
+                                showCheckButton = false
+                            }
+                            
                             print("The wrong words are:")
                             for index in viewModel.wrongWordsIndex {
                                 print("\(viewModel.decks[selectedDeck].words[index].word)")

@@ -6,12 +6,12 @@ class PlayStudyViewModel : ObservableObject {
     @Published var writtenAnswer: String = ""
     @Published var selectionDeck = 0
     @Published var randomInt : Int = 0
-    @Published var usedWordsIndex : [Int] = [0]
+    @Published var usedWordsIndex : [Int] = []
     @Published var wrongWordsIndex : [Int] = []
     
     func calculateProgress(_ chosenDeck : Int )-> Double {
         let totalNumberOfWords = decks[chosenDeck].words.count
-        let numberOfUsedWords = usedWordsIndex.count - 1
+        let numberOfUsedWords = usedWordsIndex.count
         return totalNumberOfWords > 0 ? (Double(numberOfUsedWords) / Double(totalNumberOfWords) * 100) : 0
     }
     
@@ -79,15 +79,24 @@ class PlayStudyViewModel : ObservableObject {
         
         // Check if the integer has been already used
         while isRandomNumberUsed() == true {
+            print("\(randomInt) has already been used so let's generate a new one.")
             randomInt = Int.random(in: 0..<deckLength - 2)
         }
+        
+        print("The new random integer is \(randomInt).")
         
         // new integer
         return randomInt
     }
     
-    // 2. Check if all words in the deck has been used : return Bool
+
     func checkIfAllWordsUsed() -> Bool {
+        
+        print("Checking if all words have been used...")
+        print("The num of used words is \(usedWordsIndex.count).")
+        print("selected deck: \(selectionDeck)")
+        print("words count : \(decks[selectionDeck].words.count)")
+        
         if usedWordsIndex.count == decks[selectionDeck].words.count {
             return true
         }
@@ -96,17 +105,17 @@ class PlayStudyViewModel : ObservableObject {
         }
     }
         
-    func checkIfAnswerIsCorrect() -> Bool {
+    func checkIfAnswerIsCorrect(_ chosenDeck : Int ) -> Bool {
         
         let trimmedAnswer = writtenAnswer.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         
         // 正しい単語を取得するために extractWordFromBrackets を呼び出す
-        guard let correctAnswer = extractWordFromBrackets(example: decks[selectionDeck].words[randomInt].example) else {
+        guard let correctAnswer = extractWordFromBrackets(example: decks[chosenDeck].words[randomInt].example) else {
             return false
         }
         
-        print(trimmedAnswer)
-        print(correctAnswer)
+        print("written answer: \(trimmedAnswer)")
+        print("correct answer: \(correctAnswer)")
         
         // 答えが正しいかどうかを比較
         if trimmedAnswer == correctAnswer {
