@@ -1,10 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
-    
-//    @StateObject var deckViewModel = DeckViewModel()
-//    @StateObject var playStudyViewModel = PlayStudyViewModel()
-    
+        
     init() {
         // Customize the unselected tab icon color
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
