@@ -1,5 +1,8 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. Fix the problem that the first word in the deck is always the first one to be on the question
+
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
@@ -23,7 +26,7 @@ struct PlayStudyView: View {
        
         NavigationStack {
             VStack {
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 10)
                 
                 HStack{
                     Button {
@@ -51,20 +54,20 @@ struct PlayStudyView: View {
                     .frame(width: 320)
                                 
                 }
-                .padding(.bottom,20)
+                .padding(.bottom,15)
                 .padding(.trailing,10)
                 
                 Text("Complete the sentence")
                     .font(.system(size: 23, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 10)
+                    .padding(.vertical, 5)
                     .padding(.leading, 17)
                 
                 // Question with a blank to fill in
                 Text(modifiedExample)
                       .font(.system(size: 20, weight: .bold, design: .rounded))
                       .frame(maxWidth: 360, alignment: .leading)
-                      .padding(.leading, 10)
+                      .padding(.leading, 17)
                       .padding(.vertical, 25)
                       .background(.white)
                       .cornerRadius(10)
@@ -74,7 +77,6 @@ struct PlayStudyView: View {
                 
                 // Japanese Translation as a hint
                 VStack {
-                    
                     Text("日本語訳:")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .frame(maxWidth: 360, alignment: .leading)
@@ -89,7 +91,7 @@ struct PlayStudyView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 15)
                 
                 TextField("Write your answer here!", text: $viewModel.writtenAnswer)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -103,7 +105,7 @@ struct PlayStudyView: View {
                     )
                     .padding(.horizontal)
                     .padding(.top,10)
-                    .padding(.bottom,40)
+                    .padding(.bottom,30)
                     .focused(self.$focus)
                     .keyboardType(.alphabet)
                     
@@ -130,8 +132,12 @@ struct PlayStudyView: View {
                             // Check if all the words in the deck have been used
                             if viewModel.checkIfAllWordsUsed() {
                                 print("Finished all the words in the deck")
-                                // Jump to the result view
-                                isResuktViewActive = true
+                                // Calculate the progress percentage
+                                progress = viewModel.calculateProgress(selectedDeck)
+                                // Wait for one second and jump to the result view
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                                    isResuktViewActive = true
+                                }
                             }
                             else {
                                 for index in viewModel.usedWordsIndex {
@@ -274,7 +280,7 @@ struct PlayStudyView: View {
                     } label: {
                         Text("Check")
                             .font(.system(size: 23, weight: .semibold, design: .rounded))
-                            .frame(width: 300, height:30)
+                            .frame(width: 300, height:25)
                         
                     }
                     .disabled(viewModel.writtenAnswer.isEmpty)
