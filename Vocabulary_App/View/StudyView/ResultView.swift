@@ -1,7 +1,6 @@
 import SwiftUI
 
 // TO DO LIST (12/11)
-// wrongWordIndexの中で、重複したIndex(=単語)がないようにする
 // 全問正解の時に祝福の文を表示するようにする
 
 struct ResultView: View {
@@ -20,7 +19,7 @@ struct ResultView: View {
                 .padding(.vertical,10)
             
             List {
-                ForEach(wrongWordIndex, id: \.self) { index in
+                ForEach(Array(Set(wrongWordIndex)), id: \.self) { index in
                     Text(viewModel.decks[selectedDeck].words[index].word)
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
                 }
@@ -28,7 +27,6 @@ struct ResultView: View {
             .padding(.top, -10)
             .scrollContentBackground(.hidden)
             
-            // Put a button here to go back to home page
             HStack {
                 Button {
                     isStudyHomeViewActive = true
@@ -67,6 +65,10 @@ struct ResultView: View {
                 }
             }
         }
+        .onAppear {
+            // call a function to remove all duplicated words here
+            // viewModel.getUniqueWords()
+        }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
         .background(.blue.gradient)
@@ -76,3 +78,5 @@ struct ResultView: View {
 #Preview {
     ResultView(viewModel: PlayStudyViewModel(), selectedDeck: .constant(2), wrongWordIndex: .constant([2]))
 }
+
+
