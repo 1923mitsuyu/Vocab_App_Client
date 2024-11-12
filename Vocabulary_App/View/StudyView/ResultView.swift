@@ -6,7 +6,7 @@ struct ResultView: View {
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @State private var showSheet: Bool = false
-    @State private var selectedWordIndex: Int? = nil // Store the index of the selected word
+    @State private var selectedWordIndex: Int? = nil
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
     
@@ -22,7 +22,6 @@ struct ResultView: View {
     }
     
     var body: some View {
-        
         VStack {
             Text("Check the Result")
                 .font(.system(size: 25, weight: .semibold, design: .rounded))
