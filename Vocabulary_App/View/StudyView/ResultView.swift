@@ -1,6 +1,6 @@
 import SwiftUI
 
-// TO DO LIST
+// TO DO LIST (12/11)
 // wrongWordIndexの中で、重複したIndex(=単語)がないようにする
 // 全問正解の時に祝福の文を表示するようにする
 

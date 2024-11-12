@@ -1,6 +1,6 @@
 import SwiftUI
 
-// TO DO LIST (11/11)
+// TO DO LIST 
 // 1. Users turn to the next page to see more decks (pagination) : Priority 2
 // 2. Users can tick off boxes that shows up when tapping one of the words in the list and then, they can delete the selected words : Priority 3
 // 3. Users can sort the list of decks by date added or in alphabetical order, in either ascending or descending order : Priority 2

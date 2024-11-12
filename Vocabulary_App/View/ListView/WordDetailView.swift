@@ -2,6 +2,9 @@ import SwiftUI
 
 struct WordDetailView: View {
     
+    // TO DO LIST
+    // Display the example without {{}} 
+    
     let word: Word
     @State private var showSheet: Bool = false
     @State private var newWord: String = ""
@@ -125,5 +128,5 @@ struct WordDetailView: View {
 }
 
 #Preview {
-    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1))
+    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1))
 }
