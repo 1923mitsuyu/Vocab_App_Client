@@ -8,6 +8,7 @@ struct ResultView: View {
     @ObservedObject var viewModel : PlayStudyViewModel
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
+    @State private var showSheet: Bool = false
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
     
@@ -20,8 +21,62 @@ struct ResultView: View {
             
             List {
                 ForEach(Array(Set(wrongWordIndex)), id: \.self) { index in
-                    Text(viewModel.decks[selectedDeck].words[index].word)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    HStack {
+                        Text("\(viewModel.decks[selectedDeck].words[index].word) :")
+                        Text(viewModel.decks[selectedDeck].words[index].definition)
+                    }
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .onTapGesture {
+                        showSheet = true
+                    }
+                    .sheet(isPresented: $showSheet) {
+                        VStack {
+                            
+                            Spacer()
+                        
+                            VStack {
+                                Text("例文:")
+                                    .font(.system(size: 20, weight: .medium, design: .rounded))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.bottom,5)
+                                    .padding(.horizontal, 10)
+                                
+                                Text("\(viewModel.decks[selectedDeck].words[index].example)")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 10)
+                                
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: 300)
+                            .background(.white)
+                            .cornerRadius(30)
+                            .padding(.horizontal,5)
+                            
+                            VStack {
+                                Text("日本語訳:")
+                                    .font(.system(size: 20, weight: .medium, design: .rounded))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.bottom,5)
+                                    .padding(.horizontal, 10)
+                                
+                                Text("\(viewModel.decks[selectedDeck].words[index].translation)")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 10)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: 300)
+                            .background(.white)
+                            .cornerRadius(30)
+                            .padding(.horizontal,5)
+                            
+                            Spacer()
+                        }
+                        .presentationDetents([.height(350)])
+                        .presentationDragIndicator(.visible)
+                        .frame(width: .infinity, height: .infinity)
+                        .background(.secondary.opacity(0.4))
+                      
+                    }
                 }
             }
             .padding(.top, -10)
@@ -34,7 +89,7 @@ struct ResultView: View {
                     Text("Home")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                       
+                    
                 }
                 .frame(width: 100, height: 20)
                 .padding()
@@ -53,7 +108,7 @@ struct ResultView: View {
                     Text("Study Again")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .foregroundStyle(.black)
-                       
+                    
                 }
                 .frame(width: 120, height: 20)
                 .padding()
@@ -64,10 +119,6 @@ struct ResultView: View {
                     PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck)
                 }
             }
-        }
-        .onAppear {
-            // call a function to remove all duplicated words here
-            // viewModel.getUniqueWords()
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
