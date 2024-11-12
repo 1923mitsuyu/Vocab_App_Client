@@ -182,11 +182,11 @@ struct ExampleInputView: View {
                         currentStep = 1
                     } label: {
                         Text("Previous")
-                            .foregroundStyle(.black)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
-                    .background(.white)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:150, height: 50)
+                    .foregroundStyle(.white)
+                    .background(.cyan)
                     .cornerRadius(10)
                     
                     Spacer().frame(width: 30)
@@ -199,11 +199,11 @@ struct ExampleInputView: View {
                         }
                     } label: {
                         Text("Next")
-                            .foregroundStyle(.black)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
                     }
-                    .background(.white)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:150, height: 50)
+                    .foregroundStyle(.white)
+                    .background(.cyan)
                     .cornerRadius(10)
                     .alert(isPresented: $activeAlert) {
                         Alert(

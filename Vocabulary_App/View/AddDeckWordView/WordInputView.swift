@@ -12,7 +12,7 @@ struct WordInputView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer().frame(height:10)
+                Spacer().frame(height:20)
                 
                 Text("Add a New Word")
                     .font(.system(size: 25, weight: .semibold, design: .rounded))
@@ -44,42 +44,59 @@ struct WordInputView: View {
                 }
                 .frame(maxWidth: .infinity).padding()
 
+                Spacer().frame(height: 20)
+                
                 TextField("New Word", text: $word)
                     .modifier(TextFieldModifier(height: 30, text: $word))
                     .focused($isFocused)
                 
-                Spacer().frame(height: 40)
+                Spacer().frame(height: 20)
                 
                 TextField("Translation here", text: $definition)
                     .modifier(TextFieldModifier(height: 30, text: $definition))
                     .focused($isFocused)
             
                 Spacer().frame(height: 40)
-                         
-                Button {
-                    if word.isEmpty || definition.isEmpty {
-                        activeAlert = true
+                       
+                HStack {
+                    Button {
+//                        WordListView(deck: viewModel.currentDeck))
+                    } label: {
+                        Text("Previous")
                     }
-                    else if viewModel.checkIfWordExists(word){
-                        print("The word \(word) already exists.")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:150, height: 50)
+                    .foregroundStyle(.white)
+                    .background(.cyan)
+                    .cornerRadius(10)
+                
+                    Spacer().frame(width: 20)
+                    
+                    Button {
+                        if word.isEmpty || definition.isEmpty {
+                            activeAlert = true
+                        }
+                        else if viewModel.checkIfWordExists(word){
+                            print("The word \(word) already exists.")
+                        }
+                        else {
+                            currentStep = 2
+                        }
+                    } label: {
+                        Text("Next")
                     }
-                    else {
-                        currentStep = 2
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:150, height: 50)
+                    .foregroundStyle(.white)
+                    .background(.cyan)
+                    .cornerRadius(10)
+                    .alert(isPresented: $activeAlert) {
+                        Alert(
+                            title: Text("Error"),
+                            message: Text("Please fill in the both blanks"),
+                            dismissButton: .default(Text("OK"))
+                        )
                     }
-                } label: {
-                     Text("Next")
-                        .foregroundStyle(.black)
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
-                }
-                .background(.white)
-                .cornerRadius(10)
-                .alert(isPresented: $activeAlert) {
-                    Alert(
-                           title: Text("Error"),
-                           message: Text("Please fill in the both blanks"),
-                           dismissButton: .default(Text("OK"))
-                       )
                 }
                 
                 Spacer()
@@ -89,7 +106,9 @@ struct WordInputView: View {
             .onTapGesture {
                 isFocused = false
             }
+            //.navigationBarBackButtonHidden()
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
@@ -134,4 +153,3 @@ struct TextFieldModifier: ViewModifier {
         currentStep: .constant(1)
     )
 }
-

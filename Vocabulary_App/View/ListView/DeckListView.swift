@@ -119,10 +119,11 @@ struct DeckListView: View {
             }
             .sheet(isPresented: $showEditSheet) {
                 VStack {
-                    Spacer()
+                    Spacer().frame(height:20)
                     Text("Edit the Deck Name")
                         .font(.system(size: 25, weight: .semibold, design: .rounded))
                         .padding(.top, 25)
+                        .padding(.bottom,20)
                     
                     TextField("", text: $newDeckName)
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -159,7 +160,7 @@ struct DeckListView: View {
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .padding()
-                    .background(Color.blue)
+                    .background(.cyan)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     

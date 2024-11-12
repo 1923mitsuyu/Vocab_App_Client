@@ -78,13 +78,15 @@ struct CreateDeckView: View {
                     }
                 
                 } label: {
-                    Text("Create")
-                        .foregroundStyle(.black)
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .frame(maxWidth: 200, minHeight: 40)
+                    Text("Save")
                 }
-                .background(.white)
-                .cornerRadius(10)
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .frame(width:150)
+                .padding()
+                .background(.cyan)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .padding(.top,20)
                 .alert(isPresented: $activeAlert) {
                     Alert(
                         title: Text("Error"),

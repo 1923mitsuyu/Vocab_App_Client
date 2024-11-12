@@ -15,13 +15,11 @@ struct ReviewAndAddView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                Spacer().frame(height:20)
+                Text("Review")
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
                 
-                Spacer().frame(height:15)
-                
-                Text("Review and Add")
-                    .font(.system(size: 25, weight: .semibold, design: .rounded))
-                    .padding(.bottom,10)
-                
+                // Progress Bar
                 HStack {
                     ForEach(1...3, id: \.self) { step in
                         HStack {
@@ -76,19 +74,23 @@ struct ReviewAndAddView: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
-                .frame(height: 550)
+                .frame(height: 430)
+                
+                Spacer().frame(height:30)
                 
                 HStack {
                     Button {
                         currentStep = 2
                     } label: {
                         Text("Previous")
-                            .foregroundStyle(.black)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
+                         
                     }
-                    .background(.white)
-                    .cornerRadius(10)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:100)
+                    .padding()
+                    .background(.cyan)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                     
                     Spacer().frame(width: 30)
                     
@@ -101,16 +103,16 @@ struct ReviewAndAddView: View {
                         viewModel.addWordToDeck(word, definition, example, translation, deckName)
                     
                     } label: {
-                        Text("Add")
-                            .foregroundStyle(.black)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .frame(width: UIScreen.main.bounds.size.width / 6 * 2,height: UIScreen.main.bounds.size.width / 10 * 1)
+                        Text("Save")
                     }
-                    .background(.white)
-                    .cornerRadius(10)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:100)
+                    .padding()
+                    .background(.cyan)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                 }
-    
-                Spacer().frame(height: 100)
+                Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
