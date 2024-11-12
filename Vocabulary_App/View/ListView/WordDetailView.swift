@@ -16,6 +16,7 @@ struct WordDetailView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                
                 List {
                     Section(header: Text("Word").font(.headline)) {
                         Text(word.word)
@@ -45,6 +46,9 @@ struct WordDetailView: View {
                 .scrollContentBackground(.hidden)
                 .sheet(isPresented: $showSheet) {
                     VStack {
+                        
+                        Spacer().frame(height:30)
+                        
                         Text("Edit the Word")
                             .font(.system(size: 23, weight: .semibold, design: .rounded))
                             .padding(.top,25)
@@ -66,7 +70,6 @@ struct WordDetailView: View {
                                 TextField(word.example, text: $newExample)
                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
-                                    
                             }
                             
                             Section(header: Text("Translation").font(.headline)) {
@@ -75,6 +78,9 @@ struct WordDetailView: View {
                                     .padding(.vertical, 4)
                             }
                         }
+                        // Remove the gap at the bottom of the list
+                        .frame(height:450)
+                
                         Button {
                             showSheet = false
                         } label: {
@@ -85,12 +91,12 @@ struct WordDetailView: View {
                         .background(.blue)
                         .foregroundColor(.white)
                         .cornerRadius(8)
-
-                        Spacer().frame(height:200)
+                        
+                        Spacer()
+                        
                     }
                     .scrollContentBackground(.hidden)
                     .background(.blue.opacity(0.5))
-                    
                 }
                 .onTapGesture {
                     showSheet.toggle()

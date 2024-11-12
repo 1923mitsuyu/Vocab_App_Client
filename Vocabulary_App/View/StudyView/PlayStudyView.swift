@@ -14,7 +14,7 @@ struct PlayStudyView: View {
     @State private var moveToNewWord : Bool = false
     @State private var showCheckButton : Bool = true
     @FocusState var focus: Bool
-    
+  
     var body: some View {
         
         // Generate a sentence with a blank for questions

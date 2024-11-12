@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct MainView: View {
-        
+    
     init() {
-        // Customize the unselected tab icon color
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
         let appearance: UITabBarAppearance = UITabBarAppearance()
         appearance.backgroundColor = .white
@@ -13,21 +12,22 @@ struct MainView: View {
     
     var body: some View {
         TabView {
-            DeckListView()
-                .tabItem {
-                    Label("Deck", systemImage: "list.dash")
-                }
-           
             StudyHomeView()
                 .tabItem {
                     Label("Study", systemImage: "brain.head.profile")
                 }
-             
+            
+            DeckListView()
+                .tabItem {
+                    Label("Deck", systemImage: "list.dash")
+                }
+    
             SettingView()
                 .tabItem {
                     Label("Setting", systemImage: "gearshape")
                 }
         }
+        .navigationBarBackButtonHidden()
         .accentColor(.black)
     }
 }

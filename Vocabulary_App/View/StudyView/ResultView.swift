@@ -5,6 +5,7 @@ struct ResultView: View {
     @ObservedObject var viewModel: PlayStudyViewModel
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
+    @State private var isMainViewActive: Bool = false
     @State private var showSheet: Bool = false
     @State private var selectedWordIndex: Int? = nil
     @Binding var selectedDeck: Int
@@ -106,7 +107,7 @@ struct ResultView: View {
             
             HStack {
                 Button {
-                    isStudyHomeViewActive = true
+                    isMainViewActive = true
                 } label: {
                     Text("Home")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -118,8 +119,8 @@ struct ResultView: View {
                 .background(.white)
                 .cornerRadius(10)
                 .padding(.vertical, 20)
-                .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                    StudyHomeView(viewModel: PlayStudyViewModel())
+                .navigationDestination(isPresented: $isMainViewActive) {
+                    MainView()
                 }
                 
                 Spacer().frame(width: 30)
@@ -138,7 +139,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck)
+                    StudyHomeView(viewModel: PlayStudyViewModel())
                 }
             }
         }
