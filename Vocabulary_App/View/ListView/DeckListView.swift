@@ -3,6 +3,8 @@ import SwiftUI
 // TO DO LIST
 // 1. Users turn to the next page to see more decks (pagination) : Priority 2
 
+// 2. Deckの名前をEditした時、すぐに反映されない
+
 struct DeckListView: View {
     
     @StateObject var viewModel = DeckViewModel()
@@ -142,7 +144,6 @@ struct DeckListView: View {
                             print("Error: deckToEdit is nil")
                             return
                         }
-                        
                         // 編集するデッキのインデックスを取得
                         if let index = viewModel.decks.firstIndex(where: { $0.id == deckToEdit }) {
                             // 編集した名前でデッキ名を更新

@@ -1,5 +1,8 @@
 import SwiftUI
 
+// TO DO LIST
+// Deckの名前をAddした時、すぐに反映されない
+
 struct CreateDeckView: View {
     
     @ObservedObject var viewModel: DeckViewModel
