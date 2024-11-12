@@ -18,7 +18,7 @@ struct DeckListView: View {
     var body: some View {
         NavigationStack {
             List($viewModel.decks, editActions: .move) { $deck in
-                NavigationLink(destination: WordListView(deck: deck)) {
+                NavigationLink(destination: NavigationParentView(deck: deck)) {
                     HStack {
                         Text(deck.name)
                             .font(.system(size: 20, weight: .semibold, design: .rounded))

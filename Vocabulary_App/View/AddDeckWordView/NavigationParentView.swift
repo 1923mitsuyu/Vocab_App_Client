@@ -2,7 +2,7 @@ import SwiftUI
 
 struct NavigationParentView: View {
     
-    @State private var currentStep: Int = 1
+    @State private var currentStep: Int = 0
     @State private var word: String = ""
     @State private var definition: String = ""
     @State private var example: String = ""
@@ -21,7 +21,9 @@ struct NavigationParentView: View {
     var body: some View {
             NavigationStack {
                 VStack {
-                    if currentStep == 1 {
+                    if currentStep == 0 {
+                        WordListView(deck: deck, currentStep: $currentStep)
+                    } else if currentStep == 1 {
                         WordInputView(viewModel: DeckViewModel(), word: $word, definition: $definition, currentStep: $currentStep)
                     } else if currentStep == 2 {
                         ExampleInputView(example: $example, translation: $translation, note: $note, currentStep: $currentStep)
@@ -48,3 +50,4 @@ struct NavigationParentView: View {
         Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1)
     ], listOrder: 0))
 }
+

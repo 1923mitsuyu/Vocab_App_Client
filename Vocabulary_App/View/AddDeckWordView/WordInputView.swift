@@ -61,6 +61,7 @@ struct WordInputView: View {
                 HStack {
                     Button {
 //                        WordListView(deck: viewModel.currentDeck))
+                        currentStep = 0
                     } label: {
                         Text("Previous")
                     }
@@ -106,7 +107,7 @@ struct WordInputView: View {
             .onTapGesture {
                 isFocused = false
             }
-            //.navigationBarBackButtonHidden()
+            .navigationBarBackButtonHidden()
         }
         .toolbar(.hidden, for: .tabBar)
     }

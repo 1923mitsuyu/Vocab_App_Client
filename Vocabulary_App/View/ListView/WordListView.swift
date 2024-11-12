@@ -11,6 +11,7 @@ struct WordListView: View {
     @State private var isWordInputActive : Bool  = false
     @State private var isPickerPresented : Bool = false
     @State private var selectedSortOption : String = "Name"
+    @Binding var currentStep: Int
     
     var body: some View {
         NavigationStack {
@@ -29,14 +30,13 @@ struct WordListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        isWordInputActive = true
+                        currentStep =  1
                     }) {
                         Image(systemName: "plus")
                     }
                     .foregroundStyle(.white)
                     .padding(.trailing,10)
-                    .navigationDestination(isPresented: $isWordInputActive) { NavigationParentView(deck: deck) }
-                }
+             }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -71,6 +71,7 @@ struct WordListView: View {
             .toolbar(.hidden, for: .tabBar)
         }
     }
+        
 
     private func moveWords(indices: IndexSet, newOffset: Int) {
         var reorderedWords = deck.words
@@ -89,5 +90,5 @@ struct WordListView: View {
     WordListView(deck:  Deck(name: "Sample Deck1", words: [
         Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。", wordOrder:0),
         Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1)
-    ], listOrder: 0))
+    ], listOrder: 0), currentStep: .constant(0))
 }
