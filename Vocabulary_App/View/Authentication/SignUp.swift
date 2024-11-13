@@ -2,8 +2,6 @@ import SwiftUI
 
 struct SignUp: View {
     
-//    @EnvironmentObject var network: Network
-//    @StateObject var viewModel = UserViewModel()
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
@@ -76,8 +74,16 @@ struct SignUp: View {
                     else {
                         // Call a function to create a new user
                         let newUser = User(id: 0, username: userName, password: password)
+                        print("Authenticate the user")
                         Task {
-//                            await viewModel.loadCreateUser(user: newUser)
+                            do {
+                                let user = try await AuthService.shared.signUp(email: userName, password: password)
+                                print("User: \(user)")
+                                // Additional logic if needed
+                            } catch {
+                                print("Login failed with error: \(error.localizedDescription)")
+                                // Set an appropriate error state or show an alert
+                            }
                         }
                     }
                 }, label: {
@@ -125,5 +131,4 @@ struct SignUp: View {
 
 #Preview {
     SignUp()
-//        .environmentObject(Network())
 }

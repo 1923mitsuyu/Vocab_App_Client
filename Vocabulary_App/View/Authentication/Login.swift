@@ -2,8 +2,6 @@ import SwiftUI
 
 struct Login: View {
     
-//    @EnvironmentObject var network: Network
-//    @StateObject var viewModel = UserViewModel()
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
@@ -83,7 +81,14 @@ struct Login: View {
                         // Call a function to authenticate users
                         print("Authenticate the user")
                         Task {
-//                            await viewModel.loadGetUsers()
+                            do {
+                                let user = try await AuthService.shared.login(email: userName, password: password)
+                                print("User: \(user)")
+                                // Additional logic if needed
+                            } catch {
+                                print("Login failed with error: \(error.localizedDescription)")
+                                // Set an appropriate error state or show an alert
+                            }
                         }
                     }
                 }, label: {
@@ -150,7 +155,6 @@ struct Login: View {
 }
 #Preview {
     Login()
-//        .environmentObject(Network())
 }
 
 
@@ -163,5 +167,27 @@ struct Login: View {
 //        print("デッキの名前が変更されました: \(updatedDeck.name)")
 //    case .failure(let error):
 //        print("デッキの名前変更に失敗しました: \(error.localizedDescription)")
+//    }
+//}
+
+
+//class AuthManager: ObservableObject {
+//    static let shared = AuthManager()
+//    
+//    @Published var isAuthenticated: Bool = false
+//    
+//    private init() {}
+//}
+//
+//// どのViewでもアクセス可能
+//struct LoginView: View {
+//    @ObservedObject var authManager = AuthManager.shared
+//    
+//    var body: some View {
+//        if authManager.isAuthenticated {
+//            Text("Welcome back!")
+//        } else {
+//            Text("Please log in")
+//        }
 //    }
 //}

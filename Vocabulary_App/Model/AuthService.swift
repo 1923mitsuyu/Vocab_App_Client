@@ -1,31 +1,85 @@
-import Foundation // OK
+import Foundation
+
+enum NetworkError: Error {
+    case invalidURL
+    case invalidResponse
+    case decodingError
+}
 
 class AuthService {
     
-    func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
-        
+    static let shared = AuthService()
+    
+    func login(email: String, password: String) async throws -> User {
         guard let url = URL(string: "http://localhost:3000/login") else {
-            completion(.failure(NetworkError.invalidURL))
-            return
+            throw NetworkError.invalidURL
         }
         
-        let parameters: [String: Any] = ["email": email, "password": password]
+        // Create a URLRequest and configure it
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        NetworkManager.shared.request(endpoint: url.absoluteString, method: .post, parameters: parameters) { (result: Result<User, Error>) in
-            completion(result)
+        // Encode parameters as JSON data
+        let parameters = ["email": email, "password": password]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Perform the network request
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into a User object
+        do {
+            let user = try JSONDecoder().decode(User.self, from: data)
+            return user
+        } catch {
+            throw NetworkError.decodingError
         }
     }
     
-    func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
-        
+    func signUp(email: String, password: String) async throws -> User {
+        // Validate URL
         guard let url = URL(string: "http://localhost:3000/signup") else {
-            completion(.failure(NetworkError.invalidURL))
-            return
+            throw NetworkError.invalidURL
         }
         
+        // Set parameters
         let parameters: [String: Any] = ["email": email, "password": password]
-        NetworkManager.shared.request(endpoint: url.absoluteString, method: .post, parameters: parameters) { (result: Result<User, Error>) in
-            completion(result)
+        
+        // Create a URLRequest
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Encoding parameters as JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Perform network request using async/await
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into User object
+        do {
+            let user = try JSONDecoder().decode(User.self, from: data)
+            return user
+        } catch {
+            throw NetworkError.decodingError
         }
     }
 }
