@@ -1,7 +1,7 @@
 import SwiftUI
 
 // TO DO LIST
-// Deckの名前をAddした時、すぐに反映されない
+// Deckの名前をAddした時、すぐに反映されない : Priority 5
 
 struct CreateDeckView: View {
     

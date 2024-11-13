@@ -15,60 +15,68 @@ struct WordListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(deck.words.sorted(by: { $0.wordOrder < $1.wordOrder })) { word in
-                    NavigationLink(destination: WordDetailView(word: word)) {
-                        Text(word.word)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    }
-                }
-                .onMove(perform: moveWords)
-            }
-            .navigationTitle("All Words")
-            .background(.blue.gradient)
-            .scrollContentBackground(.hidden)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            VStack {
+                HStack {
+                    Text("All Words")
+                        .font(.system(size: 35, weight: .semibold, design: .rounded))
+                        .frame(maxWidth:.infinity, alignment: .leading)
+                        .padding(.leading)
+                      
                     Button(action: {
                         currentStep =  1
                     }) {
                         Image(systemName: "plus")
                     }
+                    .font(.system(size: 25))
                     .foregroundStyle(.white)
-                    .padding(.trailing,10)
-             }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
+                    .padding(.trailing, 10)
+                    .padding(.top,5)
+                    
                     Button(action: {
                         isPickerPresented.toggle()
                     }) {
                         Image(systemName: "list.bullet")
                     }
+                    .font(.system(size: 25))
                     .foregroundStyle(.white)
-                    .padding(.trailing, 10)
+                    .padding(.trailing, 30)
+                    .padding(.top,5)
                 }
+                .padding(.bottom, -20)
+                
+                List {
+                    ForEach(deck.words.sorted(by: { $0.wordOrder < $1.wordOrder })) { word in
+                        NavigationLink(destination: WordDetailView(word: word)) {
+                            Text(word.word)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        }
+                    }
+                    .onMove(perform: moveWords)
+                }
+                .scrollContentBackground(.hidden)
+                .actionSheet(isPresented: $isPickerPresented) {
+                    ActionSheet(
+                        title: Text("Select Sorting Option"),
+                        buttons: [
+                            .default(Text("By Name(Ascending)")) {
+                                selectedSortOption = "Name"
+                                //                            deck.words.sort { $0.name < $1.name }
+                            },
+                            .default(Text("By Name (Descending)")) {
+                                selectedSortOption = "Name"
+                                //                            deck.words.sort { $0.name > $1.name }
+                            },
+                            .default(Text("By Date Added")) {
+                                selectedSortOption = "Date Added"
+                                //                            deck.words.sort { $0.listOrder < $1.listOrder }
+                            },
+                            .cancel()
+                        ]
+                    )
+                }
+                .toolbar(.hidden, for: .tabBar)
             }
-            .actionSheet(isPresented: $isPickerPresented) {
-                ActionSheet(
-                    title: Text("Select Sorting Option"),
-                    buttons: [
-                        .default(Text("By Name(Ascending)")) {
-                            selectedSortOption = "Name"
-//                            deck.words.sort { $0.name < $1.name }
-                        },
-                        .default(Text("By Name (Descending)")) {
-                            selectedSortOption = "Name"
-//                            deck.words.sort { $0.name > $1.name }
-                        },
-                        .default(Text("By Date Added")) {
-                            selectedSortOption = "Date Added"
-//                            deck.words.sort { $0.listOrder < $1.listOrder }
-                        },
-                        .cancel()
-                    ]
-                )
-            }
-            .toolbar(.hidden, for: .tabBar)
+            .background(.blue.gradient)
         }
     }
         

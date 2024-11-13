@@ -16,6 +16,10 @@ struct WordDetailView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                Text("Word Details")
+                    .font(.system(size: 35, weight: .semibold, design: .rounded))
+                    .padding(.top,20)
+                    .padding(.bottom, -3)
                 
                 List {
                     Section(header: Text("Word").font(.headline)) {
@@ -42,7 +46,6 @@ struct WordDetailView: View {
                             .padding(.vertical, 4)
                     }
                 }
-                .navigationTitle("Word Details")
                 .scrollContentBackground(.hidden)
                 .sheet(isPresented: $showSheet) {
                     VStack {
