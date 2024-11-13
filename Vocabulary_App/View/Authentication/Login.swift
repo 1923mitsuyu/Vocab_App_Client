@@ -2,8 +2,8 @@ import SwiftUI
 
 struct Login: View {
     
-    @EnvironmentObject var network: Network
-    @StateObject var viewModel = UserViewModel()
+//    @EnvironmentObject var network: Network
+//    @StateObject var viewModel = UserViewModel()
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
@@ -83,7 +83,7 @@ struct Login: View {
                         // Call a function to authenticate users
                         print("Authenticate the user")
                         Task {
-                            await viewModel.loadGetUsers()
+//                            await viewModel.loadGetUsers()
                         }
                     }
                 }, label: {
@@ -150,5 +150,18 @@ struct Login: View {
 }
 #Preview {
     Login()
-        .environmentObject(Network())
+//        .environmentObject(Network())
 }
+
+
+//let deckService = DeckService()
+//
+//// デッキの名前を変更
+//deckService.editDeck(deckId: 123, newName: "New Deck Name") { result in
+//    switch result {
+//    case .success(let updatedDeck):
+//        print("デッキの名前が変更されました: \(updatedDeck.name)")
+//    case .failure(let error):
+//        print("デッキの名前変更に失敗しました: \(error.localizedDescription)")
+//    }
+//}

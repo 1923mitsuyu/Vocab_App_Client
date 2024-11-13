@@ -1,13 +1,14 @@
 import Foundation
 
-class Deck: Identifiable, Equatable, ObservableObject {
+class Deck: Decodable, Identifiable, Equatable, ObservableObject {
     
     var id = UUID()
     var name: String
-    @Published var words: [Word]
+    var words: [Word]
     var listOrder: Int
     
-    init(name: String, words: [Word] = [], listOrder: Int) {
+    init(id: UUID = UUID(), name: String, words: [Word] = [], listOrder: Int) {
+        self.id = id
         self.name = name
         self.words = words
         self.listOrder = listOrder
@@ -18,7 +19,8 @@ class Deck: Identifiable, Equatable, ObservableObject {
     }
 }
 
-struct Word: Identifiable, Equatable {
+struct Word: Decodable, Identifiable, Equatable {
+    
     var id = UUID()
     var word: String
     var definition: String

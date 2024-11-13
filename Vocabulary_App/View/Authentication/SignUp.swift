@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SignUp: View {
     
-    @EnvironmentObject var network: Network
-    @StateObject var viewModel = UserViewModel()
+//    @EnvironmentObject var network: Network
+//    @StateObject var viewModel = UserViewModel()
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
@@ -77,7 +77,7 @@ struct SignUp: View {
                         // Call a function to create a new user
                         let newUser = User(id: 0, username: userName, password: password)
                         Task {
-                            await viewModel.loadCreateUser(user: newUser)
+//                            await viewModel.loadCreateUser(user: newUser)
                         }
                     }
                 }, label: {
@@ -125,5 +125,5 @@ struct SignUp: View {
 
 #Preview {
     SignUp()
-        .environmentObject(Network())
+//        .environmentObject(Network())
 }
