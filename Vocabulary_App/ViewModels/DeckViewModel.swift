@@ -27,7 +27,7 @@ class DeckViewModel : ObservableObject {
     func addWordToDeck(_ word: String, _ definition: String, _ example: String, _ translation: String, _ deckName: String) {
         if let index = decks.firstIndex(where: { $0.name == deckName }) {
             decks[index].words.append(
-                Word(word: word, definition: definition, example: example, translation: translation, wordOrder: decks[index].words.count)
+                Word(word: word, definition: definition, example: example, translation: translation, wordOrder: decks[index].words.count, deckId: 1)
             )
         }
     }

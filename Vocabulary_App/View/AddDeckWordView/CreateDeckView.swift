@@ -54,7 +54,7 @@ struct CreateDeckView: View {
                     }
                     else {
                         // Create a new deck
-                        let newDeck = Deck(name: deckName, words:[], listOrder: viewModel.decks.count)
+                        let newDeck = Deck(name: deckName, words:[], listOrder: viewModel.decks.count, userId: 1)
                         
                         // Add the new deck to the deck array
                         viewModel.decks.append(newDeck)

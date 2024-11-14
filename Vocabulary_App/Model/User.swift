@@ -6,3 +6,4 @@ struct User: Identifiable, Decodable, Encodable {
     let username: String
     let password: String   
 }
+

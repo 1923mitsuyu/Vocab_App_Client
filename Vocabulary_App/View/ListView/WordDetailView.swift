@@ -137,5 +137,5 @@ struct WordDetailView: View {
 }
 
 #Preview {
-    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1))
+    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1, deckId: 1))
 }

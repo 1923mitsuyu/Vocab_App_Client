@@ -185,28 +185,28 @@ struct DeckListView: View {
 struct CreateDeckView_Previews: PreviewProvider {
     @State static var decks: [Deck] = [
            Deck(name: "Sample Deck1", words: [
-            Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。", wordOrder: 0),
-               Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1)], listOrder: 6),
+            Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。", wordOrder: 0, deckId: 1),
+            Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1, deckId: 1)], listOrder: 6, userId: 1),
            
            Deck(name: "Sample Deck2", words: [
-               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0),
-               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1)], listOrder: 1),
+            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
+            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 1, userId: 1),
            
            Deck(name: "Sample Deck3", words: [
-               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0),
-               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1)], listOrder: 2),
+            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
+            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 2, userId: 1),
            
            Deck(name: "Sample Deck4", words: [
-               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0),
-               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1)], listOrder: 3),
+            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
+            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 3, userId: 1),
            
            Deck(name: "Sample Deck5", words: [
-               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0),
-               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1)], listOrder: 4),
+            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
+            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 4, userId: 1),
            
            Deck(name: "Sample Deck6", words: [
-               Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0),
-               Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1)], listOrder: 5),
+            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
+            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 5, userId: 1),
        ]
     
     static var previews: some View {
