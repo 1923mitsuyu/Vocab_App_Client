@@ -6,12 +6,18 @@ enum NetworkError: Error {
     case decodingError
 }
 
+struct SignUpResponse: Decodable {
+    let message: String
+    let user: User
+}
+
 class AuthService {
     
     static let shared = AuthService()
     
-    func login(email: String, password: String) async throws -> User {
-        guard let url = URL(string: "http://localhost:3000/login") else {
+    func login(username: String, password: String) async throws -> User {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/login") else {
             throw NetworkError.invalidURL
         }
         
@@ -21,7 +27,7 @@ class AuthService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Encode parameters as JSON data
-        let parameters = ["email": email, "password": password]
+        let parameters = ["username": username, "password": password]
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         } catch {
@@ -38,21 +44,27 @@ class AuthService {
         
         // Decode the response data into a User object
         do {
-            let user = try JSONDecoder().decode(User.self, from: data)
+            let signUpResponse = try JSONDecoder().decode(SignUpResponse.self, from: data)
+            print(signUpResponse.message)
+            print(signUpResponse.user)
+            
+            let user = signUpResponse.user
             return user
+            
         } catch {
             throw NetworkError.decodingError
         }
     }
     
-    func signUp(email: String, password: String) async throws -> User {
+    func signUp(username: String, password: String) async throws -> User {
+        
         // Validate URL
-        guard let url = URL(string: "http://localhost:3000/signup") else {
+        guard let url = URL(string: "http://localhost:3000/v1/signup") else {
             throw NetworkError.invalidURL
         }
         
         // Set parameters
-        let parameters: [String: Any] = ["email": email, "password": password]
+        let parameters: [String: Any] = ["username": username, "password": password]
         
         // Create a URLRequest
         var request = URLRequest(url: url)
@@ -74,10 +86,16 @@ class AuthService {
             throw NetworkError.invalidResponse
         }
         
-        // Decode the response data into User object
+        // Decode the response data into SignUpResponse object to get the message
         do {
-            let user = try JSONDecoder().decode(User.self, from: data)
+            let signUpResponse = try JSONDecoder().decode(SignUpResponse.self, from: data)
+            
+            print(signUpResponse.message)
+            print(signUpResponse.user)
+            
+            let user = signUpResponse.user
             return user
+            
         } catch {
             throw NetworkError.decodingError
         }
