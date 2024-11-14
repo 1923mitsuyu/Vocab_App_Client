@@ -3,7 +3,7 @@ import SwiftUI
 // TO DO LIST
 // 1. Implement Google Authentication : Priority 2
 // 2. Implement the function to reset passwords : Priority 3
-// 3. Display the error messages underneath the text field : Priority 5
+// 3. Display the error messages underneath the text field : Priority 5 (11/15)
 
 struct Login: View {
     
