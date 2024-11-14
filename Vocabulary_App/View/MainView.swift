@@ -11,24 +11,26 @@ struct MainView: View {
     }
     
     var body: some View {
-        TabView {
-            StudyHomeView()
-                .tabItem {
-                    Label("Study", systemImage: "brain.head.profile")
-                }
-            
-            DeckListView()
-                .tabItem {
-                    Label("Deck", systemImage: "list.dash")
-                }
-    
-            SettingView()
-                .tabItem {
-                    Label("Setting", systemImage: "gearshape")
-                }
+        NavigationStack {  
+            TabView {
+                StudyHomeView()
+                    .tabItem {
+                        Label("Study", systemImage: "brain.head.profile")
+                    }
+                
+                DeckListView()
+                    .tabItem {
+                        Label("Deck", systemImage: "list.dash")
+                    }
+                
+                SettingView()
+                    .tabItem {
+                        Label("Setting", systemImage: "gearshape")
+                    }
+            }
+            .navigationBarBackButtonHidden()
+            .accentColor(.black)
         }
-        .navigationBarBackButtonHidden()
-        .accentColor(.black)
     }
 }
 
