@@ -1,44 +1,57 @@
-//import Foundation
+import Foundation
+
+// TO DO LIST (11/15)
+// 1. Create three http request handlings (add, edit, and delete)
+
+struct FetchDeckResponse: Decodable {
+    let message: String
+    let decks: [Deck]
+}
+
+class DeckService {
+    
+    static let shared = DeckService()
+    private init() {}
+    
+    func getDecks() async throws -> [Deck] {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/fetch/deck") else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Create a URLRequest and configure it
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        do {
+            let fetchDeckResponse = try JSONDecoder().decode(FetchDeckResponse.self, from: data)
+            
+            return fetchDeckResponse.decks
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
+    }
+    
+//    func addDecks() async throws -> Deck {
 //
-//class DeckService {
-// 
-//    static let shared = DeckService()
-//    private init() {} 
-//    // Deckの取得
-//    func fetchDeck(completion: @escaping (Result<[Deck], Error>) -> Void) {
-//        let endpoint = "https://api.example.com/deck"
-//        
-//        NetworkManager.shared.request(endpoint: endpoint, method: .get) { (result: Result<[Deck], Error>) in
-//            completion(result)
-//        }
 //    }
-//    
-//    // Deckの追加
-//    func createDeck(name: String, description: String?, completion: @escaping (Result<Deck, Error>) -> Void) {
-//        let endpoint = "https://api.example.com/deck"
-//        let parameters: [String: Any] = ["name": name, "description": description ?? ""]
-//        
-//        NetworkManager.shared.request(endpoint: endpoint, method: .post, parameters: parameters) { (result: Result<Deck, Error>) in
-//            completion(result)
-//        }
+//
+//    func editDecks() async throws -> Deck {
+//
 //    }
-//    
-//    // Deckの編集
-//    func editDeck(deckId: Int, newName: String, completion: @escaping (Result<Deck, Error>) -> Void) {
-//        let endpoint = "https://api.example.com/deck/\(deckId)"
-//        let parameters: [String: Any] = ["name": newName]
-//        
-//        NetworkManager.shared.request(endpoint: endpoint, method: .put, parameters: parameters) { (result: Result<Deck, Error>) in
-//            completion(result)
-//        }
+//
+//    func removeDecks() async throws -> Deck {
+//
 //    }
-//    
-//    // Deckの削除
-//    func deleteDeck(deckId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-//        let endpoint = "https://api.example.com/deck/\(deckId)"
-//        
-//        NetworkManager.shared.request(endpoint: endpoint, method: .delete) { (result: Result<Void, Error>) in
-//            completion(result)
-//        }
-//    }
-//}
+    
+}
+        
+
