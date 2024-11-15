@@ -1,9 +1,9 @@
 import SwiftUI
 
 // TO DO LIST
-// 2. Users can change their profiles (usernames, passwords, age, purposes of learning English and their level of English etc)
-// 3. Users can turn on and off reminders (push notification)
-// 4. Users can change the colour of the app (eg. red, green, blue, yellow)
+// 1. Users can change their profiles (usernames, passwords, age, purposes of learning English and their level of English etc)
+// 2. Users can recieve push notification (APNs（Apple Push Notification Service))
+// 3. Users can change the colour of the app (eg. red, green, blue, yellow)
 
 struct AccountView: View {
     var body: some View {

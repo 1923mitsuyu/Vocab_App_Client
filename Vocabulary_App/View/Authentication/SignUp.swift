@@ -3,7 +3,6 @@ import SwiftUI
 // TO DO LIST
 // 1. Implement password validation check : Priority 2
 // 2. Display the error messages underneath the text field : Priority 5
-// 3. Disable the login button when the text fields are empty : Priority 5
 
 struct SignUp: View {
     
