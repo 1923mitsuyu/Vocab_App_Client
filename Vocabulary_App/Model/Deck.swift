@@ -44,7 +44,7 @@ struct Word: Decodable, Identifiable, Equatable {
 
 let sampleDecks = [
     Deck(name: "Deck1", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をしています。", wordOrder:0, deckId: 1),
+        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} diligently every single day to ensure that I am fully prepared for the challenging final exams scheduled at the end of this month, which will determine my overall performance for the year.", translation: "私は毎日一生懸命勉強しており、今月末に予定されている難しい期末試験に向けて十分な準備を整えています。この試験は、今年の全体的な成績を決定する重要なものです。", wordOrder:0, deckId: 1),
         Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 1),
         Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 1)], listOrder: 0, userId: 1),
     Deck(name: "Deck2", words: [
