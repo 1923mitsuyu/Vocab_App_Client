@@ -9,34 +9,36 @@ struct StudyHomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer().frame(height: 40)
-               
-                MonthlyCalendarView(studyDates: studyDates)
-                    .padding(.horizontal,20)
-                    .padding(.bottom,30)
+                Spacer().frame(height: 35)
                 
                 Text("Choose a deck and study!")
                     .font(.system(size: 30, weight: .semibold, design: .rounded))
-                    .padding(.bottom,20)
+                    .padding(.bottom,35)
+               
+                MonthlyCalendarView(studyDates: studyDates)
+                    .padding(.horizontal,20)
+                    .padding(.bottom,10)
                 
                 Picker("Choose a deck", selection: $viewModel.selectionDeck) {
                     ForEach(viewModel.decks.indices, id: \.self) { index in
                         Text(viewModel.decks[index].name).tag(index)
                     }
                 }
+                .pickerStyle(WheelPickerStyle())
+                .frame(width: 200, height: 100)
+                .clipped()
                 .cornerRadius(8)
-                .padding(.bottom,30)
+                .padding(.bottom,20)
                 
                 Button {
                     isPlayStudyActive = true
                 } label: {
                     Text("Start")
-                        .font(.system(size: 23, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.black)
-                       
                 }
-                .frame(width: 150, height: 50)
-                .background(.white)
+                .font(.system(size: 23, weight: .semibold, design: .rounded))
+                .frame(width: 300, height: 60)
+                .foregroundStyle(.white)
+                .background(.cyan)
                 .cornerRadius(10)
                 .navigationDestination(isPresented: $isPlayStudyActive) {
                     PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck)
