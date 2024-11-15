@@ -11,7 +11,7 @@ struct MainView: View {
     }
     
     var body: some View {
-        NavigationStack {  
+        NavigationStack {
             TabView {
                 StudyHomeView()
                     .tabItem {
@@ -25,7 +25,7 @@ struct MainView: View {
                 
                 SettingView()
                     .tabItem {
-                        Label("Setting", systemImage: "gearshape")
+                        Label("Account", systemImage: "person.crop.circle")
                     }
             }
             .navigationBarBackButtonHidden()

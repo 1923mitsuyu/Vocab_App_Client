@@ -33,7 +33,7 @@ struct PlayStudyView: View {
                             .foregroundStyle(.white)
                     }
                     .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                        StudyHomeView(viewModel: PlayStudyViewModel())
+                        MainView()
                     }
                     
                     Spacer().frame(width:20)
