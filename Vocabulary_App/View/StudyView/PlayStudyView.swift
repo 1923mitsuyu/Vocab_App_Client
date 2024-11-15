@@ -51,7 +51,7 @@ struct PlayStudyView: View {
                     .frame(width: 320)
                                 
                 }
-                .padding(.bottom,15)
+                .padding(.bottom,5)
                 .padding(.trailing,10)
                 
                 Text("Complete the sentence")
@@ -61,16 +61,21 @@ struct PlayStudyView: View {
                     .padding(.leading, 17)
                 
                 // Question with a blank to fill in
-                Text(modifiedExample)
-                      .font(.system(size: 20, weight: .bold, design: .rounded))
-                      .frame(maxWidth: 360, alignment: .leading)
-                      .padding(.leading, 17)
-                      .padding(.vertical, 25)
-                      .background(.white)
-                      .cornerRadius(10)
-                      .multilineTextAlignment(.leading)
-                      .lineLimit(nil)
-                      .fixedSize(horizontal: false, vertical: true)
+                VStack {
+                    ScrollView {
+                        Text(modifiedExample)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .padding(.leading, 20)
+                .padding(.trailing, 10)
+                .padding(.top, 10)
+                .frame(maxWidth: 370, maxHeight:90, alignment: .leading)
+                .background(.white)
+                .cornerRadius(10)
                 
                 // Japanese Translation as a hint
                 VStack {
@@ -79,13 +84,16 @@ struct PlayStudyView: View {
                         .frame(maxWidth: 360, alignment: .leading)
                         .padding(.top,10)
                   
-                    Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].translation)
-                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                        .padding(.top,2)
-                        .frame(maxWidth: 360, alignment: .leading)
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                    ScrollView {
+                        Text(viewModel.decks[selectedDeck].words[viewModel.randomInt].translation)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .padding(.top,2)
+                            .frame(maxWidth: 360, maxHeight: 100, alignment: .leading)
+                            .lineLimit(nil)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxHeight: 40)
                 }
                 
                 Spacer().frame(height: 15)
@@ -164,7 +172,7 @@ struct PlayStudyView: View {
                         }
                         .padding(.bottom, 20)
                         .navigationDestination(isPresented: $isResuktViewActive) {
-                            ResultView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                            ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
                         }
                         
                     }
@@ -223,7 +231,7 @@ struct PlayStudyView: View {
                              }
                              .padding(.bottom, 20)
                              .navigationDestination(isPresented: $isResuktViewActive) {
-                                 ResultView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckViewModel(), selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
                              }
                              
                          }

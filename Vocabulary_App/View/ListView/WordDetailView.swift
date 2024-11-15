@@ -1,24 +1,22 @@
 import SwiftUI
 
 struct WordDetailView: View {
-    
-    // TO DO LIST
-    // Display the example without {{}} 
-    
+
     let word: Word
+    @ObservedObject var viewModel : DeckViewModel
     @State private var showSheet: Bool = false
     @State private var newWord: String = ""
     @State private var newDefinition: String = ""
     @State private var newExample: String = ""
     @State private var newTranslation: String = ""
     @State private var showAlert: Bool = false
+    @State private var modifiedExample : String = ""
     
     var body: some View {
         NavigationStack {
             VStack {
                 Text("Word Details")
-                    .font(.system(size: 35, weight: .semibold, design: .rounded))
-                    .padding(.top,20)
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
                     .padding(.bottom, -3)
                 
                 List {
@@ -35,7 +33,7 @@ struct WordDetailView: View {
                     }
                     
                     Section(header: Text("Example").font(.headline)) {
-                        Text(word.example)
+                        Text(modifiedExample)
                             .padding(.vertical, 4)
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
                     }
@@ -45,6 +43,10 @@ struct WordDetailView: View {
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .padding(.vertical, 4)
                     }
+                }
+                .frame(height: 600)
+                .onAppear {
+                    modifiedExample = viewModel.removeBrackets(word.example)
                 }
                 .scrollContentBackground(.hidden)
                 .sheet(isPresented: $showSheet) {
@@ -70,7 +72,7 @@ struct WordDetailView: View {
                             }
                             
                             Section(header: Text("Example").font(.headline)) {
-                                TextField(word.example, text: $newExample)
+                                TextField(modifiedExample, text: $newExample)
                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                                     .padding(.vertical, 4)
                             }
@@ -82,7 +84,7 @@ struct WordDetailView: View {
                             }
                         }
                         // Remove the gap at the bottom of the list
-                        .frame(height:450)
+                        .frame(height:430)
                 
                         Button {
                             showSheet = false
@@ -91,7 +93,7 @@ struct WordDetailView: View {
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                         }
                         .padding()
-                        .background(.blue)
+                        .background(.cyan)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                         
@@ -105,15 +107,17 @@ struct WordDetailView: View {
                     showSheet.toggle()
                 }
                 
+                Spacer().frame(height: 30)
                 Button {
                     showAlert = true
                 } label: {
                     Text("Delete")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
-                .padding()
+                .padding(.horizontal,50)
+                .padding(.vertical,10)
                 .fontWeight(.semibold)
-                .background(Color.white)
+                .background(.white)
                 .foregroundColor(.red)
                 .cornerRadius(8)
                 .alert(isPresented: $showAlert) {
@@ -129,6 +133,7 @@ struct WordDetailView: View {
                     )
                 }
                 Spacer().frame(height: 20)
+              
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
@@ -137,5 +142,5 @@ struct WordDetailView: View {
 }
 
 #Preview {
-    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1, deckId: 1))
+    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1, deckId: 1), viewModel: DeckViewModel())
 }

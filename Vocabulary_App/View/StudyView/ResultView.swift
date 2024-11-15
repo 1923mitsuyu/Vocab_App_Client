@@ -3,11 +3,13 @@ import SwiftUI
 struct ResultView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
+    @ObservedObject var viewModel2: DeckViewModel
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @State private var isMainViewActive: Bool = false
     @State private var showSheet: Bool = false
     @State private var selectedWordIndex: Int? = nil
+    @State private var modifiedExample : String = ""
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
     
@@ -29,7 +31,6 @@ struct ResultView: View {
                 .padding(.vertical, 10)
             
             if wrongWordIndex.count == 0 {
-                
                 VStack {
                     Text("Congratulations!")
                         .foregroundColor(.white)
@@ -52,47 +53,52 @@ struct ResultView: View {
                     .onTapGesture {
                         selectedWordIndex = index // Set the selected word index when tapped
                         showSheet = true // Show the sheet
+                        
                     }
                     .sheet(isPresented: $showSheet) {
                         if let index = selectedWordIndex {
                             VStack {
-                                Spacer()
                                 VStack {
                                     Text("例文:")
                                         .font(.system(size: 20, weight: .medium, design: .rounded))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.bottom, 5)
+                                        .padding(.top, 40)
                                         .padding(.horizontal, 10)
                                     
-                                    Text("\(viewModel.decks[selectedDeck].words[index].example)")
-                                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(.horizontal, 10)
+                                    ScrollView {
+                                        Text("\(modifiedExample)")
+                                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(.horizontal, 10)
+                                            .padding(.bottom,20)
+                                    }
+                                  
+                                    Divider()
                                     
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: 300)
-                                .background(.white)
-                                .cornerRadius(30)
-                                .padding(.horizontal, 5)
-                                
-                                VStack {
                                     Text("日本語訳:")
                                         .font(.system(size: 20, weight: .medium, design: .rounded))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.bottom, 5)
+                                        .padding(.top,10)
                                         .padding(.horizontal, 10)
                                     
-                                    Text("\(viewModel.decks[selectedDeck].words[index].translation)")
-                                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(.horizontal, 10)
+                                    ScrollView {
+                                        Text("\(viewModel.decks[selectedDeck].words[index].translation)")
+                                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(.horizontal, 10)
+                                    }
                                 }
-                                .frame(maxWidth: .infinity, maxHeight: 300)
+                                .onAppear {
+                                    modifiedExample = viewModel2.removeBrackets(viewModel.decks[selectedDeck].words[index].example)
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: 370)
+                                .padding(.horizontal,5)
                                 .background(.white)
                                 .cornerRadius(30)
                                 .padding(.horizontal, 5)
-                                
-                                Spacer()
+                                .padding(.top,20)
                             }
                             .presentationDetents([.height(350)])
                             .presentationDragIndicator(.visible)
@@ -150,5 +156,5 @@ struct ResultView: View {
 }
 
 #Preview {
-    ResultView(viewModel: PlayStudyViewModel(), selectedDeck: .constant(2), wrongWordIndex: .constant([0]))
+    ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckViewModel(), selectedDeck: .constant(2), wrongWordIndex: .constant([0]))
 }

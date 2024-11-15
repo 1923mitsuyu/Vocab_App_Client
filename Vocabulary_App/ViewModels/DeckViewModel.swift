@@ -3,6 +3,19 @@ import Foundation
 class DeckViewModel : ObservableObject {
     
     @Published var decks: [Deck] = sampleDecks
+    
+    func removeBrackets(_ string: String) -> String {
+        let pattern = "\\{\\{(.+?)\\}\\}"
+        
+        guard let regex = try? NSRegularExpression(pattern: pattern) else {
+               return string // If regex fails, return the original string
+           }
+        let range = NSRange(location: 0, length: string.utf16.count)
+        
+        let cleanedString = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "$1")
+        
+        return cleanedString
+    }
  
     func checkIfNameExists (_ name: String) -> Bool {
         for deck in decks {
