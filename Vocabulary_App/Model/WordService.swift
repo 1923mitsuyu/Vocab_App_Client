@@ -2,6 +2,9 @@ import Foundation
 
 class WordService {
     
+    static let shared = WordService()
+    private init() {}
+    
 //    func getWords() async throws -> [Word] {
 //        
 //    }

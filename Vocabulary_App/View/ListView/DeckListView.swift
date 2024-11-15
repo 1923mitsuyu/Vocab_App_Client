@@ -29,7 +29,7 @@ struct DeckListView: View {
                     }) {
                         Image(systemName: "plus")
                     }
-                    .font(.system(size: 25)) // Adjust the size here
+                    .font(.system(size: 25))
                     .foregroundStyle(.white)
                     .padding(.trailing, 10)
                     .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel) }
@@ -113,6 +113,8 @@ struct DeckListView: View {
                         title: Text("Delete Deck"),
                         message: Text("Are you sure you want to delete this deck?"),
                         primaryButton: .destructive(Text("Delete")) {
+                            
+                            // Logics to remove the deck from db
                             if let deckToDelete = deckToDelete {
                                 if let index = viewModel.decks.firstIndex(where: { $0.id == deckToDelete }) {
                                     viewModel.decks.remove(at: index)
@@ -143,6 +145,8 @@ struct DeckListView: View {
                         
                         Spacer().frame(height:25)
                         Button {
+                            
+                            // Logics to edit the deck on db
                             guard let deckToEdit = deckToEdit else {
                                 print("Error: deckToEdit is nil")
                                 return
@@ -177,6 +181,17 @@ struct DeckListView: View {
                 }
             }
             .background(.blue.gradient)
+            .onAppear {
+                // Logics here to fetch all decks and words info
+                Task {
+                    do {
+                        let decks = try await DeckService.shared.getDecks()
+                    } catch {
+                        print("Error in fetching all decks: \(error.localizedDescription)")
+                    }
+                }
+               
+            }
         }
     }
 }

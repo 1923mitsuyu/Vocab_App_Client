@@ -11,6 +11,7 @@ struct WordDetailView: View {
     @State private var newTranslation: String = ""
     @State private var showAlert: Bool = false
     @State private var modifiedExample : String = ""
+    @State private var isWordListViewActive : Bool = false
     
     var body: some View {
         NavigationStack {
@@ -87,6 +88,9 @@ struct WordDetailView: View {
                         .frame(height:430)
                 
                         Button {
+                            // Logics here to edit the word info from the db
+                            
+                            // Dismiss the sheet once the editing request succeeds
                             showSheet = false
                         } label: {
                             Text("Save")
@@ -126,8 +130,25 @@ struct WordDetailView: View {
                         message: Text("This will permanently delete the word info."),
                         primaryButton: .destructive(Text("Delete")) {
                             print("Word info deleted")
-                            // Logics to delete the word info here!
-                            // Refresh the word list and jump to the word view
+                            // Logics here to delete the word
+//                            Task {
+//                                do {
+//                                    let removedWord = WordService.shared.deleteWord(word: word)
+//                                } catch {
+//                                    print("Error in deleting the word info: \(error.localizedDescription)")
+//                                }
+//                            }
+                            // Logics to refresh the word list
+//                            Task {
+//                                do {
+//                                    let newList = WordService.shared.getWordList()
+//                                } catch {
+//                                    
+//                                }
+//                            }
+                            
+                            // Logics here to jump to the word view if deletion succeeds
+                            isWordListViewActive = true
                         },
                         secondaryButton: .cancel()
                     )

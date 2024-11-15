@@ -1,6 +1,6 @@
 import Foundation
 
-// TO DO LIST (11/15)
+// TO DO LIST (11/16)
 // 1. Create three http request handlings (add, edit, and delete)
 
 struct FetchDeckResponse: Decodable {
@@ -40,7 +40,7 @@ class DeckService {
         }
     }
     
-//    func addDecks() async throws -> Deck {
+//    func saveDeck() async throws -> Deck {
 //
 //    }
 //

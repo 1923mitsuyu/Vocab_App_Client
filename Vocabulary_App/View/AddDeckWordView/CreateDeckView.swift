@@ -56,19 +56,19 @@ struct CreateDeckView: View {
                         // Add the new deck to the deck array
                         viewModel.decks.append(newDeck)
                         
-                        // print("Deck added: \(newDeck.name)")
-                        // print("Updated decks list: \(viewModel.decks.map { $0.name })")
+                        print("Deck added: \(newDeck.name)")
+                        print("Updated decks list: \(viewModel.decks.map { $0.name })")
                         
-                        //    Save the new deck to the database
-                        //    saveDeckToDatabase(newDeck) { success in
-                        //    if success {
-                        //     refresh the local deck list from the server or update the UI
-                        //    fetchDecksFromDatabase()
-                        //    print("Deck saved successfully.")
-                        //     } else {
-                        //     print("Failed to save deck.")
-                        //     }
-                        //  }
+                        // Logics here to save the newly entered deck to the db
+//                        Task {
+//                            do {
+//                                let newDeck = try await DeckService.shared.saveDecks()
+//                            } catch {
+//                                print("Error in saving the new deck: \(error.localizedDescription)")
+//                            }
+//                        }
+                        
+                        // Logics to navigate to DeckListView
                         
                         // Clear the text field
                         deckName = ""

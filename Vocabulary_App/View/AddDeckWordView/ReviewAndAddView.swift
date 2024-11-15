@@ -100,7 +100,18 @@ struct ReviewAndAddView: View {
                         print("Adding the word into Deck Name \(deckName)")
                         
                         // Find the deck with the name and append the word info into the deck
-                        viewModel.addWordToDeck(word, definition, example, translation, deckName)
+//                        viewModel.addWordToDeck(word, definition, example, translation, deckName)
+                        
+                        // Logics here to save the newly entered word to the db
+//                        Task {
+//                            do {
+//                                let newDeck = try await WordService.shared.saveWord()
+//                            } catch {
+//                                print("Error in saving the new word: \(error.localizedDescription)")
+//                            }
+//                        }
+                        
+                        // Logics to navigate to WordListView
                     
                     } label: {
                         Text("Save")
