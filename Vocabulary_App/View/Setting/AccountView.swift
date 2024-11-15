@@ -1,7 +1,6 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Make a base of UI
 // 2. Users can change their profiles (usernames, passwords, age, purposes of learning English and their level of English etc)
 // 3. Users can turn on and off reminders (push notification)
 // 4. Users can change the colour of the app (eg. red, green, blue, yellow)

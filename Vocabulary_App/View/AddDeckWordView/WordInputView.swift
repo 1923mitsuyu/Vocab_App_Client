@@ -60,7 +60,6 @@ struct WordInputView: View {
                        
                 HStack {
                     Button {
-//                        WordListView(deck: viewModel.currentDeck))
                         currentStep = 0
                     } label: {
                         Text("Previous")

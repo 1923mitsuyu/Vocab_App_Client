@@ -2,7 +2,6 @@ import SwiftUI
 
 // TO DO LIST
 // 1. Users turn to the next page to see more decks (pagination) : Priority 2
-// 2. Deckの名前をEditした時、すぐに反映されない : Priority 5
 
 struct DeckListView: View {
     

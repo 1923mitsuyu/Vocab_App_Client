@@ -2,7 +2,6 @@ import SwiftUI
 
 // TO DO LIST
 // 1. Make a button to encapsulate the word in {{}} using UI kit : Priority 5
-// 2. Call an API of AI : 3
 
 struct ExampleInputView: View {
     
