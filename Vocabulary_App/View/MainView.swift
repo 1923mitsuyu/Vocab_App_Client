@@ -23,7 +23,7 @@ struct MainView: View {
                         Label("Deck", systemImage: "list.dash")
                     }
                 
-                SettingView()
+                AccountView()
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle")
                     }
