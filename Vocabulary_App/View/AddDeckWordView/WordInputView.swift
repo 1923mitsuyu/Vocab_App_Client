@@ -18,6 +18,7 @@ struct WordInputView: View {
                     .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.bottom,5)
                 
+                // Progress bar
                 HStack {
                     ForEach(1...3, id: \.self) { step in
                         HStack {
@@ -85,10 +86,11 @@ struct WordInputView: View {
                     } label: {
                         Text("Next")
                     }
+                    .disabled(word.isEmpty || definition.isEmpty)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
                     .foregroundStyle(.white)
-                    .background(.cyan)
+                    .background(word.isEmpty || definition.isEmpty ? .gray : .cyan)
                     .cornerRadius(10)
                     .alert(isPresented: $activeAlert) {
                         Alert(

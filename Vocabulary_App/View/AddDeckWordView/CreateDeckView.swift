@@ -17,7 +17,7 @@ struct CreateDeckView: View {
                 
                 HStack {
                     TextField("Deck name here", text: $deckName)
-                        .font(.system(size: 24, weight: .semibold, design: .rounded))
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width: 280, height: 30)
                         .padding()
                         .background(Color.white)
@@ -80,10 +80,11 @@ struct CreateDeckView: View {
                 } label: {
                     Text("Save")
                 }
+                .disabled(deckName.isEmpty)
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
-                .frame(width:150)
+                .frame(width:140, height:15)
                 .padding()
-                .background(.cyan)
+                .background(deckName.isEmpty ? .gray : .cyan)
                 .foregroundColor(.white)
                 .cornerRadius(8)
                 .padding(.top,20)
