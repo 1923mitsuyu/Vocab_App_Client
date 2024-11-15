@@ -61,6 +61,7 @@ struct ExampleInputView: View {
                             .overlay(alignment: .topLeading) {
                                 if example.isEmpty {
                                     Text("Example sentence here")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .allowsHitTesting(false)
                                         .foregroundColor(Color(uiColor: .placeholderText))
                                         .padding(.leading, 15)
@@ -110,6 +111,7 @@ struct ExampleInputView: View {
                             .overlay(alignment: .topLeading) {
                                 if translation.isEmpty {
                                     Text("Example translation here")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .allowsHitTesting(false)
                                         .foregroundColor(Color(uiColor: .placeholderText))
                                         .padding(.leading,15)
@@ -229,8 +231,8 @@ struct ExampleInputView: View {
 
 #Preview {
     ExampleInputView(
-        example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
-        translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
+        example: .constant(""),
+        translation: .constant(""),
         note: .constant("りんごはおいしいよ"),
         currentStep: .constant(3)
     )

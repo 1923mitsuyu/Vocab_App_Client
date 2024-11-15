@@ -20,7 +20,7 @@ struct DeckListView: View {
             VStack {
                 HStack {
                     Text("All Decks")
-                        .font(.system(size: 35, weight: .semibold, design: .rounded))
+                        .font(.system(size: 30, weight: .semibold, design: .rounded))
                         .frame(maxWidth:.infinity, alignment: .leading)
                         .padding(.leading)
                       

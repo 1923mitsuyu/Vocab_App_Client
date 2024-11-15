@@ -18,7 +18,7 @@ struct WordListView: View {
             VStack {
                 HStack {
                     Text("All Words")
-                        .font(.system(size: 35, weight: .semibold, design: .rounded))
+                        .font(.system(size: 30, weight: .semibold, design: .rounded))
                         .frame(maxWidth:.infinity, alignment: .leading)
                         .padding(.leading)
                       
@@ -46,7 +46,7 @@ struct WordListView: View {
                 
                 List {
                     ForEach(deck.words.sorted(by: { $0.wordOrder < $1.wordOrder })) { word in
-                        NavigationLink(destination: WordDetailView(word: word)) {
+                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckViewModel())) {
                             Text(word.word)
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                         }
