@@ -48,7 +48,7 @@ let sampleDecks = [
         Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 1),
         Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 1)], listOrder: 0, userId: 1),
     Deck(name: "Deck2", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をしています。", wordOrder:0, deckId: 2),
+        Word(word: "Like", definition: "好きである", example: "I {{like}} to study.", translation: "私は勉強をするのが好きです。", wordOrder:0, deckId: 2),
         Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 2),
         Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 2)], listOrder: 0, userId: 1),
     Deck(name: "Deck3", words: [
