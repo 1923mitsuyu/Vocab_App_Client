@@ -20,6 +20,8 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                
+                
                 List {
                     Section(header: Text("Name")) {
                         Text(userName)

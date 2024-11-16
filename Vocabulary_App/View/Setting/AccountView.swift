@@ -6,6 +6,9 @@ import SwiftUI
 // 3. Users can change the colour of the app (eg. red, green, blue, yellow)
 
 struct AccountView: View {
+    
+    @State private var isLoginViewActive : Bool = false
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -20,10 +23,6 @@ struct AccountView: View {
                     }
                     
                     Section {
-                        NavigationLink("Notification", destination: NotificationView())
-                    }
-                    
-                    Section {
                         NavigationLink("Setting", destination: SettingView())
                     }
                 }
@@ -31,8 +30,9 @@ struct AccountView: View {
                 
                 Button {
                     // Call a func to log off here
+                    isLoginViewActive = true
                 } label: {
-                    Text("Log Off")
+                    Text("Log Out")
                 }
                 .frame(width:130, height:50)
                 .foregroundStyle(.white)
@@ -43,6 +43,9 @@ struct AccountView: View {
             }
             .font(.system(size: 20, weight: .semibold, design: .rounded))
             .background(.blue.gradient)
+            .navigationDestination(isPresented: $isLoginViewActive) {
+                LoginView()
+            }
         }
     }
 }
