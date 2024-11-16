@@ -1,37 +1,37 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Implement Google Authentication : Priority 2
-// 2. Implement the function to reset passwords : Priority 3
-// 3. Display the error messages underneath the text field : Priority 5 (11/15)
+// 1. Implement password validation check : Priority 2
 
-struct Login: View {
+struct SignUp: View {
     
+    @ObservedObject var viewModel = AuthenticationViewModel()
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
     @State private var error: Error?
     @State private var activeAlert: ActiveAlert? = nil
-    @State private var isSignUpActive = false
-    @State private var isMainViewActive = false
+    @State private var isLoginViewActive = false
+    @State private var isError : Bool = false
+    @State private var errorMessage : [String] = []
     @FocusState var focus: Bool
     
     enum ActiveAlert: Identifiable {
         case emptyFields
-        case invalidPassword
+        case inValidPassword
         
         var id: Int {
             switch self {
             case .emptyFields:
                 return 1
-            case .invalidPassword:
+            case .inValidPassword:
                 return 2
             }
         }
     }
     
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             GeometryReader { _ in
                 VStack{
                     Text("Vocab!")
@@ -42,16 +42,13 @@ struct Login: View {
                     TextField("Phone number, user name, or email address", text: $userName)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .padding()
-                        .background(Color.white)
+                        .background(.white)
                         .cornerRadius(5)
                         .overlay(
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.gray, lineWidth: 2)
                         )
                         .padding(.horizontal)
-                        .onChange(of: password) {
-                            print("\(password) is entered")
-                        }
                         .focused(self.$focus)
                     
                     Spacer().frame(height: 30)
@@ -59,51 +56,41 @@ struct Login: View {
                     SecureField("Password",text: $password)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .padding()
-                        .background(Color.white)
+                        .background(.white)
                         .cornerRadius(5)
                         .overlay(
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.gray, lineWidth: 2)
                         )
                         .padding(.horizontal)
-                        .onChange(of: password) {
-                            print("\(password) is entered")
-                        }
                         .focused(self.$focus)
                     
-                    Button(action: {
-                        // Call a function to reset the password
-                        print("Reset the password")
-                    }) {
-                        Text("Forgot your password? Tap here!")
-                            .foregroundStyle(.black)
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .underline()
-                            .padding(15)
-                    }
+                    Spacer().frame(height:30)
                     
                     Button(action: {
-                        // Check if either of the values (username and password) is empty
-                        if userName.isEmpty || password.isEmpty {
-                            activeAlert = .emptyFields
+                        
+                        // Validate the password
+                        errorMessage = viewModel.validatePassword(password)
+                        
+                        if !errorMessage.isEmpty {
+                            activeAlert = .inValidPassword
                         }
-                        else {
-                            // Call a function to authenticate users
-                            print("Authenticate the user")
+                        else if errorMessage.isEmpty {
                             Task {
                                 do {
-                                    let user = try await AuthService.shared.login(username: userName, password: password)
-                                    print("User: \(user)")
-                                    isMainViewActive = true
+                                    let user = try await AuthService.shared.signUp(username: userName, password: password)
+                                    print("User info: \(user)")
                                     
+                                    // Jump to Login view
+                                    isLoginViewActive = true
                                 } catch {
-                                    print("Login failed with error: \(error.localizedDescription)")
-                                    // Set an appropriate error state or show an alert
+                                    isError = true
+                                    print("Sign-up failed with error: \(error.localizedDescription)")
                                 }
                             }
                         }
                     }, label: {
-                        Text("Login")
+                        Text("Sign Up")
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .frame(width: UIScreen.main.bounds.size.width / 6 * 3,height: UIScreen.main.bounds.size.width / 17 * 1)
                     })
@@ -116,51 +103,31 @@ struct Login: View {
                         switch alert {
                         case .emptyFields:
                             return Alert(title: Text("User name or password is empty."))
-                        case .invalidPassword:
-                            return Alert(title:Text("Invalid password"))
+                        case .inValidPassword:
+                            let errorMessages = errorMessage.joined(separator: "\n")
+                            return Alert(title: Text("Invalid password"), message: Text(errorMessages))
                         }
                     }
-                    .navigationDestination(isPresented: $isMainViewActive) { MainView() }
                     
                     Spacer().frame(height: 30)
                     
                     HStack {
-                        Text("Don't have an account?")
-                            .foregroundStyle(.black)
+                        Text("Has already an account?")
                             .font(.system(size: 17, weight: .semibold, design: .rounded))
                         Button {
-                            isSignUpActive = true
+                            isLoginViewActive = true
                         } label: {
-                            Text("Sign Up")
+                            Text("Log In")
                                 .font(.system(size: 17, weight: .semibold, design: .rounded))
                                 .underline()
                         }
                         .foregroundStyle(.black)
-                        .navigationDestination(isPresented: $isSignUpActive) { SignUp() }
+                        .navigationDestination(isPresented: $isLoginViewActive) {
+                            LoginView()
+                        }
                     }
                     
-                    HStack {
-                        Divider()
-                            .frame(maxWidth: .infinity, maxHeight: 1)
-                            .background(Color.black)
-                        
-                        Text("OR")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.black)
-                            .padding(.horizontal, 8)
-                        
-                        Divider()
-                            .frame(maxWidth: .infinity, maxHeight: 1)
-                            .background(Color.black)
-                    }
-                    .padding(.horizontal)
-                    
-                    Text("Login with Google Account")
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.black)
-                        .padding(.top)
-                    
-                    Spacer().frame(height:110)
+                    Spacer().frame(height: 150)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.blue.gradient)
@@ -172,11 +139,12 @@ struct Login: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
-     
 }
+
 #Preview {
-    Login()
+    SignUp()
 }
+
 
 
 
