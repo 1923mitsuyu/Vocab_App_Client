@@ -1,9 +1,11 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Implement password validation check : Priority 2
+// sample password : P@ssw0rd2024
 
-struct SignUp: View {
+// TO DO LIST
+// 1. Show the error message "The user name has already existed" in the alert.
+
+struct SignUpView: View {
     
     @ObservedObject var viewModel = AuthenticationViewModel()
     @State private var userName: String = ""
@@ -12,21 +14,21 @@ struct SignUp: View {
     @State private var error: Error?
     @State private var activeAlert: ActiveAlert? = nil
     @State private var isLoginViewActive = false
-    @State private var isError : Bool = false
     @State private var errorMessage : [String] = []
+    @State private var serverErrorMessage : String = ""
     @FocusState var focus: Bool
     
     enum ActiveAlert: Identifiable {
-        case emptyFields
         case inValidPassword
-        
+        case serverError
         var id: Int {
             switch self {
-            case .emptyFields:
-                return 1
             case .inValidPassword:
+                return 1
+            case .serverError:
                 return 2
             }
+        
         }
     }
     
@@ -65,7 +67,7 @@ struct SignUp: View {
                         .padding(.horizontal)
                         .focused(self.$focus)
                     
-                    Spacer().frame(height:30)
+                    Spacer().frame(height:20)
                     
                     Button(action: {
                         
@@ -84,8 +86,8 @@ struct SignUp: View {
                                     // Jump to Login view
                                     isLoginViewActive = true
                                 } catch {
-                                    isError = true
-                                    print("Sign-up failed with error: \(error.localizedDescription)")
+                                    activeAlert = .serverError
+                                    serverErrorMessage = "Sign-up failed. Please try again later."
                                 }
                             }
                         }
@@ -101,11 +103,12 @@ struct SignUp: View {
                     .cornerRadius(20)
                     .alert(item: $activeAlert) { alert in
                         switch alert {
-                        case .emptyFields:
-                            return Alert(title: Text("User name or password is empty."))
                         case .inValidPassword:
                             let errorMessages = errorMessage.joined(separator: "\n")
                             return Alert(title: Text("Invalid password"), message: Text(errorMessages))
+                            
+                        case .serverError:
+                            return Alert(title: Text(serverErrorMessage))
                         }
                     }
                     
@@ -142,7 +145,7 @@ struct SignUp: View {
 }
 
 #Preview {
-    SignUp()
+    SignUpView()
 }
 
 

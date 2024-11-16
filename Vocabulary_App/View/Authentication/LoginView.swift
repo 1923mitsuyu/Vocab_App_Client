@@ -148,7 +148,7 @@ struct LoginView: View {
                                 .underline()
                         }
                         .foregroundStyle(.black)
-                        .navigationDestination(isPresented: $isSignUpActive) { SignUp() }
+                        .navigationDestination(isPresented: $isSignUpActive) { SignUpView() }
                     }
                     
                     HStack {
@@ -184,7 +184,6 @@ struct LoginView: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
-     
 }
 #Preview {
     LoginView()
