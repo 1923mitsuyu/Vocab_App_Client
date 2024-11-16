@@ -26,14 +26,13 @@ struct NavigationParentView: View {
                     } else if currentStep == 1 {
                         WordInputView(viewModel: DeckViewModel(), word: $word, definition: $definition, currentStep: $currentStep)
                     } else if currentStep == 2 {
-                        ExampleInputView(example: $example, translation: $translation, note: $note, currentStep: $currentStep)
-                    } else {
+                        ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
+                    } else if currentStep == 3 {
                         ReviewAndAddView(
                             viewModel: DeckViewModel(), word: $word,
                             definition: $definition,
                             example: $example,
                             translation: $translation,
-                            note: $note,
                             currentStep: $currentStep,
                             deckId: $deckId,
                             deckName: $deckName
