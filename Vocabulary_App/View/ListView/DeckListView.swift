@@ -74,6 +74,14 @@ struct DeckListView: View {
                 }
                 .cornerRadius(10)
                 .onAppear {
+                    // Fetch all decks from the db
+                    Task {
+                        do {
+                            let decks = try await DeckService.shared.getDecks()
+                        } catch {
+                            print("Error in fetching all decks: \(error.localizedDescription)")
+                        }
+                    }
                     print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
                     viewModel.decks.sort { $0.listOrder < $1.listOrder }
                 }

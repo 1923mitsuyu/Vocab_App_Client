@@ -7,7 +7,6 @@ struct ReviewAndAddView: View {
     @Binding var definition: String
     @Binding var example: String
     @Binding var translation: String
-    @Binding var note: String
     @Binding var currentStep: Int
     @Binding var deckId: UUID
     @Binding var deckName: String
@@ -66,18 +65,11 @@ struct ReviewAndAddView: View {
                             .foregroundColor(.black)
                             .font(.system(size: 17, weight: .semibold, design: .rounded))
                     }
-                    
-                    Section(header: Text("Note")) {
-                        Text(note)
-                            .foregroundColor(.black)
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    }
                 }
                 .scrollContentBackground(.hidden)
-                .frame(height: 430)
-                
-                Spacer().frame(height:30)
-                
+                .frame(height: 400)
+                                
+                Spacer().frame(height: 40)
                 HStack {
                     Button {
                         currentStep = 2
@@ -102,16 +94,17 @@ struct ReviewAndAddView: View {
                         // Find the deck with the name and append the word info into the deck
 //                        viewModel.addWordToDeck(word, definition, example, translation, deckName)
                         
-                        // Logics here to save the newly entered word to the db
-//                        Task {
-//                            do {
-//                                let newDeck = try await WordService.shared.saveWord()
-//                            } catch {
-//                                print("Error in saving the new word: \(error.localizedDescription)")
-//                            }
-//                        }
+                        // Save the newly entered word to the db
+                        Task {
+                            do {
+                                let newDeck = try await WordService.shared.addWords()
+                            } catch {
+                                print("Error in saving the new word: \(error.localizedDescription)")
+                            }
+                        }
                         
-                        // Logics to navigate to WordListView
+                        // Navigate to WordListView
+                        currentStep = 0
                     
                     } label: {
                         Text("Save")
@@ -138,7 +131,6 @@ struct ReviewAndAddView: View {
         definition: .constant("後回しにする"),
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
-        note:.constant("Procrastinator: 後回しにする人"),
         currentStep: .constant(3),
         deckId: .constant(UUID()),
         deckName: .constant("Deck1")

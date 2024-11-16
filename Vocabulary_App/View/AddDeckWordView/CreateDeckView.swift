@@ -14,7 +14,6 @@ struct CreateDeckView: View {
                     .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.vertical,30)
                     
-                
                 HStack {
                     TextField("Deck name here", text: $deckName)
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -59,20 +58,20 @@ struct CreateDeckView: View {
                         print("Deck added: \(newDeck.name)")
                         print("Updated decks list: \(viewModel.decks.map { $0.name })")
                         
-                        // Logics here to save the newly entered deck to the db
-//                        Task {
-//                            do {
-//                                let newDeck = try await DeckService.shared.saveDecks()
-//                            } catch {
-//                                print("Error in saving the new deck: \(error.localizedDescription)")
-//                            }
-//                        }
-                        
-                        // Logics to navigate to DeckListView
-                        
+                        // Save the newly entered deck to the db (仮)
+                        Task {
+                            do {
+                                let newDeck = try await DeckService.shared.addDeck(name: deckName, words: [], listOrder: viewModel.decks.count, userId: 1)
+                                
+                                print("Deck added: \(newDeck.name)")
+                                
+                            } catch {
+                                print("Error in saving the new deck: \(error.localizedDescription)")
+                            }
+                        }
+                                            
                         // Clear the text field
                         deckName = ""
-                        
                         // Jump back to the word list
                         isDeckListActive = true
                     }
