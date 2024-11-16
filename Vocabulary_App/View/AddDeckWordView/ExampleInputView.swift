@@ -1,13 +1,12 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Make a button to encapsulate the word in {{}} using UI kit : Priority 5
+// 1. Make a button to encapsulate the word in {{}} using UI kit : Priority 2
 
 struct ExampleInputView: View {
     
     @Binding var example: String
     @Binding var translation: String
-    @Binding var note: String
     @Binding var currentStep: Int
     @State private var isReviewAndAddActive: Bool = false
     @State private var activeAlert: Bool = false
@@ -51,35 +50,50 @@ struct ExampleInputView: View {
                     
                     Spacer().frame(height: 20)
                     
-                    HStack {
-                        TextEditor(text: $example)
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .frame(width: 330, height: 80)
-                            .cornerRadius(5)
-                            .focused($isFocused)
-                            .padding(.leading, 10)
-                            .overlay(alignment: .topLeading) {
-                                if example.isEmpty {
-                                    Text("Example sentence here")
-                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                                        .allowsHitTesting(false)
-                                        .foregroundColor(Color(uiColor: .placeholderText))
-                                        .padding(.leading, 15)
-                                        .padding(.top, 8)
+                    VStack(alignment: .leading) {
+//                        Button {
+//                            print("Button pressed")
+//                        } label: {
+//                            Text("{ }")
+//                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+//                        }
+//                        .foregroundStyle(.black)
+//                        .frame(width: 30, height: 30)
+//                        .background(.white)
+//                        .cornerRadius(7)
+//                        .padding(.leading,10)
+                        
+                        HStack {
+                            TextEditor(text: $example)
+                                .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                .frame(width: 330, height: 80)
+                                .cornerRadius(5)
+                                .focused($isFocused)
+                                .padding(.leading, 10)
+                                .overlay(alignment: .topLeading) {
+                                    if example.isEmpty {
+                                        Text("Example sentence here")
+                                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                            .allowsHitTesting(false)
+                                            .foregroundColor(Color(uiColor: .placeholderText))
+                                            .padding(.leading, 15)
+                                            .padding(.top, 8)
+                                    }
                                 }
+                            
+                            Spacer().frame(width: 5)
+                            
+                            Button(action: {
+                                example = ""
+                            }) {
+                                Image(systemName: "delete.left")
+                                    .foregroundColor(Color(UIColor.opaqueSeparator))
                             }
-                        
-                        Spacer().frame(width: 10)
-                        
-                        Button(action: {
-                            example = ""
-                        }) {
-                            Image(systemName: "delete.left")
-                                .foregroundColor(Color(UIColor.opaqueSeparator))
+                            .padding(.top, 4)
+                            .opacity(example.isEmpty ? 0 : 1)
                         }
-                        .padding(.top, 4)
-                        .opacity(example.isEmpty ? 0 : 1)
                     }
+                    .padding(.leading,15)
                     
                     Spacer().frame(height: 10)
                     
@@ -89,7 +103,7 @@ struct ExampleInputView: View {
                         Text("Generate an example sentence")
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                             .foregroundStyle(.black)
-                            .frame(width: 250)
+                            .frame(width: 250, height:25)
                             .padding(.vertical,5)
                     }
                     .background(
@@ -97,13 +111,13 @@ struct ExampleInputView: View {
                             .overlay(.black.opacity(0.2))
                     )
                     .cornerRadius(10)
-                    .padding(.trailing,35)
+                    .padding(.top,8)
                     
                     Spacer().frame(height: 20)
                     
                     HStack {
                         TextEditor(text: $translation)
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                             .frame(width: 330, height: 80)
                             .cornerRadius(5)
                             .padding(.leading,10)
@@ -127,8 +141,8 @@ struct ExampleInputView: View {
                         }
                         .padding(.top, 4)
                         .opacity(translation.isEmpty ? 0 : 1)
-                        
                     }
+                    .padding(.leading,15)
                     
                     Spacer().frame(height: 10)
                     
@@ -138,7 +152,7 @@ struct ExampleInputView: View {
                         Text("Generate a translation")
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                             .foregroundStyle(.black)
-                            .frame(width: 250)
+                            .frame(width: 250, height:25)
                             .padding(.vertical,5)
                     }
                     .background(
@@ -146,36 +160,7 @@ struct ExampleInputView: View {
                             .overlay(.black.opacity(0.2))
                     )
                     .cornerRadius(10)
-                    .padding(.trailing,35)
-                    
-                    Spacer().frame(height: 20)
-                    
-                    HStack {
-                        TextEditor(text: $note)
-                            .font(.system(size: 15, weight: .light, design: .rounded))
-                            .frame(width: 330, height: 100)
-                            .cornerRadius(5)
-                            .padding(.leading,10)
-                            .focused($isFocused)
-                            .overlay(alignment: .topLeading) {
-                                if note.isEmpty {
-                                    Text("Notes")
-                                        .allowsHitTesting(false)
-                                        .foregroundColor(Color(uiColor: .placeholderText))
-                                        .padding(.leading,15)
-                                        .padding(.top, 8)
-                                }
-                            }
-                        
-                        Button(action: {
-                            note = ""
-                        }) {
-                            Image(systemName: "delete.left")
-                                .foregroundColor(Color(UIColor.opaqueSeparator))
-                        }
-                        .padding(.top, 4)
-                        .opacity(note.isEmpty ? 0 : 1)
-                    }
+                    .padding(.top,8)
                     
                     Spacer().frame(height: 50)
                     
@@ -205,7 +190,7 @@ struct ExampleInputView: View {
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width:150, height: 50)
                         .foregroundStyle(.white)
-                        .background(.cyan)
+                        .background(example.isEmpty || translation.isEmpty ? .gray : .cyan)
                         .cornerRadius(10)
                         .alert(isPresented: $activeAlert) {
                             Alert(
@@ -213,6 +198,7 @@ struct ExampleInputView: View {
                                 message: Text("Please fill in the first two blanks")
                             )
                         }
+                        .disabled(example.isEmpty || translation.isEmpty)
                     }
                     Spacer()
                 }
@@ -231,9 +217,8 @@ struct ExampleInputView: View {
 
 #Preview {
     ExampleInputView(
-        example: .constant(""),
-        translation: .constant(""),
-        note: .constant("りんごはおいしいよ"),
+        example: .constant("I like apples but I do not eat them often."),
+        translation: .constant("りんごは好きだけど、あまり食べない。"),
         currentStep: .constant(3)
     )
 }
