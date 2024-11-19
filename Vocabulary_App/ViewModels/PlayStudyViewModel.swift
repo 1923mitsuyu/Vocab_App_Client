@@ -3,17 +3,24 @@ import Foundation
 class PlayStudyViewModel : ObservableObject {
     
     @Published var decks: [Deck] = sampleDecks
+    @Published var words: [Word] = sampleWords
     @Published var writtenAnswer: String = ""
     @Published var selectionDeck = 0
-    @Published var randomInt : Int = 0
+//    @Published var randomInt : Int = 0
     @Published var usedWordsIndex : [Int] = []
     @Published var wrongWordsIndex : [Int] = []
     
-    func calculateProgress(_ chosenDeck : Int )-> Double {
-        let totalNumberOfWords = decks[chosenDeck].words.count
+    func calculateProgress(_ chosenDeck : Int, wordsList : [Word] )-> Double {
+        let totalNumberOfWords = wordsList.count
         let numberOfUsedWords = usedWordsIndex.count
         return totalNumberOfWords > 0 ? (Double(numberOfUsedWords) / Double(totalNumberOfWords) * 100) : 0
     }
+    
+    // Filter words based on the selected deck
+    func filterWords(for deckId: UUID, in wordList: [Word]) async throws -> [Word] {
+        return wordList.filter { $0.deckId == deckId }
+    }
+    
     
     func hideTargetWordInExample(_ example: String) -> String {
         // 正規表現で {{}} 内の部分を見つける
@@ -62,42 +69,39 @@ class PlayStudyViewModel : ObservableObject {
         return nil  // 一致が見つからなかった場合
     }
     
-    func isRandomNumberUsed() -> Bool {
-        if usedWordsIndex.contains(randomInt) {
+    func isRandomNumberUsed(randomNum: Int) -> Bool {
+        if usedWordsIndex.contains(randomNum) {
             return true
         } else {
             return false
         }
     }
     
-    func generateRandomQuestion() -> Int {
+    func generateRandomQuestion(wordsList : [Word]) async throws -> Int {
         
-        let deckLength = decks.count
+        let maxQuestion = wordsList.count
+        
+        print("length: \(maxQuestion)")
         
         // Generate a random integer
-        randomInt = Int.random(in: 0..<deckLength - 2)
+        var randomNum = Int.random(in: 0..<maxQuestion)
         
         // Check if the integer has been already used
-        while isRandomNumberUsed() == true {
-            print("\(randomInt) has already been used so let's generate a new one.")
-            randomInt = Int.random(in: 0..<deckLength - 2)
+        while isRandomNumberUsed(randomNum: randomNum) == true {
+            print("\(randomNum) has already been used so let's generate a new one.")
+            randomNum = Int.random(in: 0..<maxQuestion)
         }
         
-        print("The new random integer is \(randomInt).")
+        print("The new random integer is \(randomNum).")
         
         // new integer
-        return randomInt
+        return randomNum
     }
     
 
-    func checkIfAllWordsUsed() -> Bool {
-        
-        print("Checking if all words have been used...")
-        print("The num of used words is \(usedWordsIndex.count).")
-        print("selected deck: \(selectionDeck)")
-        print("words count : \(decks[selectionDeck].words.count)")
-        
-        if usedWordsIndex.count == decks[selectionDeck].words.count {
+    func checkIfAllWordsUsed(wordsList : [Word]) -> Bool {
+    
+        if usedWordsIndex.count == wordsList.count {
             return true
         }
         else {
@@ -105,32 +109,31 @@ class PlayStudyViewModel : ObservableObject {
         }
     }
         
-    func checkIfAnswerIsCorrect(_ chosenDeck : Int ) -> Bool {
+    func checkIfAnswerIsCorrect(_ chosenDeck : Int, wordsList : [Word], randomNum : Int ) -> Bool {
+        
+        print("Checking the answer...")
         
         let trimmedAnswer = writtenAnswer.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         
+        print("The random int for checking ans: \(randomNum)")
+        
+        for word in wordsList {
+            print("Word: \(word.word), Example: \(word.example)")
+        }
+                
         // 正しい単語を取得するために extractWordFromBrackets を呼び出す
-        guard let correctAnswer = extractWordFromBrackets(example: decks[chosenDeck].words[randomInt].example) else {
+        guard let correctAnswer = extractWordFromBrackets(example: wordsList[randomNum].example) else {
+            print("Error in getting a correct answer.")
             return false
         }
-        
-        print("written answer: \(trimmedAnswer)")
-        print("correct answer: \(correctAnswer)")
-        
-        // 答えが正しいかどうかを比較
+                
         if trimmedAnswer == correctAnswer {
             return true
         } else {
             return false
         }
     }
-    
-    // 4. Calculate the progress : return progress
-    func calculateProgress() {
         
-    }
-    
-    // 5. Reset the text field : return writtenAnswer
     func resetTextField() {
         writtenAnswer = ""
     }

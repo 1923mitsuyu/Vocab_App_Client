@@ -2,6 +2,8 @@ import SwiftUI
 
 struct MainView: View {
     
+    @State private var selectedDeck: Int = 0
+    
     init() {
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
         let appearance: UITabBarAppearance = UITabBarAppearance()
@@ -18,7 +20,7 @@ struct MainView: View {
                         Label("Study", systemImage: "brain.head.profile")
                     }
                 
-                DeckListView()
+                DeckListView(selectedDeck: selectedDeck)
                     .tabItem {
                         Label("Deck", systemImage: "list.dash")
                     }

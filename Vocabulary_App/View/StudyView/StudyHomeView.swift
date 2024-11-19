@@ -24,6 +24,9 @@ struct StudyHomeView: View {
                         Text(viewModel.decks[index].name).tag(index)
                     }
                 }
+                .onChange(of: viewModel.selectionDeck) {
+                    print("selected deck is \(viewModel.selectionDeck)")
+                }
                 .pickerStyle(WheelPickerStyle())
                 .frame(width: 200, height: 100)
                 .clipped()

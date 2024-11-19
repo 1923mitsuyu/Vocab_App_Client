@@ -1,52 +1,52 @@
 import SwiftUI
 
 struct NavigationParentView: View {
-    
     @State private var currentStep: Int = 0
     @State private var word: String = ""
     @State private var definition: String = ""
     @State private var example: String = ""
     @State private var translation: String = ""
     @State private var note: String = ""
+    @Binding var selectedDeck: Int
+    
+    // Directly initializing these state properties
     @State private var deckId: UUID
-    @State private var deckName: String = ""
+    @State private var deckName: String
+    
     let deck: Deck
-   
-    init(deck: Deck) {
+    
+    init(deck: Deck, selectedDeck: Binding<Int>) {
         self.deck = deck
+        self._selectedDeck = selectedDeck
         _deckId = State(initialValue: deck.id)
         _deckName = State(initialValue: deck.name)
     }
     
     var body: some View {
-            NavigationStack {
-                VStack {
-                    if currentStep == 0 {
-                        WordListView(deck: deck, currentStep: $currentStep)
-                    } else if currentStep == 1 {
-                        WordInputView(viewModel: DeckViewModel(), word: $word, definition: $definition, currentStep: $currentStep)
-                    } else if currentStep == 2 {
-                        ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
-                    } else if currentStep == 3 {
-                        ReviewAndAddView(
-                            viewModel: DeckViewModel(), word: $word,
-                            definition: $definition,
-                            example: $example,
-                            translation: $translation,
-                            currentStep: $currentStep,
-                            deckId: $deckId,
-                            deckName: $deckName
-                        )
-                    }
+        NavigationStack {
+            VStack {
+                if currentStep == 0 {
+                    WordListView(viewModel: DeckWordViewModel(), deck: deck, selectedDeck: $selectedDeck, currentStep: $currentStep)
+                } else if currentStep == 1 {
+                    WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep)
+                } else if currentStep == 2 {
+                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
+                } else if currentStep == 3 {
+                    ReviewAndAddView(
+                        viewModel: DeckWordViewModel(), word: $word,
+                        definition: $definition,
+                        example: $example,
+                        translation: $translation,
+                        currentStep: $currentStep,
+                        deckId: $deckId,
+                        deckName: $deckName
+                    )
                 }
             }
         }
     }
-
-#Preview {
-    NavigationParentView(deck:  Deck(name: "Sample Deck1", words: [
-        Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。", wordOrder: 0, deckId: 11),
-        Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1, deckId: 1)
-    ], listOrder: 0, userId: 1))
 }
 
+#Preview {
+    NavigationParentView(deck: Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1))
+}

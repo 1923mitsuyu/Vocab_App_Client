@@ -10,3 +10,4 @@ struct Vocabulary_AppApp: App {
         }
     }
 }
+

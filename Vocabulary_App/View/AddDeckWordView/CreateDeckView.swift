@@ -2,10 +2,11 @@ import SwiftUI
 
 struct CreateDeckView: View {
     
-    @ObservedObject var viewModel: DeckViewModel
+    @ObservedObject var viewModel: DeckWordViewModel
     @State private var deckName: String = ""
     @State private var activeAlert: Bool = false
     @State private var isDeckListActive: Bool = false
+    @State var selectedDeck: Int
     
     var body: some View {
         NavigationStack {
@@ -50,7 +51,7 @@ struct CreateDeckView: View {
                     }
                     else {
                         // Create a new deck
-                        let newDeck = Deck(name: deckName, words:[], listOrder: viewModel.decks.count, userId: 1)
+                        let newDeck = Deck(name: deckName, deckOrder: viewModel.decks.count, userId: 1)
                         
                         // Add the new deck to the deck array
                         viewModel.decks.append(newDeck)
@@ -61,7 +62,7 @@ struct CreateDeckView: View {
                         // Save the newly entered deck to the db (仮)
                         Task {
                             do {
-                                let newDeck = try await DeckService.shared.addDeck(name: deckName, words: [], listOrder: viewModel.decks.count, userId: 1)
+                                let newDeck = try await DeckService.shared.addDeck(name: deckName, words: [], deckOrder: viewModel.decks.count, userId: 1)
                                 
                                 print("Deck added: \(newDeck.name)")
                                 
@@ -93,7 +94,9 @@ struct CreateDeckView: View {
                         message: Text("Please fill in the blank")
                     )
                 }
-                .navigationDestination(isPresented: $isDeckListActive) { DeckListView(viewModel: DeckViewModel()) }
+                .navigationDestination(isPresented: $isDeckListActive) {
+                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck)
+                }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -103,6 +106,6 @@ struct CreateDeckView: View {
 }
 
 #Preview {
-    let sampleViewModel = DeckViewModel()
-    CreateDeckView(viewModel: sampleViewModel)
+    let sampleViewModel = DeckWordViewModel()
+    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1)
 }

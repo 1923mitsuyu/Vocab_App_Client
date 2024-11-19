@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ReviewAndAddView: View {
     
-    @ObservedObject var viewModel : DeckViewModel
+    @ObservedObject var viewModel : DeckWordViewModel
     @Binding var word: String
     @Binding var definition: String
     @Binding var example: String
@@ -92,12 +92,12 @@ struct ReviewAndAddView: View {
                         print("Adding the word into Deck Name \(deckName)")
                         
                         // Find the deck with the name and append the word info into the deck
-//                        viewModel.addWordToDeck(word, definition, example, translation, deckName)
+                        // viewModel.addWordToDeck(word, definition, example, translation, deckName)
                         
                         // Save the newly entered word to the db
                         Task {
                             do {
-                                let newDeck = try await WordService.shared.addWords()
+                                let newDeck = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, wordOrder: 0, deckId: 0)
                             } catch {
                                 print("Error in saving the new word: \(error.localizedDescription)")
                             }
@@ -127,7 +127,7 @@ struct ReviewAndAddView: View {
 
 #Preview {
     ReviewAndAddView(
-        viewModel: DeckViewModel(), word: .constant("Procrastinate"),
+        viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),

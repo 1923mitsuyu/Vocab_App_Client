@@ -3,7 +3,7 @@ import SwiftUI
 struct WordDetailView: View {
 
     let word: Word
-    @ObservedObject var viewModel : DeckViewModel
+    @ObservedObject var viewModel : DeckWordViewModel
     @State private var showSheet: Bool = false
     @State private var newWord: String = ""
     @State private var newDefinition: String = ""
@@ -163,5 +163,5 @@ struct WordDetailView: View {
 }
 
 #Preview {
-    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", wordOrder: 1, deckId: 1), viewModel: DeckViewModel())
+    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel())
 }

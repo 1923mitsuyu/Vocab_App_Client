@@ -3,7 +3,8 @@ import SwiftUI
 struct ResultView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
-    @ObservedObject var viewModel2: DeckViewModel
+    @ObservedObject var viewModel2: DeckWordViewModel
+    @Binding var wordList : [Word]
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @State private var isMainViewActive: Bool = false
@@ -46,8 +47,8 @@ struct ResultView: View {
                 // Using unique to preserve the order of indices and remove duplicates
                 ForEach(unique(array: wrongWordIndex), id: \.self) { index in
                     HStack {
-                        Text("\(viewModel.decks[selectedDeck].words[index].word) :")
-                        Text(viewModel.decks[selectedDeck].words[index].definition)
+                        Text("\(wordList[index].word) :")
+                        Text(wordList[index].definition)
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .onTapGesture {
@@ -84,14 +85,14 @@ struct ResultView: View {
                                         .padding(.horizontal, 10)
                                     
                                     ScrollView {
-                                        Text("\(viewModel.decks[selectedDeck].words[index].translation)")
+                                        Text("\(wordList[index].translation)")
                                             .font(.system(size: 20, weight: .bold, design: .rounded))
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .padding(.horizontal, 10)
                                     }
                                 }
                                 .onAppear {
-                                    modifiedExample = viewModel2.removeBrackets(viewModel.decks[selectedDeck].words[index].example)
+                                    modifiedExample = viewModel2.removeBrackets(wordList[index].example)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: 370)
                                 .padding(.horizontal,5)
@@ -156,5 +157,17 @@ struct ResultView: View {
 }
 
 #Preview {
-    ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckViewModel(), selectedDeck: .constant(2), wrongWordIndex: .constant([0]))
+    @Previewable @State var sampleWordList: [Word] = [
+        Word(id: UUID(), word: "example", definition: "a representative form or pattern", example: "This is an example sentence.", translation: "例", correctTimes: 2, wordOrder: 1, deckId: UUID())
+    ]
+    @Previewable @State var sampleWrongWordIndex: [Int] = [0]
+    @Previewable @State var sampleSelectedDeck: Int = 2
+
+    ResultView(
+        viewModel: PlayStudyViewModel(),
+        viewModel2: DeckWordViewModel(),
+        wordList: $sampleWordList,
+        selectedDeck: $sampleSelectedDeck,
+        wrongWordIndex: $sampleWrongWordIndex
+    )
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WordInputView: View {
     
-    @ObservedObject var viewModel: DeckViewModel
+    @ObservedObject var viewModel: DeckWordViewModel
     @Binding var word: String
     @Binding var definition: String
     @Binding var currentStep: Int
@@ -150,7 +150,7 @@ struct TextFieldModifier: ViewModifier {
 }
 #Preview {
     WordInputView(
-        viewModel: DeckViewModel(), word: .constant("Procrastinate"),
+        viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
         currentStep: .constant(1)
     )

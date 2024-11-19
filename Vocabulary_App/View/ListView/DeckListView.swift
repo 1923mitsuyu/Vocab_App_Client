@@ -5,7 +5,8 @@ import SwiftUI
 
 struct DeckListView: View {
     
-    @StateObject var viewModel = DeckViewModel()
+    @StateObject var viewModel = DeckWordViewModel()
+    @State var selectedDeck = -1
     @State private var isCreateDeckActive = false
     @State private var deckToEdit: UUID?
     @State private var deckToDelete: UUID?
@@ -32,7 +33,7 @@ struct DeckListView: View {
                     .font(.system(size: 25))
                     .foregroundStyle(.white)
                     .padding(.trailing, 10)
-                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel) }
+                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck) }
                     
                     Button(action: {
                         isPickerPresented.toggle()
@@ -47,28 +48,33 @@ struct DeckListView: View {
                 .padding(.top, 20)
              
                 List($viewModel.decks, editActions: .move) { $deck in
-                    NavigationLink(destination: NavigationParentView(deck: deck)) {
-                        HStack {
-                            Text(deck.name)
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                    NavigationLink(
+                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck)
+                            .onAppear {
+                                if let index = viewModel.decks.firstIndex(where: { $0.id == deck.id }) {
+                                    selectedDeck = index
+                                    print("selectedDeck is \(selectedDeck)")
+                                }
+                            }
+                    ) {
+                        Text(deck.name)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                            .padding(.vertical, 4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .swipeActions {
+                        Button(role: .destructive, action: {
+                            deckToDelete = deck.id
+                            showDeleteAlert = true
+                        }) {
+                            Label("Delete", systemImage: "trash")
                         }
-                        .swipeActions {
-                            Button(role: .destructive, action: {
-                                deckToDelete = deck.id
-                                showDeleteAlert = true
-                            }) {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            
-                            Button(action: {
-                                deckToEdit = deck.id
-                                newDeckName = deck.name
-                                showEditSheet = true
-                            }) {
-                                Label("Edit", systemImage: "pencil")
-                            }
+                        Button(action: {
+                            deckToEdit = deck.id
+                            newDeckName = deck.name
+                            showEditSheet = true
+                        }) {
+                            Label("Edit", systemImage: "pencil")
                         }
                     }
                 }
@@ -83,18 +89,18 @@ struct DeckListView: View {
                         }
                     }
                     print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
-                    viewModel.decks.sort { $0.listOrder < $1.listOrder }
+                    
                 }
-                .onChange(of: viewModel.decks) { oldValue, newValue in
-                    print("The deck list changed!")
-                    var counter = 0
-                    for index in viewModel.decks.indices {
-                        viewModel.decks[index].listOrder = counter
-                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].listOrder)")
-                        counter += 1
-                    }
-                    print("--------------------------------")
-                }
+//                .onChange(of: viewModel.decks) { oldValue, newValue in
+//                    print("The deck list changed!")
+//                    var counter = 0
+//                    for index in viewModel.decks.indices {
+//                        viewModel.decks[index].deckOrder = counter
+//                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
+//                        counter += 1
+//                    }
+//                    print("--------------------------------")
+//                }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
                     ActionSheet(
@@ -110,7 +116,7 @@ struct DeckListView: View {
                             },
                             .default(Text("By Date Added")) {
                                 selectedSortOption = "Date Added"
-                                viewModel.decks.sort { $0.listOrder < $1.listOrder }
+                                viewModel.decks.sort { $0.deckOrder < $1.deckOrder }
                             },
                             .cancel()
                         ]
@@ -206,32 +212,13 @@ struct DeckListView: View {
 
 struct CreateDeckView_Previews: PreviewProvider {
     @State static var decks: [Deck] = [
-           Deck(name: "Sample Deck1", words: [
-            Word(word: "Procrastinate", definition: "後回しにする", example: "I procrastinated my assignments, but I finished them in time.", translation: "私は課題を後回しにした。", wordOrder: 0, deckId: 1),
-            Word(word: "Ubiquitous", definition: "どこにでもある", example: "Smartphones are ubiquitous nowadays.", translation: "スマホは至る所にある", wordOrder: 1, deckId: 1)], listOrder: 6, userId: 1),
-           
-           Deck(name: "Sample Deck2", words: [
-            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
-            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 1, userId: 1),
-           
-           Deck(name: "Sample Deck3", words: [
-            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
-            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 2, userId: 1),
-           
-           Deck(name: "Sample Deck4", words: [
-            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
-            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 3, userId: 1),
-           
-           Deck(name: "Sample Deck5", words: [
-            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
-            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 4, userId: 1),
-           
-           Deck(name: "Sample Deck6", words: [
-            Word(word: "Serenity", definition: "静けさ", example: "The lake was a place of serenity.", translation: "湖は静けさのある場所だった。", wordOrder: 0, deckId: 1),
-            Word(word: "Ephemeral", definition: "儚い", example: "Life is ephemeral.", translation: "人生は儚いものだ。", wordOrder: 1, deckId: 1)], listOrder: 5, userId: 1),
+           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
+           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
+           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
+           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
        ]
     
     static var previews: some View {
-        DeckListView(viewModel: DeckViewModel())
+        DeckListView(viewModel: DeckWordViewModel())
     }
 }

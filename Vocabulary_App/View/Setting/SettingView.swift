@@ -44,7 +44,6 @@ struct SettingView: View {
                             .labelsHidden()
                             .padding(.leading,10)
                             .padding(.trailing,50)
-                        
                     }
                 }
             }
