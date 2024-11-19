@@ -119,12 +119,11 @@ struct ResultView: View {
                 } label: {
                     Text("Home")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.black)
-                    
+                        .foregroundStyle(.white)
                 }
                 .frame(width: 100, height: 20)
                 .padding()
-                .background(.white)
+                .background(.blue)
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isMainViewActive) {
@@ -138,12 +137,12 @@ struct ResultView: View {
                 } label: {
                     Text("Study Again")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.white)
                     
                 }
                 .frame(width: 120, height: 20)
                 .padding()
-                .background(.white)
+                .background(.blue)
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
@@ -159,7 +158,7 @@ struct ResultView: View {
 
 #Preview {
     @Previewable @State var sampleWordList: [Word] = [
-        Word(id: UUID(), word: "example", definition: "a representative form or pattern", example: "This is an example sentence.", translation: "例", correctTimes: 2, wordOrder: 1, deckId: UUID())
+        Word(id: 0, word: "example", definition: "a representative form or pattern", example: "This is an example sentence.", translation: "例", correctTimes: 2, wordOrder: 1, deckId: 0)
     ]
     @Previewable @State var sampleWrongWordIndex: [Int] = [0]
     @Previewable @State var sampleSelectedDeck: Int = 2

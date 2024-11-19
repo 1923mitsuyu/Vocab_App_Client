@@ -69,7 +69,7 @@ struct WordInputView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
                     .foregroundStyle(.white)
-                    .background(.cyan)
+                    .background(.blue)
                     .cornerRadius(10)
                 
                     Spacer().frame(width: 20)
@@ -91,7 +91,7 @@ struct WordInputView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
                     .foregroundStyle(.white)
-                    .background(word.isEmpty || definition.isEmpty ? .gray : .cyan)
+                    .background(word.isEmpty || definition.isEmpty ? .gray : .blue)
                     .cornerRadius(10)
                     .alert(isPresented: $activeAlert) {
                         Alert(

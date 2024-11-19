@@ -7,7 +7,7 @@ class DeckWordViewModel : ObservableObject {
     @Published var words: [Word] = sampleWords
     
     // Filter words based on the selected deck
-    func filterWords(for deckId: UUID, in wordList: [Word]) -> [Word] {
+    func filterWords(for deckId: Int, in wordList: [Word]) -> [Word] {
         return wordList.filter { $0.deckId == deckId }
     }
     

@@ -17,7 +17,7 @@ class PlayStudyViewModel : ObservableObject {
     }
     
     // Filter words based on the selected deck
-    func filterWords(for deckId: UUID, in wordList: [Word]) async throws -> [Word] {
+    func filterWords(for deckId: Int, in wordList: [Word]) async throws -> [Word] {
         return wordList.filter { $0.deckId == deckId }
     }
     

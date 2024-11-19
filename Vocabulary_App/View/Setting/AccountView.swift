@@ -37,7 +37,7 @@ struct AccountView: View {
                 }
                 .frame(width:130, height:50)
                 .foregroundStyle(.white)
-                .background(.cyan)
+                .background(.blue)
                 .cornerRadius(10)
                 
                 Spacer().frame(height:40)

@@ -42,14 +42,14 @@ class DeckService {
         }
     }
     
-    func addDeck(name: String, words: [String], deckOrder: Int, userId: Int) async throws -> Deck {
+    func addDeck(name: String, deckOrder: Int, userId: Int) async throws -> Deck {
         
         guard let url = URL(string: "http://localhost:3000/v1/saveDeck") else {
             throw NetworkError.invalidURL
         }
         
         // Set parameters
-        let parameters: [String: Any] = ["name": name, "words": words, "deckOrder": deckOrder, "userId": userId]
+        let parameters: [String: Any] = ["name": name, "deckOrder": deckOrder, "userId": userId]
         
         // Create a URL request
         var request = URLRequest(url: url)

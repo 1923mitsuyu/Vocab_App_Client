@@ -5,7 +5,7 @@ struct SettingView: View {
     @State private var reminderIsOn = false
     @State private var isHovering = false
     @Binding var selectedColor: Color
-    let colors: [Color] = [.blue, .teal, .indigo, .green, .purple, .orange, .gray]
+    let colors: [Color] = [.teal, .indigo, .green, .purple, .orange, .gray]
     
     var body: some View {
         VStack {

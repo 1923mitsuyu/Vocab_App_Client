@@ -42,7 +42,7 @@ struct StudyHomeView: View {
                 .font(.system(size: 23, weight: .semibold, design: .rounded))
                 .frame(width: 300, height: 60)
                 .foregroundStyle(.white)
-                .background(.cyan)
+                .background(.blue)
                 .cornerRadius(10)
                 .navigationDestination(isPresented: $isPlayStudyActive) {
                     PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor)

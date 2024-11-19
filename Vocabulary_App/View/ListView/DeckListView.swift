@@ -6,10 +6,10 @@ import SwiftUI
 struct DeckListView: View {
     
     @StateObject var viewModel = DeckWordViewModel()
-    @State var selectedDeck = -1
+    @State var selectedDeck = 0
     @State private var isCreateDeckActive = false
-    @State private var deckToEdit: UUID?
-    @State private var deckToDelete: UUID?
+    @State private var deckToEdit: Int?
+    @State private var deckToDelete: Int?
     @State private var newDeckName: String = ""
     @State private var showEditSheet: Bool = false
     @State private var isPickerPresented = false
@@ -92,16 +92,16 @@ struct DeckListView: View {
                     print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
                     
                 }
-//                .onChange(of: viewModel.decks) { oldValue, newValue in
-//                    print("The deck list changed!")
-//                    var counter = 0
-//                    for index in viewModel.decks.indices {
-//                        viewModel.decks[index].deckOrder = counter
-//                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
-//                        counter += 1
-//                    }
-//                    print("--------------------------------")
-//                }
+                .onChange(of: viewModel.decks) { oldValue, newValue in
+                    print("The deck list changed!")
+                    var counter = 0
+                    for index in viewModel.decks.indices {
+                        viewModel.decks[index].deckOrder = counter
+                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
+                        counter += 1
+                    }
+                    print("--------------------------------")
+                }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
                     ActionSheet(
@@ -183,7 +183,7 @@ struct DeckListView: View {
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .padding()
-                        .background(.cyan)
+                        .background(.blue)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                         
@@ -213,10 +213,10 @@ struct DeckListView: View {
 
 struct CreateDeckView_Previews: PreviewProvider {
     @State static var decks: [Deck] = [
-           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
-           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
-           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
-           Deck(name: "Sample Deck1", deckOrder: 6, userId: 1),
+        Deck(id: 0, name: "Sample Deck1", deckOrder: 6, userId: 1),
+        Deck(id: 1, name: "Sample Deck1", deckOrder: 6, userId: 1),
+        Deck(id: 2, name: "Sample Deck1", deckOrder: 6, userId: 1),
+        Deck(id: 3, name: "Sample Deck1", deckOrder: 6, userId: 1),
        ]
     
     static var previews: some View {

@@ -52,7 +52,7 @@ struct CreateDeckView: View {
                     }
                     else {
                         // Create a new deck
-                        let newDeck = Deck(name: deckName, deckOrder: viewModel.decks.count, userId: 1)
+                        let newDeck = Deck(id: 0, name: deckName, deckOrder: viewModel.decks.count, userId: 1)
                         
                         // Add the new deck to the deck array
                         viewModel.decks.append(newDeck)
@@ -63,7 +63,7 @@ struct CreateDeckView: View {
                         // Save the newly entered deck to the db (仮)
                         Task {
                             do {
-                                let newDeck = try await DeckService.shared.addDeck(name: deckName, words: [], deckOrder: viewModel.decks.count, userId: 1)
+                                let newDeck = try await DeckService.shared.addDeck(name: deckName, deckOrder: viewModel.decks.count, userId: 1)
                                 
                                 print("Deck added: \(newDeck.name)")
                                 
@@ -85,7 +85,7 @@ struct CreateDeckView: View {
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                 .frame(width:140, height:15)
                 .padding()
-                .background(deckName.isEmpty ? .gray : .cyan)
+                .background(deckName.isEmpty ? .gray : .blue)
                 .foregroundColor(.white)
                 .cornerRadius(8)
                 .padding(.top,20)

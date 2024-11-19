@@ -51,7 +51,6 @@ struct WordListView: View {
                 List {
                     ForEach(wordList) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
-                       
                         NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor)) {
                             Rectangle()
                                 .fill(color)
@@ -89,11 +88,9 @@ struct WordListView: View {
                 .toolbar(.hidden, for: .tabBar)
             }
             .onAppear {
-                // 最初にビューが表示された時にフィルタリングを実行
                 wordList = viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
             }
             .onChange(of: selectedDeck) { 
-                // selectedDeck が変更されたらフィルタリングを実行
                 wordList = viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
             }
             .background(selectedColor)
@@ -107,13 +104,13 @@ struct WordListView: View {
         
         for index in reorderedWords.indices {
             reorderedWords[index].wordOrder = index
+            print("Deck Name: \(reorderedWords[index].word), Word Order: \(reorderedWords[index].wordOrder)")
         }
-        
+    
         wordList = reorderedWords
     }
 }
 
-
 #Preview {
-    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), currentStep: .constant(0), selectedColor: .constant(.teal))
+    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), currentStep: .constant(0), selectedColor: .constant(.teal))
 }

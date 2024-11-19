@@ -7,7 +7,7 @@ struct NavigationParentView: View {
     @State private var example: String = ""
     @State private var translation: String = ""
     @State private var note: String = ""
-    @State private var deckId: UUID
+    @State private var deckId: Int
     @State private var deckName: String
     @Binding var selectedDeck: Int
     @Binding var selectedColor: Color
@@ -48,5 +48,5 @@ struct NavigationParentView: View {
 }
 
 #Preview {
-    NavigationParentView(deck: Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), selectedColor: .constant(.teal))
+    NavigationParentView(deck: Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), selectedColor: .constant(.teal))
 }

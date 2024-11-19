@@ -345,8 +345,8 @@ struct PlayStudyView: View {
                     }
                     .disabled(viewModel.writtenAnswer.isEmpty)
                     .padding()
-                    .foregroundStyle(.black)
-                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .white)
+                    .foregroundStyle(.white)
+                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .blue)
                     .cornerRadius(20)
                 }
                 
@@ -397,7 +397,7 @@ struct PlayStudyView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(selectedColor)
         }
-        .toolbar(.hidden, for: .tabBar)
+//        .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
     }
 

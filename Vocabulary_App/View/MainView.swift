@@ -3,7 +3,7 @@ import SwiftUI
 struct MainView: View {
     
     @State private var selectedDeck: Int = 0
-    @State private var selectedColor : Color = .blue
+    @State private var selectedColor : Color = .cyan
     
     init() {
         UITabBar.appearance().unselectedItemTintColor = UIColor.black

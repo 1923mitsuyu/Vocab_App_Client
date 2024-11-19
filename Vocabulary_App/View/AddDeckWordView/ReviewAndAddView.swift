@@ -8,7 +8,7 @@ struct ReviewAndAddView: View {
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
-    @Binding var deckId: UUID
+    @Binding var deckId: Int
     @Binding var deckName: String
     @Binding var selectedColor: Color
     
@@ -81,7 +81,7 @@ struct ReviewAndAddView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:100)
                     .padding()
-                    .background(.cyan)
+                    .background(.blue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     
@@ -113,7 +113,7 @@ struct ReviewAndAddView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:100)
                     .padding()
-                    .background(.cyan)
+                    .background(.blue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                 }
@@ -133,7 +133,7 @@ struct ReviewAndAddView: View {
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
-        deckId: .constant(UUID()),
+        deckId: .constant(1),
         deckName: .constant("Deck1"),
         selectedColor: .constant(.teal)
     )
