@@ -4,15 +4,13 @@ class Deck: Decodable, Identifiable, Equatable, ObservableObject {
     
     var id = UUID()
     var name: String
-    var words: [Word]
-    var listOrder: Int
+    var deckOrder: Int
     var userId: Int
     
-    init(id: UUID = UUID(), name: String, words: [Word] = [], listOrder: Int, userId: Int) {
+    init(id: UUID = UUID(), name: String, deckOrder: Int, userId: Int) {
         self.id = id
         self.name = name
-        self.words = words
-        self.listOrder = listOrder
+        self.deckOrder = deckOrder
         self.userId = userId
     }
     
@@ -28,40 +26,45 @@ struct Word: Decodable, Identifiable, Equatable {
     var definition: String
     var example: String
     var translation: String
+    var correctTimes : Int
     var wordOrder: Int
-    var deckId: Int
+    var deckId: UUID
     
-    init(id: UUID = UUID(), word: String, definition: String, example: String, translation: String, wordOrder: Int, deckId : Int) {
+    init(id: UUID = UUID(), word: String, definition: String, example: String, translation: String, correctTimes : Int, wordOrder: Int, deckId : UUID) {
         self.id = id
         self.word = word
         self.definition = definition
         self.example = example
         self.translation = translation
+        self.correctTimes = correctTimes
         self.wordOrder = wordOrder
         self.deckId = deckId
     }
 }
 
 let sampleDecks = [
-    Deck(name: "Deck1", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} diligently every single day to ensure that I am fully prepared for the challenging final exams scheduled at the end of this month, which will determine my overall performance for the year.", translation: "私は毎日一生懸命勉強しており、今月末に予定されている難しい期末試験に向けて十分な準備を整えています。この試験は、今年の全体的な成績を決定する重要なものです。", wordOrder:0, deckId: 1),
-        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 1),
-        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 1)], listOrder: 0, userId: 1),
-    Deck(name: "Deck2", words: [
-        Word(word: "Like", definition: "好きである", example: "I {{like}} to study.", translation: "私は勉強をするのが好きです。", wordOrder:0, deckId: 2),
-        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 2),
-        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 2)], listOrder: 0, userId: 1),
-    Deck(name: "Deck3", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をしています。", wordOrder:0, deckId: 3),
-        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 3),
-        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 3)], listOrder: 0, userId: 1),
-    Deck(name: "Deck4", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をしています。", wordOrder:0, deckId: 4),
-        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 4),
-        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 4)], listOrder: 0, userId: 1),
-    Deck(name: "Deck5", words: [
-        Word(word: "Study", definition: "勉強する", example: "I am {{studying}} for my exams.", translation: "私はテスト勉強をしています。", wordOrder:0, deckId: 5),
-        Word(word: "Run", definition: "走る", example: "I was {{running}} in the ground.", translation: "私はグラウンドを駆け回った。", wordOrder:1, deckId: 5),
-        Word(word: "Stop", definition: "止まる", example: "I did not {{stop}} myself from eating pancakes.", translation: "パンケーキを食べずにはいられなかった。", wordOrder:2, deckId: 5)], listOrder: 0, userId: 1),
+    Deck(id: UUID(), name: "Deck1", deckOrder: 0, userId: 1),
+    Deck(id: UUID(), name: "Deck2", deckOrder: 1, userId: 1),
+    Deck(id: UUID(), name: "Deck3", deckOrder: 2, userId: 1),
+    Deck(id: UUID(), name: "Deck4", deckOrder: 3, userId: 1),
+    Deck(id: UUID(), name: "Deck5", deckOrder: 4, userId: 1),
+    Deck(id: UUID(), name: "Deck6", deckOrder: 5, userId: 1),
+    Deck(id: UUID(), name: "Deck7", deckOrder: 6, userId: 1),
+    Deck(id: UUID(), name: "Deck8", deckOrder: 7, userId: 1),
+    Deck(id: UUID(), name: "Deck9", deckOrder: 8, userId: 1),
+    Deck(id: UUID(), name: "Deck10", deckOrder: 9, userId: 1),
+]
+
+let sampleWords = [
+    Word(id: UUID(), word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[0].id),
+    Word(id: UUID(), word: "Book", definition: "本", example: "I borrowed a {{book}} from the library.", translation: "図書館で本を借りました。", correctTimes: 3, wordOrder: 2, deckId: sampleDecks[0].id),
+    Word(id: UUID(), word: "Chair", definition: "椅子", example: "I need a comfortable {{chair}} for my desk.", translation: "机用に座り心地の良い椅子が必要です。", correctTimes: 2, wordOrder: 3, deckId: sampleDecks[1].id),
+    Word(id: UUID(), word: "Dog", definition: "犬", example: "My {{dog}} loves going for a walk every evening.", translation: "私の犬は毎晩散歩に行くのが大好きです。", correctTimes: 1, wordOrder: 1, deckId: sampleDecks[1].id),
+    Word(id: UUID(), word: "Egg", definition: "卵", example: "I had scrambled {{eggs}} for breakfast.", translation: "朝食にスクランブルエッグを食べました。", correctTimes: 0, wordOrder: 2, deckId: sampleDecks[2].id),
+    Word(id: UUID(), word: "Car", definition: "車", example: "I bought a new {{car}} last week.", translation: "先週、新しい車を買いました。", correctTimes: 0, wordOrder: 3, deckId: sampleDecks[2].id),
+    Word(id: UUID(), word: "Cat", definition: "猫", example: "My {{cat}} sleeps all day.", translation: "私の猫は一日中寝ています。", correctTimes: 2, wordOrder: 1, deckId: sampleDecks[3].id),
+    Word(id: UUID(), word: "Water", definition: "水", example: "Drink more {{water}} to stay hydrated.", translation: "水分補給のためにもっと水を飲みましょう。", correctTimes: 5, wordOrder: 2, deckId: sampleDecks[3].id),
+    Word(id: UUID(), word: "Watch", definition: "時計", example: "I wear a {{watch}} on my wrist.", translation: "私は腕に時計をつけています。", correctTimes: 4, wordOrder: 3, deckId: sampleDecks[4].id),
+    Word(id: UUID(), word: "Smartphone", definition: "スマホ", example: "{{Smartphones}} are ubiquitous nowadays.", translation: "現代ではスマートフォンがどこにでもあります。", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[4].id),
 ]
 
