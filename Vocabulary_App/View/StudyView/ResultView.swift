@@ -13,7 +13,8 @@ struct ResultView: View {
     @State private var modifiedExample : String = ""
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
-    
+    @Binding var selectedColor: Color
+
     // Helper function to get unique indices while preserving order
     func unique<T: Equatable>(array: [T]) -> [T] {
         var uniqueArray = [T]()
@@ -146,13 +147,13 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    StudyHomeView(viewModel: PlayStudyViewModel())
+                    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: $selectedColor)
                 }
             }
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
-        .background(.blue.gradient)
+        .background(selectedColor)
     }
 }
 
@@ -168,6 +169,7 @@ struct ResultView: View {
         viewModel2: DeckWordViewModel(),
         wordList: $sampleWordList,
         selectedDeck: $sampleSelectedDeck,
-        wrongWordIndex: $sampleWrongWordIndex
+        wrongWordIndex: $sampleWrongWordIndex,
+        selectedColor: .constant(.teal)
     )
 }

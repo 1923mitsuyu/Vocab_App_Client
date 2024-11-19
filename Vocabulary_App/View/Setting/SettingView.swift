@@ -4,9 +4,8 @@ struct SettingView: View {
     
     @State private var reminderIsOn = false
     @State private var isHovering = false
-    @State private var selectedColor: Color = .blue
-    
-    let colors: [Color] = [.red, .green, .blue, .yellow, .purple, .orange]
+    @Binding var selectedColor: Color
+    let colors: [Color] = [.blue, .teal, .indigo, .green, .purple, .orange, .gray]
     
     var body: some View {
         VStack {
@@ -22,7 +21,7 @@ struct SettingView: View {
                         ForEach(colors, id: \.self) { color in
                             Circle()
                                 .fill(color)
-                                .frame(width: 40, height: 40)
+                                .frame(width: 33, height: 40)
                                 .onTapGesture {
                                     selectedColor = color
                                 }
@@ -56,5 +55,5 @@ struct SettingView: View {
 }
 
 #Preview {
-    SettingView()
+    SettingView(selectedColor: .constant(.blue))
 }

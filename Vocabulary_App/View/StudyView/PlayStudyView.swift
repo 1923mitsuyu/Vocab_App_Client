@@ -21,7 +21,8 @@ struct PlayStudyView: View {
     @State private var isAlertActive : Bool = false
     @FocusState var focus: Bool
     @State private var correctAnswer : String = ""
-    
+    @Binding var selectedColor: Color
+
     var body: some View {
         
         NavigationStack {
@@ -209,7 +210,7 @@ struct PlayStudyView: View {
                             }
                             .padding(.bottom, 20)
                             .navigationDestination(isPresented: $isResuktViewActive) {
-                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor)
                             }
                             
                         }
@@ -289,7 +290,7 @@ struct PlayStudyView: View {
                              }
                              .padding(.bottom, 20)
                              .navigationDestination(isPresented: $isResuktViewActive) {
-                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex)
+                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor)
                              }
                              
                          }
@@ -394,7 +395,7 @@ struct PlayStudyView: View {
                 })
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.blue.gradient)
+            .background(selectedColor)
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
@@ -405,5 +406,5 @@ struct PlayStudyView: View {
     // Create a sample instance of PlayStudyViewModel with a sample deck index
     let sampleViewModel = PlayStudyViewModel()
     // Pass the sample ViewModel and selectedDeck binding to the preview
-    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0))
+    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal))
 }

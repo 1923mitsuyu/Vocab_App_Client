@@ -11,6 +11,7 @@ struct ExampleInputView: View {
     @State private var isReviewAndAddActive: Bool = false
     @State private var activeAlert: Bool = false
     @FocusState var isFocused: Bool
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -204,7 +205,7 @@ struct ExampleInputView: View {
                 }
                 .ignoresSafeArea(.keyboard, edges: .all)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.blue.gradient)
+                .background(selectedColor)
                 .navigationBarBackButtonHidden()
                 .onTapGesture {
                     isFocused = false
@@ -219,6 +220,6 @@ struct ExampleInputView: View {
     ExampleInputView(
         example: .constant("I like apples but I do not eat them often."),
         translation: .constant("りんごは好きだけど、あまり食べない。"),
-        currentStep: .constant(3)
+        currentStep: .constant(3), selectedColor: .constant(.teal)
     )
 }

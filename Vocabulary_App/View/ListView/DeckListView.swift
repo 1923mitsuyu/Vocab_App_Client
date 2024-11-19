@@ -15,6 +15,7 @@ struct DeckListView: View {
     @State private var isPickerPresented = false
     @State private var selectedSortOption = "Name"
     @State private var showDeleteAlert : Bool = false
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -33,7 +34,7 @@ struct DeckListView: View {
                     .font(.system(size: 25))
                     .foregroundStyle(.white)
                     .padding(.trailing, 10)
-                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck) }
+                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck, selectedColor: $selectedColor) }
                     
                     Button(action: {
                         isPickerPresented.toggle()
@@ -49,7 +50,7 @@ struct DeckListView: View {
              
                 List($viewModel.decks, editActions: .move) { $deck in
                     NavigationLink(
-                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck)
+                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor)
                             .onAppear {
                                 if let index = viewModel.decks.firstIndex(where: { $0.id == deck.id }) {
                                     selectedDeck = index
@@ -194,7 +195,7 @@ struct DeckListView: View {
                     .background(.blue.opacity(0.5))
                 }
             }
-            .background(.blue.gradient)
+            .background(selectedColor)
             .onAppear {
                 // Logics here to fetch all decks and words info
                 Task {
@@ -219,6 +220,6 @@ struct CreateDeckView_Previews: PreviewProvider {
        ]
     
     static var previews: some View {
-        DeckListView(viewModel: DeckWordViewModel())
+        DeckListView(viewModel: DeckWordViewModel(), selectedColor: .constant(.teal))
     }
 }

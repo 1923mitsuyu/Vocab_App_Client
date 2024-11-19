@@ -10,7 +10,7 @@ struct ProfileView: View {
             dateFormatter.dateFormat = "dd/MM/yyyy"
             return dateFormatter.date(from: "15/07/1998") ?? Date()
         }()
-    
+    @Binding var selectedColor: Color
     private var formattedDateOfBirth: String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy"
@@ -20,8 +20,6 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
-                
                 List {
                     Section(header: Text("Name")) {
                         Text(userName)
@@ -42,12 +40,12 @@ struct ProfileView: View {
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .scrollContentBackground(.hidden)
             }
-            .background(.blue.gradient)
+            .background(selectedColor)
         }
         .navigationTitle("Profile")
     }
 }
 
 #Preview {
-    ProfileView()
+    ProfileView(selectedColor: .constant(.teal))
 }

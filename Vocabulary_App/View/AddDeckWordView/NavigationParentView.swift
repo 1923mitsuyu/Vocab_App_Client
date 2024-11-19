@@ -7,17 +7,16 @@ struct NavigationParentView: View {
     @State private var example: String = ""
     @State private var translation: String = ""
     @State private var note: String = ""
-    @Binding var selectedDeck: Int
-    
-    // Directly initializing these state properties
     @State private var deckId: UUID
     @State private var deckName: String
-    
+    @Binding var selectedDeck: Int
+    @Binding var selectedColor: Color
     let deck: Deck
     
-    init(deck: Deck, selectedDeck: Binding<Int>) {
+    init(deck: Deck, selectedDeck: Binding<Int>,selectedColor: Binding<Color> ) {
         self.deck = deck
         self._selectedDeck = selectedDeck
+        self._selectedColor = selectedColor
         _deckId = State(initialValue: deck.id)
         _deckName = State(initialValue: deck.name)
     }
@@ -26,11 +25,11 @@ struct NavigationParentView: View {
         NavigationStack {
             VStack {
                 if currentStep == 0 {
-                    WordListView(viewModel: DeckWordViewModel(), deck: deck, selectedDeck: $selectedDeck, currentStep: $currentStep)
+                    WordListView(viewModel: DeckWordViewModel(), deck: deck, selectedDeck: $selectedDeck, currentStep: $currentStep, selectedColor: $selectedColor)
                 } else if currentStep == 1 {
-                    WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep)
+                    WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep, selectedColor: $selectedColor)
                 } else if currentStep == 2 {
-                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
+                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep, selectedColor: $selectedColor)
                 } else if currentStep == 3 {
                     ReviewAndAddView(
                         viewModel: DeckWordViewModel(), word: $word,
@@ -39,7 +38,8 @@ struct NavigationParentView: View {
                         translation: $translation,
                         currentStep: $currentStep,
                         deckId: $deckId,
-                        deckName: $deckName
+                        deckName: $deckName,
+                        selectedColor: $selectedColor
                     )
                 }
             }
@@ -48,5 +48,5 @@ struct NavigationParentView: View {
 }
 
 #Preview {
-    NavigationParentView(deck: Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1))
+    NavigationParentView(deck: Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), selectedColor: .constant(.teal))
 }

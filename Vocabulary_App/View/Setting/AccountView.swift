@@ -8,6 +8,7 @@ import SwiftUI
 struct AccountView: View {
     
     @State private var isLoginViewActive : Bool = false
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -19,11 +20,11 @@ struct AccountView: View {
                 
                 List {
                     Section {
-                        NavigationLink("Profile", destination: ProfileView())
+                        NavigationLink("Profile", destination: ProfileView(selectedColor: $selectedColor))
                     }
                     
                     Section {
-                        NavigationLink("Setting", destination: SettingView())
+                        NavigationLink("Setting", destination: SettingView(selectedColor: $selectedColor))
                     }
                 }
                 .scrollContentBackground(.hidden)
@@ -42,7 +43,7 @@ struct AccountView: View {
                 Spacer().frame(height:40)
             }
             .font(.system(size: 20, weight: .semibold, design: .rounded))
-            .background(.blue.gradient)
+            .background(selectedColor)
             .navigationDestination(isPresented: $isLoginViewActive) {
                 LoginView()
             }
@@ -51,5 +52,5 @@ struct AccountView: View {
 }
 
 #Preview {
-    AccountView()
+    AccountView(selectedColor: .constant(.red))
 }

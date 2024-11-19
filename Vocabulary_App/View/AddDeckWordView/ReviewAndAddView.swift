@@ -10,6 +10,7 @@ struct ReviewAndAddView: View {
     @Binding var currentStep: Int
     @Binding var deckId: UUID
     @Binding var deckName: String
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -119,7 +120,7 @@ struct ReviewAndAddView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.blue.gradient)
+            .background(selectedColor)
             .navigationBarBackButtonHidden()
         }
     }
@@ -133,7 +134,8 @@ struct ReviewAndAddView: View {
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
         deckId: .constant(UUID()),
-        deckName: .constant("Deck1")
+        deckName: .constant("Deck1"),
+        selectedColor: .constant(.teal)
     )
 }
 

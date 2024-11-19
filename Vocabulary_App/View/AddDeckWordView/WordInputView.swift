@@ -8,6 +8,7 @@ struct WordInputView: View {
     @Binding var currentStep: Int
     @State private var activeAlert: Bool = false
     @FocusState var isFocused: Bool
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -104,7 +105,7 @@ struct WordInputView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.blue.gradient)
+            .background(selectedColor)
             .onTapGesture {
                 isFocused = false
             }
@@ -152,6 +153,6 @@ struct TextFieldModifier: ViewModifier {
     WordInputView(
         viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
-        currentStep: .constant(1)
+        currentStep: .constant(1), selectedColor: .constant(.teal)
     )
 }

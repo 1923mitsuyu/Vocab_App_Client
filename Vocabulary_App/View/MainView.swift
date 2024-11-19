@@ -3,6 +3,7 @@ import SwiftUI
 struct MainView: View {
     
     @State private var selectedDeck: Int = 0
+    @State private var selectedColor : Color = .blue
     
     init() {
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
@@ -15,17 +16,17 @@ struct MainView: View {
     var body: some View {
         NavigationStack {
             TabView {
-                StudyHomeView()
+                StudyHomeView(selectedColor: $selectedColor)
                     .tabItem {
                         Label("Study", systemImage: "brain.head.profile")
                     }
                 
-                DeckListView(selectedDeck: selectedDeck)
+                DeckListView(selectedDeck: selectedDeck,selectedColor: $selectedColor)
                     .tabItem {
                         Label("Deck", systemImage: "list.dash")
                     }
                 
-                AccountView()
+                AccountView(selectedColor: $selectedColor)
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle")
                     }

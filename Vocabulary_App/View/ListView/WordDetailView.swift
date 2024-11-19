@@ -12,6 +12,7 @@ struct WordDetailView: View {
     @State private var showAlert: Bool = false
     @State private var modifiedExample : String = ""
     @State private var isWordListViewActive : Bool = false
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -157,11 +158,11 @@ struct WordDetailView: View {
               
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.blue.gradient)
+            .background(selectedColor)
         }
     }
 }
 
 #Preview {
-    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel())
+    WordDetailView(word: Word(word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal))
 }

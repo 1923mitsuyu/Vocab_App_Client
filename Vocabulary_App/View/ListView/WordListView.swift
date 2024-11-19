@@ -15,6 +15,7 @@ struct WordListView: View {
     @State private var selectedSortOption : String = "Name"
     @State private var isChecked = false
     @Binding var currentStep: Int
+    @Binding var selectedColor: Color
         
     var body: some View {
         NavigationStack {
@@ -51,7 +52,7 @@ struct WordListView: View {
                     ForEach(wordList) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
                        
-                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel())) {
+                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor)) {
                             Rectangle()
                                 .fill(color)
                                 .frame(width:20, height:20)
@@ -95,7 +96,7 @@ struct WordListView: View {
                 // selectedDeck が変更されたらフィルタリングを実行
                 wordList = viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
             }
-            .background(.blue.gradient)
+            .background(selectedColor)
         }
     }
         
@@ -114,5 +115,5 @@ struct WordListView: View {
 
 
 #Preview {
-    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), currentStep: .constant(0))
+    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), currentStep: .constant(0), selectedColor: .constant(.teal))
 }

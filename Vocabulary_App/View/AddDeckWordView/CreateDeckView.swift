@@ -7,6 +7,7 @@ struct CreateDeckView: View {
     @State private var activeAlert: Bool = false
     @State private var isDeckListActive: Bool = false
     @State var selectedDeck: Int
+    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -95,17 +96,17 @@ struct CreateDeckView: View {
                     )
                 }
                 .navigationDestination(isPresented: $isDeckListActive) {
-                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck)
+                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor)
                 }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.blue.gradient)
+            .background(selectedColor)
         }
     }
 }
 
 #Preview {
     let sampleViewModel = DeckWordViewModel()
-    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1)
+    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1, selectedColor: .constant(.teal))
 }
