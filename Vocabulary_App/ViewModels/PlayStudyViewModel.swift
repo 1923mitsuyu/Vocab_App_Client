@@ -59,7 +59,7 @@ class PlayStudyViewModel : ObservableObject {
             if let match = regex.firstMatch(in: example, options: [], range: range) {
                 // {{}}内の単語を抽出
                 if let range = Range(match.range(at: 1), in: example) {
-                    return String(example[range])  // 単語を返す
+                    return String(example[range]).lowercased()
                 }
             }
         } catch {
@@ -120,12 +120,15 @@ class PlayStudyViewModel : ObservableObject {
         for word in wordsList {
             print("Word: \(word.word), Example: \(word.example)")
         }
-                
+            
         // 正しい単語を取得するために extractWordFromBrackets を呼び出す
         guard let correctAnswer = extractWordFromBrackets(example: wordsList[randomNum].example) else {
             print("Error in getting a correct answer.")
             return false
         }
+        
+        print("Written Answer:\(trimmedAnswer)")
+        print("Correct Answer: \(correctAnswer)")
                 
         if trimmedAnswer == correctAnswer {
             return true
