@@ -15,6 +15,7 @@ struct LoginView: View {
     @State private var isMainViewActive = false
     @State private var isError : Bool = false
     @State private var errorMessage : String = "Sign Up Failed. Try Again."
+    @State private var userId : Int = 0
     @FocusState var focus: Bool
     
     enum ActiveAlert: Identifiable {
@@ -50,9 +51,6 @@ struct LoginView: View {
                                 .stroke(Color.gray, lineWidth: 2)
                         )
                         .padding(.horizontal)
-                        .onChange(of: password) {
-                            print("\(password) is entered")
-                        }
                         .focused(self.$focus)
                     
                     Spacer().frame(height: 30)
@@ -67,9 +65,6 @@ struct LoginView: View {
                                 .stroke(Color.gray, lineWidth: 2)
                         )
                         .padding(.horizontal)
-                        .onChange(of: password) {
-                            print("\(password) is entered")
-                        }
                         .focused(self.$focus)
                     
                     Spacer().frame(height:20)
@@ -99,18 +94,22 @@ struct LoginView: View {
                             activeAlert = .emptyFields
                         }
                         else {
-                            // Call a function to authenticate users
-                            print("Authenticate the user")
                             Task {
                                 do {
+                                    // Call a func to authenticate the users
                                     let user = try await AuthService.shared.login(username: userName, password: password)
-                                    print("User: \(user)")
+                                    
+                                    // Navigate to the Home page
                                     isMainViewActive = true
+                                    
+                                    // Assing the user id to pass the value to the home page
+                                    userId = user.id
+                                    
+                                    print("user id: \(userId)")
                                     
                                 } catch {
                                     isError = true
                                     print("Login failed with error: \(error.localizedDescription)")
-                                    // Set an appropriate error state or show an alert
                                 }
                             }
                         }
@@ -132,7 +131,7 @@ struct LoginView: View {
                             return Alert(title:Text("Invalid password"))
                         }
                     }
-                    .navigationDestination(isPresented: $isMainViewActive) { MainView() }
+                    .navigationDestination(isPresented: $isMainViewActive) { MainView(userId: $userId) }
                     
                     Spacer().frame(height: 30)
                     
