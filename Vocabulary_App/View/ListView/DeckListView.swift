@@ -6,6 +6,7 @@ import SwiftUI
 struct DeckListView: View {
     
     @StateObject var viewModel = DeckWordViewModel()
+    @State var fetchedDecks : [Deck] = []
     @State var selectedDeck = 0
     @State private var isCreateDeckActive = false
     @State private var deckToEdit: Int?
@@ -15,7 +16,9 @@ struct DeckListView: View {
     @State private var isPickerPresented = false
     @State private var selectedSortOption = "Name"
     @State private var showDeleteAlert : Bool = false
+    @State private var decksCount : Int = 0
     @Binding var selectedColor: Color
+    @Binding var userId : Int
     
     var body: some View {
         NavigationStack {
@@ -34,7 +37,7 @@ struct DeckListView: View {
                     .font(.system(size: 25))
                     .foregroundStyle(.white)
                     .padding(.trailing, 10)
-                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck, selectedColor: $selectedColor) }
+                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId, decksCount: $decksCount, fetchedDecks: $fetchedDecks) }
                     
                     Button(action: {
                         isPickerPresented.toggle()
@@ -48,13 +51,13 @@ struct DeckListView: View {
                 .padding(.bottom, -15)
                 .padding(.top, 20)
              
-                List($viewModel.decks, editActions: .move) { $deck in
+                List($fetchedDecks, editActions: .move) { $deck in
                     NavigationLink(
-                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor)
+                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks)
                             .onAppear {
-                                if let index = viewModel.decks.firstIndex(where: { $0.id == deck.id }) {
+                                if let index = fetchedDecks.firstIndex(where: { $0.id == deck.id }) {
                                     selectedDeck = index
-                                    print("selectedDeck is \(selectedDeck)")
+                                    print("1.SelectedDeck is \(selectedDeck)")
                                 }
                             }
                     ) {
@@ -84,7 +87,10 @@ struct DeckListView: View {
                     // Fetch all decks from the db
                     Task {
                         do {
-                            let decks = try await DeckService.shared.getDecks()
+                            fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
+                            decksCount = fetchedDecks.count
+                            print("How many decks: \(decksCount)")
+                                  
                         } catch {
                             print("Error in fetching all decks: \(error.localizedDescription)")
                         }
@@ -196,17 +202,6 @@ struct DeckListView: View {
                 }
             }
             .background(selectedColor)
-            .onAppear {
-                // Logics here to fetch all decks and words info
-                Task {
-                    do {
-                        let decks = try await DeckService.shared.getDecks()
-                    } catch {
-                        print("Error in fetching all decks: \(error.localizedDescription)")
-                    }
-                }
-               
-            }
         }
     }
 }
@@ -220,6 +215,6 @@ struct CreateDeckView_Previews: PreviewProvider {
        ]
     
     static var previews: some View {
-        DeckListView(viewModel: DeckWordViewModel(), selectedColor: .constant(.teal))
+        DeckListView(viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), userId: .constant(1))
     }
 }

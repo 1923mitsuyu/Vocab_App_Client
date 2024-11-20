@@ -8,6 +8,9 @@ struct CreateDeckView: View {
     @State private var isDeckListActive: Bool = false
     @State var selectedDeck: Int
     @Binding var selectedColor: Color
+    @Binding var userId : Int
+    @Binding var decksCount : Int
+    @Binding var fetchedDecks : [Deck]
     
     var body: some View {
         NavigationStack {
@@ -28,6 +31,9 @@ struct CreateDeckView: View {
                                 .stroke(Color.gray, lineWidth: 2)
                         )
                         .padding(.leading)
+                        .onChange(of:deckName) {
+                            print("The entered deck name:\(deckName)")
+                        }
                       
                     Button(action: {
                         deckName = ""
@@ -45,39 +51,31 @@ struct CreateDeckView: View {
                     if deckName.isEmpty {
                         activeAlert = true
                     }
-                    else if viewModel.checkIfNameExists(deckName) {
-                        print("It has already existed")
+                    else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
+                        print("\(deckName) has already existed.")
                         // Clear the text field
                         deckName = ""
                     }
                     else {
-                        // Create a new deck
-                        let newDeck = Deck(id: 0, name: deckName, deckOrder: viewModel.decks.count, userId: 1)
-                        
-                        // Add the new deck to the deck array
-                        viewModel.decks.append(newDeck)
-                        
-                        print("Deck added: \(newDeck.name)")
-                        print("Updated decks list: \(viewModel.decks.map { $0.name })")
-                        
-                        // Save the newly entered deck to the db (仮)
                         Task {
                             do {
-                                let newDeck = try await DeckService.shared.addDeck(name: deckName, deckOrder: viewModel.decks.count, userId: 1)
+                                print("Deck Counts:\(decksCount)")
+                                // Call a func to add a new deck
+                                _ = try await DeckService.shared.addDeck(name: deckName, deckOrder: decksCount + 1, userId: userId)
                                 
-                                print("Deck added: \(newDeck.name)")
+                                // Call a func to fetch decks to update the list view
+                                _ = try await DeckService.shared.getDecks(userId: userId)
+                                
+                                // Clear the text field
+                                deckName = ""
+                                // Jump back to the word list
+                                isDeckListActive = true
                                 
                             } catch {
                                 print("Error in saving the new deck: \(error.localizedDescription)")
                             }
                         }
-                                            
-                        // Clear the text field
-                        deckName = ""
-                        // Jump back to the word list
-                        isDeckListActive = true
                     }
-                
                 } label: {
                     Text("Save")
                 }
@@ -96,17 +94,26 @@ struct CreateDeckView: View {
                     )
                 }
                 .navigationDestination(isPresented: $isDeckListActive) {
-                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor)
+                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
                 }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(selectedColor)
+            .onAppear {
+                print("The user we are using is: \(userId)")
+            }
         }
     }
 }
 
 #Preview {
+    
+    let mockDecks = [
+            Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+            Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+        ]
+    
     let sampleViewModel = DeckWordViewModel()
-    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1, selectedColor: .constant(.teal))
+    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1, selectedColor: .constant(.teal), userId: .constant(1), decksCount: .constant(1), fetchedDecks: .constant(mockDecks))
 }

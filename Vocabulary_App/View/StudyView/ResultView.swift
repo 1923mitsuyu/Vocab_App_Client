@@ -14,7 +14,8 @@ struct ResultView: View {
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
     @Binding var selectedColor: Color
-
+    @Binding var userId : Int
+    
     // Helper function to get unique indices while preserving order
     func unique<T: Equatable>(array: [T]) -> [T] {
         var uniqueArray = [T]()
@@ -127,7 +128,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isMainViewActive) {
-                    MainView()
+                    MainView(userId: $userId)
                 }
                 
                 Spacer().frame(width: 30)
@@ -146,7 +147,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: $selectedColor)
+                    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: $selectedColor, userId: $userId)
                 }
             }
         }
@@ -158,7 +159,7 @@ struct ResultView: View {
 
 #Preview {
     @Previewable @State var sampleWordList: [Word] = [
-        Word(id: 0, word: "example", definition: "a representative form or pattern", example: "This is an example sentence.", translation: "例", correctTimes: 2, wordOrder: 1, deckId: 0)
+        Word(id: 0, word: "example", definition: "a representative form or pattern", example: "This is an example sentence.", translation: "例", correctTimes: 2, word_order: 1, deckId: 0)
     ]
     @Previewable @State var sampleWrongWordIndex: [Int] = [0]
     @Previewable @State var sampleSelectedDeck: Int = 2
@@ -169,6 +170,7 @@ struct ResultView: View {
         wordList: $sampleWordList,
         selectedDeck: $sampleSelectedDeck,
         wrongWordIndex: $sampleWrongWordIndex,
-        selectedColor: .constant(.teal)
+        selectedColor: .constant(.teal),
+        userId: .constant(1)
     )
 }

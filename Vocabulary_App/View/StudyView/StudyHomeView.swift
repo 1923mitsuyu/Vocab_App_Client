@@ -6,7 +6,8 @@ struct StudyHomeView: View {
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]
     @Binding var selectedColor: Color
-
+    @Binding var userId : Int
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -32,7 +33,7 @@ struct StudyHomeView: View {
                 .frame(width: 200, height: 100)
                 .clipped()
                 .cornerRadius(8)
-                .padding(.bottom,20)
+                .padding(.bottom,30)
                 
                 Button {
                     isPlayStudyActive = true
@@ -40,12 +41,12 @@ struct StudyHomeView: View {
                     Text("Start")
                 }
                 .font(.system(size: 23, weight: .semibold, design: .rounded))
-                .frame(width: 300, height: 60)
+                .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(.blue)
                 .cornerRadius(10)
                 .navigationDestination(isPresented: $isPlayStudyActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId)
                 }
                 Spacer()
             }
@@ -112,5 +113,5 @@ struct MonthlyCalendarView: View {
 
 
 #Preview {
-    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: .constant(.teal))
+    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: .constant(.teal), userId: .constant(1))
 }

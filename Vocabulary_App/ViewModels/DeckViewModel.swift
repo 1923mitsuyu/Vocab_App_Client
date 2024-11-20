@@ -24,8 +24,8 @@ class DeckWordViewModel : ObservableObject {
         return cleanedString
     }
  
-    func checkIfNameExists (_ name: String) -> Bool {
-        for deck in decks {
+    func checkIfNameExists (_ name: String, fetchedDecks: [Deck]) -> Bool {
+        for deck in fetchedDecks {
             if deck.name == name {
                 return true
             }

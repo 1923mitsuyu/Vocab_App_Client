@@ -8,9 +8,8 @@ struct ReviewAndAddView: View {
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
-    @Binding var deckId: Int
-    @Binding var deckName: String
     @Binding var selectedColor: Color
+    @Binding var selectedDeck : Int
     
     var body: some View {
         NavigationStack {
@@ -89,24 +88,24 @@ struct ReviewAndAddView: View {
                     
                     Button {
                         print("Add the word and example into.....")
-                        print("Adding the word into Deck ID \(deckId)")
-                        print("Adding the word into Deck Name \(deckName)")
-                        
-                        // Find the deck with the name and append the word info into the deck
-                        // viewModel.addWordToDeck(word, definition, example, translation, deckName)
-                        
+                        print("Adding the word into Deck ID \(selectedDeck)")
+                     
                         // Save the newly entered word to the db
                         Task {
                             do {
-                                let newDeck = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, wordOrder: 0, deckId: 0)
+                                // Call a func to add a new word (selectedDeck(=index)じゃなくて、decks[selectedDeck].id使う??
+                                _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, wordOrder: 0, deckId: selectedDeck)
+                                
+                                // Call a func to fetch words to update the word list 
+                                // _ = try await WordService.shared.getWords(deckId: <#Int#>)
+                                
+                                // Navigate to WordListView
+                                currentStep = 0
                             } catch {
                                 print("Error in saving the new word: \(error.localizedDescription)")
                             }
                         }
                         
-                        // Navigate to WordListView
-                        currentStep = 0
-                    
                     } label: {
                         Text("Save")
                     }
@@ -122,6 +121,9 @@ struct ReviewAndAddView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(selectedColor)
             .navigationBarBackButtonHidden()
+            .onAppear {
+                print("Selected Deck: \(selectedDeck)")
+            }
         }
     }
 }
@@ -133,9 +135,8 @@ struct ReviewAndAddView: View {
         example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
-        deckId: .constant(1),
-        deckName: .constant("Deck1"),
-        selectedColor: .constant(.teal)
+        selectedColor: .constant(.teal),
+        selectedDeck: .constant(1)
     )
 }
 

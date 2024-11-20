@@ -22,7 +22,8 @@ struct PlayStudyView: View {
     @FocusState var focus: Bool
     @State private var correctAnswer : String = ""
     @Binding var selectedColor: Color
-
+    @Binding var userId : Int
+    
     var body: some View {
         
         NavigationStack {
@@ -37,7 +38,7 @@ struct PlayStudyView: View {
                             .foregroundStyle(.white)
                     }
                     .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                        MainView()
+                        MainView(userId: $userId)
                     }
                     
                     Spacer().frame(width:20)
@@ -210,7 +211,7 @@ struct PlayStudyView: View {
                             }
                             .padding(.bottom, 20)
                             .navigationDestination(isPresented: $isResuktViewActive) {
-                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor)
+                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId)
                             }
                             
                         }
@@ -290,7 +291,7 @@ struct PlayStudyView: View {
                              }
                              .padding(.bottom, 20)
                              .navigationDestination(isPresented: $isResuktViewActive) {
-                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor)
+                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId)
                              }
                              
                          }
@@ -406,5 +407,5 @@ struct PlayStudyView: View {
     // Create a sample instance of PlayStudyViewModel with a sample deck index
     let sampleViewModel = PlayStudyViewModel()
     // Pass the sample ViewModel and selectedDeck binding to the preview
-    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal))
+    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1))
 }

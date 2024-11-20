@@ -15,9 +15,9 @@ class WordService {
     static let shared = WordService()
     private init() {}
     
-    func getWords() async throws -> [Word] {
+    func getWords(deckId: Int) async throws -> [Word] {
         
-        guard let url = URL(string: "http://localhost:3000/v1/fetch/words") else {
+        guard let url = URL(string: "http://localhost:3000/v1/fetchWords/\(deckId)") else {
             throw NetworkError.invalidURL
         }
         
@@ -28,12 +28,18 @@ class WordService {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
+        // Log raw server response for debugging
+        //if let rawResponse = String(data: data, encoding: .utf8) {
+            // print("Raw server response:", rawResponse)
+         //}
+        
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NetworkError.invalidResponse
         }
         
         do {
             let fetchWordsResponse = try JSONDecoder().decode(FetchWordsResponse.self, from: data)
+            
             return fetchWordsResponse.words
             
         } catch {

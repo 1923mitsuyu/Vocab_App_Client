@@ -8,14 +8,16 @@ struct WordListView: View {
     
     @ObservedObject var viewModel : DeckWordViewModel
     @ObservedObject var deck: Deck
-    @Binding var selectedDeck : Int
-    @State var wordList : [Word] = []
+    @State var fetchedWords : [Word] = []
     @State private var isWordInputActive : Bool  = false
     @State private var isPickerPresented : Bool = false
     @State private var selectedSortOption : String = "Name"
     @State private var isChecked = false
+    @State private var selectedDeckId : Int = 0
     @Binding var currentStep: Int
+    @Binding var selectedDeck : Int
     @Binding var selectedColor: Color
+    @Binding var fetchedDecks : [Deck]
         
     var body: some View {
         NavigationStack {
@@ -49,7 +51,7 @@ struct WordListView: View {
                 .padding(.bottom, -20)
              
                 List {
-                    ForEach(wordList) { word in
+                    ForEach(fetchedWords) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
                         NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor)) {
                             Rectangle()
@@ -71,15 +73,15 @@ struct WordListView: View {
                         buttons: [
                             .default(Text("By Name(Ascending)")) {
                                 selectedSortOption = "Name"
-                                wordList.sort { $0.word < $1.word }
+                                fetchedWords.sort { $0.word < $1.word }
                             },
                             .default(Text("By Name (Descending)")) {
                                 selectedSortOption = "Name"
-                                wordList.sort { $0.word > $1.word }
+                                fetchedWords.sort { $0.word > $1.word }
                             },
                             .default(Text("By Date Added")) {
                                 selectedSortOption = "Date Added"
-                                wordList.sort { $0.wordOrder < $1.wordOrder }
+                                fetchedWords.sort { $0.word_order < $1.word_order }
                             },
                             .cancel()
                         ]
@@ -88,29 +90,63 @@ struct WordListView: View {
                 .toolbar(.hidden, for: .tabBar)
             }
             .onAppear {
-                wordList = viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
+                print("Selelcted Deck: \(selectedDeck)")
+                
+                Task {
+                    do {
+                        print("Getting all words in the selected deck...")
+                        
+                        // Assign the selected deck id to a variable
+                        selectedDeckId = fetchedDecks[selectedDeck].id
+                        
+                        // Fetch all the words in the selected deck from the db
+                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+    
+                    } catch {
+                        print("Error in fetching words: \(error)")
+                    }
+                }
             }
-            .onChange(of: selectedDeck) { 
-                wordList = viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
+            .onChange(of: selectedDeck) {
+                Task {
+                    do {
+                        print("Getting all words in the selected deck!!!")
+                        // Assign the selected deck id to a variable
+                        selectedDeckId = fetchedDecks[selectedDeck].id
+                        
+                        // Fetch all the words in the selected deck from the db
+                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+                        
+                    } catch {
+                        print("Error in fetching words: \(error)")
+                    }
+                }
+                    
             }
             .background(selectedColor)
         }
     }
         
+        
 
     private func moveWords(indices: IndexSet, newOffset: Int) {
-        var reorderedWords = wordList
+        var reorderedWords = fetchedWords
         reorderedWords.move(fromOffsets: indices, toOffset: newOffset)
         
         for index in reorderedWords.indices {
-            reorderedWords[index].wordOrder = index
-            print("Deck Name: \(reorderedWords[index].word), Word Order: \(reorderedWords[index].wordOrder)")
+            reorderedWords[index].word_order = index
+            print("Deck Name: \(reorderedWords[index].word), Word Order: \(reorderedWords[index].word_order)")
         }
     
-        wordList = reorderedWords
+        fetchedWords = reorderedWords
     }
 }
 
 #Preview {
-    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), selectedDeck: .constant(1), currentStep: .constant(0), selectedColor: .constant(.teal))
+    let mockDecks = [
+            Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+            Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+        ]
+    
+    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), currentStep: .constant(0), selectedDeck: .constant(1), selectedColor: .constant(.teal), fetchedDecks: .constant(mockDecks))
 }
