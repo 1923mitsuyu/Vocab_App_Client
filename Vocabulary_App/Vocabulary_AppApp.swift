@@ -5,8 +5,7 @@ struct Vocabulary_AppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainView()
-//            LoginView()
+            LoginView()
         }
     }
 }

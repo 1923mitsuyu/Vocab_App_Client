@@ -164,5 +164,5 @@ struct WordDetailView: View {
 }
 
 #Preview {
-    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, wordOrder: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal))
+    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "{{Hello}}, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal))
 }

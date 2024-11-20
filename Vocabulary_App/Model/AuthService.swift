@@ -28,6 +28,7 @@ class AuthService {
         
         // Encode parameters as JSON data
         let parameters = ["username": username, "password": password]
+        
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         } catch {
@@ -45,8 +46,9 @@ class AuthService {
         // Decode the response data into a User object
         do {
             let signUpResponse = try JSONDecoder().decode(SignUpResponse.self, from: data)
-            print(signUpResponse.message)
-            print(signUpResponse.user)
+            
+            //print(signUpResponse.message)
+            //print(signUpResponse.user)
             
             let user = signUpResponse.user
             return user

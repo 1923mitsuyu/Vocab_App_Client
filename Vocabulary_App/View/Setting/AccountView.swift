@@ -3,7 +3,6 @@ import SwiftUI
 // TO DO LIST
 // 1. Users can change their profiles (usernames, passwords, age, purposes of learning English and their level of English etc)
 // 2. Users can recieve push notification (APNs（Apple Push Notification Service))
-// 3. Users can change the colour of the app (eg. red, green, blue, yellow)
 
 struct AccountView: View {
     
@@ -52,5 +51,5 @@ struct AccountView: View {
 }
 
 #Preview {
-    AccountView(selectedColor: .constant(.red))
+    AccountView(selectedColor: .constant(.teal))
 }
