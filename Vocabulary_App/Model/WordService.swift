@@ -42,9 +42,8 @@ class WordService {
             
             // Check if words is nil or empty
             if fetchWordsResponse.words?.isEmpty ?? true {
-                // wordsがnilまたは空の配列の場合
                 print("No words found for deck \(deckId).")
-                return []  // 空の配列を返す
+                return []
             } else {
                 return fetchWordsResponse.words!
             }

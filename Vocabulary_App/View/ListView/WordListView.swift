@@ -96,8 +96,10 @@ struct WordListView: View {
                     do {
                         initialSelectedDeck = selectedDeck
                         print("The index of the selected deck \(initialSelectedDeck)")
+                        
                         selectedDeckId = fetchedDecks[initialSelectedDeck].id
                         print("The id of the selected deck \(selectedDeckId)")
+                        
                         // Fetch all the words in the selected deck from the db
                         fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
                         

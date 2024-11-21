@@ -2,7 +2,7 @@ import Foundation
 
 struct FetchDecksResponse: Decodable {
     let message: String
-    let decks: [Deck]
+    let decks: [Deck]?
 }
 
 struct DeckResponse: Decodable {
@@ -28,9 +28,9 @@ class DeckService {
         let (data, response) = try await URLSession.shared.data(for: request)
     
         // Log raw server response for debugging
-        //if let rawResponse = String(data: data, encoding: .utf8) {
-             //print("Raw server response:", rawResponse)
-         //}
+        if let rawResponse = String(data: data, encoding: .utf8) {
+             print("Raw server response:", rawResponse)
+         }
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NetworkError.invalidResponse
@@ -38,8 +38,13 @@ class DeckService {
         
         do {
             let fetchDeckResponse = try JSONDecoder().decode(FetchDecksResponse.self, from: data)
-            return fetchDeckResponse.decks
-            
+          
+            if fetchDeckResponse.decks?.isEmpty ?? true {
+                print("No decks found for user \(userId).")
+                return []
+            } else {
+                return fetchDeckResponse.decks!
+            }
         } catch {
             throw NetworkError.decodingError
         }

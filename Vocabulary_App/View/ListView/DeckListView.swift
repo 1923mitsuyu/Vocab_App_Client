@@ -96,7 +96,7 @@ struct DeckListView: View {
                         do {
                             fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
                             decksCount = fetchedDecks.count
-                            print("How many decks: \(decksCount)")
+                            print("The number of decks in the deck: \(decksCount)")
                                   
                         } catch {
                             print("Error in fetching all decks: \(error.localizedDescription)")
@@ -207,6 +207,7 @@ struct DeckListView: View {
                 }
             }
             .background(selectedColor)
+            .toolbar(.visible, for: .tabBar)
             .navigationBarBackButtonHidden()
         }
     }

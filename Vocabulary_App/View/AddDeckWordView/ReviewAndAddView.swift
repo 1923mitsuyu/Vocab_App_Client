@@ -98,16 +98,20 @@ struct ReviewAndAddView: View {
                                 // Call a func to fetch words
                                 let words = try await WordService.shared.getWords(deckId: selectedDeckId)
                                 
-                                print("How many words? \(words.count)")
+                                print("The number of words in the deck: \(words.count)")
                                 
                                 // Call a func to add a new word
                                 _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
                                 
-                                // Call a func to fetch words to update the word list 
-//                                _ = try await WordService.shared.getWords(deckId: selectedDeckId)
+                                // Reset all the text fields once the process is complete 
+                                word = ""
+                                definition = ""
+                                example = ""
+                                translation = ""
                                 
                                 // Navigate to WordListView
                                 currentStep = 0
+                                
                             } catch {
                                 print("Error in saving the new word: \(error.localizedDescription)")
                             }
