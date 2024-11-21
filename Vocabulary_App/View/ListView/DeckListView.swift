@@ -19,6 +19,7 @@ struct DeckListView: View {
     @State private var decksCount : Int = 0
     @Binding var selectedColor: Color
     @Binding var userId : Int
+    @State private var initialSelectedDeck : Int = 0
     
     var body: some View {
         NavigationStack {
@@ -53,7 +54,7 @@ struct DeckListView: View {
              
                 List($fetchedDecks, editActions: .move) { $deck in
                     NavigationLink(
-                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks)
+                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
                             .onAppear {
                                 if let index = fetchedDecks.firstIndex(where: { $0.id == deck.id }) {
                                     selectedDeck = index
@@ -98,16 +99,16 @@ struct DeckListView: View {
                     print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
                     
                 }
-                .onChange(of: viewModel.decks) { oldValue, newValue in
-                    print("The deck list changed!")
-                    var counter = 0
-                    for index in viewModel.decks.indices {
-                        viewModel.decks[index].deckOrder = counter
-                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
-                        counter += 1
-                    }
-                    print("--------------------------------")
-                }
+//                .onChange(of: viewModel.decks) { oldValue, newValue in
+//                    print("The deck list changed!")
+//                    var counter = 0
+//                    for index in viewModel.decks.indices {
+//                        viewModel.decks[index].deckOrder = counter
+//                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
+//                        counter += 1
+//                    }
+//                    print("--------------------------------")
+//                }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
                     ActionSheet(
@@ -115,15 +116,15 @@ struct DeckListView: View {
                         buttons: [
                             .default(Text("By Name(Ascending)")) {
                                 selectedSortOption = "Name"
-                                viewModel.decks.sort { $0.name < $1.name }
+                                fetchedDecks.sort { $0.name < $1.name }
                             },
                             .default(Text("By Name (Descending)")) {
                                 selectedSortOption = "Name"
-                                viewModel.decks.sort { $0.name > $1.name }
+                                fetchedDecks.sort { $0.name > $1.name }
                             },
                             .default(Text("By Date Added")) {
                                 selectedSortOption = "Date Added"
-                                viewModel.decks.sort { $0.deckOrder < $1.deckOrder }
+                                fetchedDecks.sort { $0.deckOrder < $1.deckOrder }
                             },
                             .cancel()
                         ]
@@ -137,7 +138,7 @@ struct DeckListView: View {
                             
                             // Logics to remove the deck from db
                             if let deckToDelete = deckToDelete {
-                                if let index = viewModel.decks.firstIndex(where: { $0.id == deckToDelete }) {
+                                if let index = fetchedDecks.firstIndex(where: { $0.id == deckToDelete }) {
                                     viewModel.decks.remove(at: index)
                                 }
                             }

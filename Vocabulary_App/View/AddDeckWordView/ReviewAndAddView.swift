@@ -10,7 +10,8 @@ struct ReviewAndAddView: View {
     @Binding var currentStep: Int
     @Binding var selectedColor: Color
     @Binding var selectedDeck : Int
-    
+    @Binding var selectedDeckId : Int
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -88,16 +89,21 @@ struct ReviewAndAddView: View {
                     
                     Button {
                         print("Add the word and example into.....")
-                        print("Adding the word into Deck ID \(selectedDeck)")
+                        print("Adding the word into Deck ID \(selectedDeck)") // should be 15
                      
                         // Save the newly entered word to the db
                         Task {
                             do {
-                                // Call a func to add a new word (selectedDeck(=index)じゃなくて、decks[selectedDeck].id使う??
-                                _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, wordOrder: 0, deckId: selectedDeck)
+                                
+                                // Call a func to fetch words
+                                let words = try await WordService.shared.getWords(deckId: selectedDeckId)
+                                
+                                print("How many words? \(words.count)")
+                                // Call a func to add a new word
+                                _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
                                 
                                 // Call a func to fetch words to update the word list 
-                                // _ = try await WordService.shared.getWords(deckId: <#Int#>)
+//                                _ = try await WordService.shared.getWords(deckId: selectedDeckId)
                                 
                                 // Navigate to WordListView
                                 currentStep = 0
@@ -129,6 +135,7 @@ struct ReviewAndAddView: View {
 }
 
 #Preview {
+    
     ReviewAndAddView(
         viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
@@ -136,7 +143,8 @@ struct ReviewAndAddView: View {
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
         selectedColor: .constant(.teal),
-        selectedDeck: .constant(1)
+        selectedDeck: .constant(1),
+        selectedDeckId: .constant(1)
     )
 }
 

@@ -47,14 +47,15 @@ class WordService {
         }
     }
     
-    func addWords(word:String, definition: String, example: String, translation: String, wordOrder: Int, deckId: Int) async throws -> Word {
+    func addWords(word:String, definition: String, example: String, translation: String, correctTimes: Int, word_order: Int, deckId: Int) async throws -> Word {
         
-        guard let url = URL(string: "http://localhost:3000/v1/words") else {
+        guard let url = URL(string: "http://localhost:3000/v1/saveWord") else {
             throw NetworkError.invalidURL
         }
         
         // Set parameters
-        let parameters: [String: Any] = ["word": word, "definition": definition, "example": example, "translation": translation, "wordOrder": wordOrder, "deckId": deckId]
+        let parameters: [String: Any] = ["word": word, "definition": definition, "example": example, "translation": translation, "correctTimes": correctTimes, "word_order": word_order, "deckId": deckId]
+        print("Parameters being sent:", parameters)
         
         // Create a URL request
         var request = URLRequest(url: url)

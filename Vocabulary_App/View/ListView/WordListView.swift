@@ -8,16 +8,17 @@ struct WordListView: View {
     
     @ObservedObject var viewModel : DeckWordViewModel
     @ObservedObject var deck: Deck
-    @State var fetchedWords : [Word] = []
+    @Binding var fetchedWords : [Word]
     @State private var isWordInputActive : Bool  = false
     @State private var isPickerPresented : Bool = false
     @State private var selectedSortOption : String = "Name"
     @State private var isChecked = false
-    @State private var selectedDeckId : Int = 0
+    @Binding var selectedDeckId : Int
     @Binding var currentStep: Int
     @Binding var selectedDeck : Int
     @Binding var selectedColor: Color
     @Binding var fetchedDecks : [Deck]
+    @State var initialSelectedDeck : Int = 0
         
     var body: some View {
         NavigationStack {
@@ -90,45 +91,40 @@ struct WordListView: View {
                 .toolbar(.hidden, for: .tabBar)
             }
             .onAppear {
-                print("Selelcted Deck: \(selectedDeck)")
-                
+            
                 Task {
                     do {
-                        print("Getting all words in the selected deck...")
-                        
-                        // Assign the selected deck id to a variable
-                        selectedDeckId = fetchedDecks[selectedDeck].id
-                        
+                        initialSelectedDeck = selectedDeck
+                        print("The index of the selected deck \(initialSelectedDeck)")
+                        selectedDeckId = fetchedDecks[initialSelectedDeck].id
+                        print("The id of the selected deck \(selectedDeckId)")
                         // Fetch all the words in the selected deck from the db
-                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
-    
+                        fetchedWords = try await WordService.shared.getWords(deckId: fetchedDecks[initialSelectedDeck].id)
                     } catch {
                         print("Error in fetching words: \(error)")
                     }
                 }
             }
-            .onChange(of: selectedDeck) {
-                Task {
-                    do {
-                        print("Getting all words in the selected deck!!!")
-                        // Assign the selected deck id to a variable
-                        selectedDeckId = fetchedDecks[selectedDeck].id
-                        
-                        // Fetch all the words in the selected deck from the db
-                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
-                        
-                    } catch {
-                        print("Error in fetching words: \(error)")
-                    }
-                }
-                    
-            }
+//            .onChange(of: selectedDeck) {
+//                Task {
+//                    do {
+//                        print("Getting all words in the selected deck!!!")
+//                        // Assign the selected deck id to a variable
+//                        selectedDeckId = fetchedDecks[selectedDeck].id
+//                        
+//                        // Fetch all the words in the selected deck from the db
+//                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+//                        
+//                    } catch {
+//                        print("Error in fetching words: \(error)")
+//                    }
+//                }
+//                    
+//            }
             .background(selectedColor)
         }
     }
         
-        
-
     private func moveWords(indices: IndexSet, newOffset: Int) {
         var reorderedWords = fetchedWords
         reorderedWords.move(fromOffsets: indices, toOffset: newOffset)
@@ -147,6 +143,8 @@ struct WordListView: View {
             Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
             Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
         ]
+    let mockWords = [    Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+
     
-    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), currentStep: .constant(0), selectedDeck: .constant(1), selectedColor: .constant(.teal), fetchedDecks: .constant(mockDecks))
+    WordListView(viewModel: DeckWordViewModel(), deck:  Deck(id: 0, name: "Sample Deck1", deckOrder: 0, userId: 1), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(0), selectedDeck: .constant(1), selectedColor: .constant(.teal), fetchedDecks: .constant(mockDecks))
 }
