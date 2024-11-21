@@ -11,6 +11,7 @@ struct CreateDeckView: View {
     @Binding var userId : Int
     @Binding var decksCount : Int
     @Binding var fetchedDecks : [Deck]
+    @State var errorMessage : String = ""
     
     var body: some View {
         NavigationStack {
@@ -34,7 +35,7 @@ struct CreateDeckView: View {
                         .onChange(of:deckName) {
                             print("The entered deck name:\(deckName)")
                         }
-                    
+                       
                     Button(action: {
                         deckName = ""
                     }) {
@@ -44,17 +45,32 @@ struct CreateDeckView: View {
                     .padding(.top, 4)
                     .opacity(deckName.isEmpty ? 0 : 1)
                 }
-                
-                Spacer().frame(height: 20)
-                
+             
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.red)
+                        .padding(.vertical,10)
+                }else {
+                    Spacer().frame(height: 55)
+                }
+                                
                 Button {
                     if deckName.isEmpty {
                         activeAlert = true
                     }
                     else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
-                        print("\(deckName) has already existed.")
+                        
+                        // Assign an error message
+                        errorMessage = "\(deckName) has already existed."
+                        
                         // Clear the text field
                         deckName = ""
+                        
+                        // Remove the error message in 3 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            errorMessage = ""
+                        }
                     }
                     else {
                         Task {
@@ -72,6 +88,8 @@ struct CreateDeckView: View {
                                 isDeckListActive = true
                                 
                             } catch {
+                                // Assign an error message
+                                errorMessage = "The error. \(deckName) was not created."
                                 print("Error in saving the new deck: \(error.localizedDescription)")
                             }
                         }
@@ -86,7 +104,6 @@ struct CreateDeckView: View {
                 .background(deckName.isEmpty ? .gray : .blue)
                 .foregroundColor(.white)
                 .cornerRadius(8)
-                .padding(.top, 20)
                 .alert(isPresented: $activeAlert) {
                     Alert(
                         title: Text("Error"),
