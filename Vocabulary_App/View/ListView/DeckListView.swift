@@ -29,16 +29,22 @@ struct DeckListView: View {
                         .font(.system(size: 30, weight: .semibold, design: .rounded))
                         .frame(maxWidth:.infinity, alignment: .leading)
                         .padding(.leading)
-                      
-                    Button(action: {
-                        isCreateDeckActive = true
-                    }) {
-                        Image(systemName: "plus")
-                    }
-                    .font(.system(size: 25))
-                    .foregroundStyle(.white)
-                    .padding(.trailing, 10)
-                    .navigationDestination(isPresented: $isCreateDeckActive) { CreateDeckView(viewModel: viewModel, selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId, decksCount: $decksCount, fetchedDecks: $fetchedDecks) }
+                                          
+                    NavigationLink {
+                        CreateDeckView(
+                            viewModel: viewModel,
+                            selectedDeck: selectedDeck,
+                            selectedColor: $selectedColor,
+                            userId: $userId,
+                            decksCount: $decksCount,
+                            fetchedDecks: $fetchedDecks
+                        )
+                       } label: {
+                           Image(systemName: "plus")
+                               .font(.system(size: 25))
+                               .foregroundStyle(.white)
+                               .padding(.trailing, 10)
+                       }
                     
                     Button(action: {
                         isPickerPresented.toggle()
@@ -203,6 +209,7 @@ struct DeckListView: View {
                 }
             }
             .background(selectedColor)
+            .toolbar(.visible, for: .tabBar)
         }
     }
 }

@@ -18,7 +18,7 @@ struct CreateDeckView: View {
                 Text("Create a new deck!")
                     .font(.system(size: 25, weight: .semibold, design: .rounded))
                     .padding(.vertical,30)
-                    
+                
                 HStack {
                     TextField("Deck name here", text: $deckName)
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -30,11 +30,11 @@ struct CreateDeckView: View {
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.gray, lineWidth: 2)
                         )
-                        .padding(.leading)
+                        .padding(.leading,30)
                         .onChange(of:deckName) {
                             print("The entered deck name:\(deckName)")
                         }
-                      
+                    
                     Button(action: {
                         deckName = ""
                     }) {
@@ -47,73 +47,55 @@ struct CreateDeckView: View {
                 
                 Spacer().frame(height: 20)
                 
-                HStack {
-                    Button {
-                       isDeckListActive = true
-                    } label: {
-                        Text("Previous")
+                Button {
+                    if deckName.isEmpty {
+                        activeAlert = true
                     }
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .frame(width:100)
-                    .padding()
-                    .background(.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    Spacer().frame(width: 30)
-                    
-                    Button {
-                        if deckName.isEmpty {
-                            activeAlert = true
-                        }
-                        else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
-                            print("\(deckName) has already existed.")
-                            // Clear the text field
-                            deckName = ""
-                        }
-                        else {
-                            Task {
-                                do {
-                                    print("Deck Counts:\(decksCount)")
-                                    // Call a func to add a new deck
-                                    _ = try await DeckService.shared.addDeck(name: deckName, deckOrder: decksCount + 1, userId: userId)
-                                    
-                                    // Call a func to fetch decks to update the list view
-                                    _ = try await DeckService.shared.getDecks(userId: userId)
-                                    
-                                    // Clear the text field
-                                    deckName = ""
-                                    // Jump back to the word list
-                                    isDeckListActive = true
-                                    
-                                } catch {
-                                    print("Error in saving the new deck: \(error.localizedDescription)")
-                                }
+                    else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
+                        print("\(deckName) has already existed.")
+                        // Clear the text field
+                        deckName = ""
+                    }
+                    else {
+                        Task {
+                            do {
+                                print("Deck Counts:\(decksCount)")
+                                // Call a func to add a new deck
+                                _ = try await DeckService.shared.addDeck(name: deckName, deckOrder: decksCount + 1, userId: userId)
+                                
+                                // Call a func to fetch decks to update the list view
+                                _ = try await DeckService.shared.getDecks(userId: userId)
+                                
+                                // Clear the text field
+                                deckName = ""
+                                // Jump back to the word list
+                                isDeckListActive = true
+                                
+                            } catch {
+                                print("Error in saving the new deck: \(error.localizedDescription)")
                             }
                         }
-                    } label: {
-                        Text("Save")
                     }
-                    .disabled(deckName.isEmpty)
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .frame(width:100)
-                    .padding()
-                    .background(deckName.isEmpty ? .gray : .blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .alert(isPresented: $activeAlert) {
-                        Alert(
-                            title: Text("Error"),
-                            message: Text("Please fill in the blank")
-                        )
-                    }
-                    .navigationBarBackButtonHidden()
-                    .navigationDestination(isPresented: $isDeckListActive) {
-                        DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
-                    }
+                } label: {
+                    Text("Save")
                 }
-                .padding(.top,20)
-                .padding(.trailing,15)
+                .disabled(deckName.isEmpty)
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .frame(width:100)
+                .padding()
+                .background(deckName.isEmpty ? .gray : .blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .padding(.top, 20)
+                .alert(isPresented: $activeAlert) {
+                    Alert(
+                        title: Text("Error"),
+                        message: Text("Please fill in the blank")
+                    )
+                }
+                .navigationDestination(isPresented: $isDeckListActive) {
+                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
+                }
                 
                 Spacer()
             }
