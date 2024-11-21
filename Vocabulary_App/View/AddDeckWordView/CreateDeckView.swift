@@ -47,62 +47,78 @@ struct CreateDeckView: View {
                 
                 Spacer().frame(height: 20)
                 
-                Button {
-                    if deckName.isEmpty {
-                        activeAlert = true
+                HStack {
+                    Button {
+                       isDeckListActive = true
+                    } label: {
+                        Text("Previous")
                     }
-                    else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
-                        print("\(deckName) has already existed.")
-                        // Clear the text field
-                        deckName = ""
-                    }
-                    else {
-                        Task {
-                            do {
-                                print("Deck Counts:\(decksCount)")
-                                // Call a func to add a new deck
-                                _ = try await DeckService.shared.addDeck(name: deckName, deckOrder: decksCount + 1, userId: userId)
-                                
-                                // Call a func to fetch decks to update the list view
-                                _ = try await DeckService.shared.getDecks(userId: userId)
-                                
-                                // Clear the text field
-                                deckName = ""
-                                // Jump back to the word list
-                                isDeckListActive = true
-                                
-                            } catch {
-                                print("Error in saving the new deck: \(error.localizedDescription)")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:100)
+                    .padding()
+                    .background(.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    
+                    Spacer().frame(width: 30)
+                    
+                    Button {
+                        if deckName.isEmpty {
+                            activeAlert = true
+                        }
+                        else if viewModel.checkIfNameExists(deckName, fetchedDecks: fetchedDecks) {
+                            print("\(deckName) has already existed.")
+                            // Clear the text field
+                            deckName = ""
+                        }
+                        else {
+                            Task {
+                                do {
+                                    print("Deck Counts:\(decksCount)")
+                                    // Call a func to add a new deck
+                                    _ = try await DeckService.shared.addDeck(name: deckName, deckOrder: decksCount + 1, userId: userId)
+                                    
+                                    // Call a func to fetch decks to update the list view
+                                    _ = try await DeckService.shared.getDecks(userId: userId)
+                                    
+                                    // Clear the text field
+                                    deckName = ""
+                                    // Jump back to the word list
+                                    isDeckListActive = true
+                                    
+                                } catch {
+                                    print("Error in saving the new deck: \(error.localizedDescription)")
+                                }
                             }
                         }
+                    } label: {
+                        Text("Save")
                     }
-                } label: {
-                    Text("Save")
+                    .disabled(deckName.isEmpty)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .frame(width:100)
+                    .padding()
+                    .background(deckName.isEmpty ? .gray : .blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .alert(isPresented: $activeAlert) {
+                        Alert(
+                            title: Text("Error"),
+                            message: Text("Please fill in the blank")
+                        )
+                    }
+                    .navigationBarBackButtonHidden()
+                    .navigationDestination(isPresented: $isDeckListActive) {
+                        DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
+                    }
                 }
-                .disabled(deckName.isEmpty)
-                .font(.system(size: 20, weight: .semibold, design: .rounded))
-                .frame(width:140, height:15)
-                .padding()
-                .background(deckName.isEmpty ? .gray : .blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
                 .padding(.top,20)
-                .alert(isPresented: $activeAlert) {
-                    Alert(
-                        title: Text("Error"),
-                        message: Text("Please fill in the blank")
-                    )
-                }
-                .navigationDestination(isPresented: $isDeckListActive) {
-                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
-                }
+                .padding(.trailing,15)
+                
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(selectedColor)
-            .onAppear {
-                print("The user we are using is: \(userId)")
-            }
         }
     }
 }
