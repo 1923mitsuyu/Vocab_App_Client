@@ -99,6 +99,7 @@ struct ReviewAndAddView: View {
                                 let words = try await WordService.shared.getWords(deckId: selectedDeckId)
                                 
                                 print("How many words? \(words.count)")
+                                
                                 // Call a func to add a new word
                                 _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
                                 

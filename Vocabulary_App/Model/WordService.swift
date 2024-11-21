@@ -2,7 +2,7 @@ import Foundation
 
 struct FetchWordsResponse: Decodable {
     let message: String
-    let words: [Word]
+    var words: [Word]?
 }
 
 struct WordResponse: Decodable {
@@ -29,9 +29,9 @@ class WordService {
         let (data, response) = try await URLSession.shared.data(for: request)
         
         // Log raw server response for debugging
-        //if let rawResponse = String(data: data, encoding: .utf8) {
-            // print("Raw server response:", rawResponse)
-         //}
+        if let rawResponse = String(data: data, encoding: .utf8) {
+             print("Raw server response:", rawResponse)
+         }
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NetworkError.invalidResponse
@@ -40,7 +40,14 @@ class WordService {
         do {
             let fetchWordsResponse = try JSONDecoder().decode(FetchWordsResponse.self, from: data)
             
-            return fetchWordsResponse.words
+            // Check if words is nil or empty
+            if fetchWordsResponse.words?.isEmpty ?? true {
+                // wordsがnilまたは空の配列の場合
+                print("No words found for deck \(deckId).")
+                return []  // 空の配列を返す
+            } else {
+                return fetchWordsResponse.words!
+            }
             
         } catch {
             throw NetworkError.decodingError

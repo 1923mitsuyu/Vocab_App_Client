@@ -102,8 +102,6 @@ struct DeckListView: View {
                             print("Error in fetching all decks: \(error.localizedDescription)")
                         }
                     }
-                    print("Decks on DeckListView appear: \(viewModel.decks.map { $0.name })")
-                    
                 }
 //                .onChange(of: viewModel.decks) { oldValue, newValue in
 //                    print("The deck list changed!")
@@ -209,7 +207,7 @@ struct DeckListView: View {
                 }
             }
             .background(selectedColor)
-            .toolbar(.visible, for: .tabBar)
+            .navigationBarBackButtonHidden()
         }
     }
 }
