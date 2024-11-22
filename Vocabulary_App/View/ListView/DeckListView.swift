@@ -143,10 +143,23 @@ struct DeckListView: View {
                         message: Text("Are you sure you want to delete this deck?"),
                         primaryButton: .destructive(Text("Delete")) {
                             
-                            // Logics to remove the deck from db
-                            if let deckToDelete = deckToDelete {
-                                if let index = fetchedDecks.firstIndex(where: { $0.id == deckToDelete }) {
-                                    viewModel.decks.remove(at: index)
+                            guard let deckToDelete = deckToDelete else {
+                                print("Error: deckToEdit is nil")
+                                return
+                            }
+                            
+                            Task {
+                                do {
+                                    _ = try await DeckService.shared.deleteDeck(id: deckToDelete, userId: userId)
+                                    
+                                    // Reset the word
+                                    fetchedDecks = []
+                                    
+                                    // Fetch all the words in the selected deck from the db
+                                    fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
+                                    
+                                } catch {
+                                    print("Error in deleting the deck: \(error.localizedDescription)")
                                 }
                             }
                         },
@@ -198,7 +211,6 @@ struct DeckListView: View {
                         }
                         
                         Button {
-                            
                             guard let deckToEdit = deckToEdit else {
                                 print("Error: deckToEdit is nil")
                                 return

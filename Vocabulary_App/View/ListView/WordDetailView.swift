@@ -1,5 +1,10 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. Keyboardが背景がTapされたら消えるようにする
+// 2. TextFieldの大きさが文字列の長さによって変わるようにする
+// 3. TextFieldの右端に消去マークを追加する
+
 struct WordDetailView: View {
 
     let word: Word
@@ -89,7 +94,7 @@ struct WordDetailView: View {
                         }
                         // Remove the gap at the bottom of the list
                         .frame(height:430)
-                
+                     
                         Button {
                             // Logics here to edit the word info from the db
                             Task {
@@ -106,6 +111,8 @@ struct WordDetailView: View {
                                     
                                     // Dismiss the sheet
                                     showEditSheet = false
+                                    
+                                    modifiedExample = viewModel.removeBrackets(newExample)
                                     
                                 } catch {
                                     print("Error in editing a word: \(error.localizedDescription)")
@@ -157,24 +164,24 @@ struct WordDetailView: View {
                         primaryButton: .destructive(Text("Delete")) {
                             print("Word info deleted")
                             // Logics here to delete the word
-//                            Task {
-//                                do {
-//                                    let removedWord = WordService.shared.deleteWord(word: word)
-//                                } catch {
-//                                    print("Error in deleting the word info: \(error.localizedDescription)")
-//                                }
-//                            }
-                            // Logics to refresh the word list
-//                            Task {
-//                                do {
-//                                    let newList = WordService.shared.getWordList()
-//                                } catch {
-//                                    
-//                                }
-//                            }
-                            
-                            // Logics here to jump to the word view if deletion succeeds
-                            isWordListViewActive = true
+                            Task {
+                                do {
+                                    // 1を本当のIDに修正
+                                    _ = try await WordService.shared.deleteWord(wordId: word.id, userId: 1)
+                                    
+                                    // Reset the word
+                                    fetchedWords = []
+                                    
+                                    // Fetch all the words in the selected deck from the db
+                                    fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+                                    
+                                    // Logics here to jump to the word view if deletion succeeds
+                                    isWordListViewActive = true
+                                    
+                                } catch {
+                                    print("Error in deleting the word: \(error.localizedDescription)")
+                                }
+                            }
                         },
                         secondaryButton: .cancel()
                     )
@@ -190,7 +197,7 @@ struct WordDetailView: View {
 
 #Preview {
     
-    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べますが、今朝は食べませんでした。違うものを食べたかったんです。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
     
     WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1))
 }

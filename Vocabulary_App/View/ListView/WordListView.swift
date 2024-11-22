@@ -91,7 +91,6 @@ struct WordListView: View {
                 .toolbar(.hidden, for: .tabBar)
             }
             .onAppear {
-            
                 Task {
                     do {
                         initialSelectedDeck = selectedDeck
@@ -110,22 +109,6 @@ struct WordListView: View {
                     }
                 }
             }
-//            .onChange(of: selectedDeck) {
-//                Task {
-//                    do {
-//                        print("Getting all words in the selected deck!!!")
-//                        // Assign the selected deck id to a variable
-//                        selectedDeckId = fetchedDecks[selectedDeck].id
-//                        
-//                        // Fetch all the words in the selected deck from the db
-//                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
-//                        
-//                    } catch {
-//                        print("Error in fetching words: \(error)")
-//                    }
-//                }
-//                    
-//            }
             .background(selectedColor)
         }
     }

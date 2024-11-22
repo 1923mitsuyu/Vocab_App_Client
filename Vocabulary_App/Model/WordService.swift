@@ -14,6 +14,10 @@ struct EditWordResponse: Decodable {
     let message: String
 }
 
+struct DeleteWordResponse: Decodable {
+    let message: String
+}
+
 class WordService {
     
     static let shared = WordService()
@@ -34,8 +38,8 @@ class WordService {
         
         // Log raw server response for debugging
         if let rawResponse = String(data: data, encoding: .utf8) {
-             print("Raw server response:", rawResponse)
-         }
+            print("Raw server response:", rawResponse)
+        }
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NetworkError.invalidResponse
@@ -100,7 +104,7 @@ class WordService {
         } catch {
             throw NetworkError.decodingError
         }
-    
+        
     }
     
     func editWord(wordId: Int, word: String, definition: String, example: String, translation: String) async throws {
@@ -150,11 +154,35 @@ class WordService {
         }
         
     }
-        
-//
-//    func deleteWord(word:String, definition: String, example: String, translation: String, wordOrder: Int, deckId: Int) async throws -> Word {
-//        return
-//    }
     
+    func deleteWord(wordId: Int, userId: Int) async throws -> Bool {
+        // Correct URL to use wordId for deletion
+        guard let url = URL(string: "http://localhost:3000/v1/removeWord/\(wordId)") else {
+            throw URLError(.badURL)
+        }
+        
+        // Create the request
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Include the userId in the body or headers if required for authorization
+        let body = ["userId": userId]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        // Execute the request
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check the response status
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+        
+        // Optionally parse the response if needed (assuming it returns a success message)
+        // If the response body contains a success message, you can decode that, or just return success based on status code
+        let success = (httpResponse.statusCode == 200 || httpResponse.statusCode == 204)
+        
+        return success
+    }
 }
 

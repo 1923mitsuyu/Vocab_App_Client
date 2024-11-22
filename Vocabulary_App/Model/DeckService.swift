@@ -146,7 +146,7 @@ class DeckService {
 
     func deleteDeck(id: Int, userId: Int) async throws -> Bool {
        
-        guard let url = URL(string: "https://yourapi.com/decks/\(id)") else {
+        guard let url = URL(string: "http://localhost:3000/v1/removeDeck/\(id)") else {
             throw URLError(.badURL)
         }
         

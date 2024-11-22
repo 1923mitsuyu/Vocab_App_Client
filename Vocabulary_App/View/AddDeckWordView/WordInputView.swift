@@ -7,9 +7,9 @@ struct WordInputView: View {
     @Binding var definition: String
     @Binding var currentStep: Int
     @State private var activeAlert: Bool = false
-    @FocusState var isFocused: Bool
     @Binding var selectedColor: Color
     @Binding var initialSelectedDeck : Int
+    @FocusState var isFocused: Bool
     
     var body: some View {
         NavigationStack {
