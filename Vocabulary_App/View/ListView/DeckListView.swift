@@ -225,6 +225,7 @@ struct DeckListView: View {
                                         // Fetch the decks to update the list
                                         fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
                           
+                                        // Dismiss the sheet
                                         showEditSheet = false
                                     } catch {
                                         errorMessage = "Error in editing the deck. Try again later."

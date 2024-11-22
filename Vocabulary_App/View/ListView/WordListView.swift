@@ -54,7 +54,7 @@ struct WordListView: View {
                 List {
                     ForEach(fetchedWords) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
-                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor)) {
+                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor, fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId)) {
                             Rectangle()
                                 .fill(color)
                                 .frame(width:20, height:20)
