@@ -29,7 +29,7 @@ class DeckService {
     
         // Log raw server response for debugging
         if let rawResponse = String(data: data, encoding: .utf8) {
-             print("Raw server response:", rawResponse)
+             print("Raw server response for fetching decks:", rawResponse)
          }
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -77,7 +77,7 @@ class DeckService {
         
         // Log raw server response for debugging
          if let rawResponse = String(data: data, encoding: .utf8) {
-             print("Raw server response:", rawResponse)
+             print("Raw server response for adding a new deck:", rawResponse)
          }
         
         // Check for a valid HTTP response
@@ -98,13 +98,14 @@ class DeckService {
         
     }
     
-    func editDeck(name: String, words: [String], deckOrder: Int, userId: Int) async throws {
+    func editDeck(deckId: Int, name: String) async throws {
         guard let url = URL(string: "http://localhost:3000/v1/modifyDeck") else {
             throw NetworkError.invalidURL
         }
         
         // Set parameters
-        let parameters: [String: Any] = ["name": name, "words": words, "deckOrder": deckOrder, "userId": userId]
+        let parameters: [String: Any] = ["deckId": deckId, "name": name]
+        print("Parameters being sent:", parameters)
         
         // Create a URL request
         var request = URLRequest(url: url)
@@ -120,6 +121,11 @@ class DeckService {
         
         // Perform network request using async/await
         let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Log raw server response for debugging
+         if let rawResponse = String(data: data, encoding: .utf8) {
+             print("Raw server response for editing:", rawResponse)
+         }
         
         // Check for a valid HTTP response
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -138,11 +144,34 @@ class DeckService {
         
     }
 
-//
-//    func deleteDeck(name: String, words: [String], listOrder: Int, userId: Int) async throws -> Deck {
-//
-//    }
-    
+    func deleteDeck(id: Int, userId: Int) async throws -> Bool {
+       
+        guard let url = URL(string: "https://yourapi.com/decks/\(id)") else {
+            throw URLError(.badURL)
+        }
+        
+        // Create the request
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Include the userId in the body or headers if required for authorization
+        let body = ["userId": userId]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        // Execute the request
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check the response status
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+        
+        // Optionally parse the response
+        let isDeleted = try JSONDecoder().decode(Bool.self, from: data)
+        
+        return isDeleted
+    }
 }
         
 

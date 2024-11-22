@@ -17,6 +17,7 @@ struct DeckListView: View {
     @State private var selectedSortOption = "Name"
     @State private var showDeleteAlert : Bool = false
     @State private var decksCount : Int = 0
+    @State private var errorMessage : String = ""
     @Binding var selectedColor: Color
     @Binding var userId : Int
     @State private var initialSelectedDeck : Int = 0
@@ -58,7 +59,7 @@ struct DeckListView: View {
                 .padding(.bottom, -15)
                 .padding(.top, 20)
              
-                List($fetchedDecks, editActions: .move) { $deck in
+                List($fetchedDecks,editActions: .move) { $deck in
                     NavigationLink(
                         destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
                             .onAppear {
@@ -84,6 +85,8 @@ struct DeckListView: View {
                             deckToEdit = deck.id
                             newDeckName = deck.name
                             showEditSheet = true
+                            // The deck id and name to edit: Optional(15) and Deck1
+                            print("The deck id and name to edit: \(String(describing: deckToEdit)) and \(newDeckName)")
                         }) {
                             Label("Edit", systemImage: "pencil")
                         }
@@ -103,16 +106,16 @@ struct DeckListView: View {
                         }
                     }
                 }
-//                .onChange(of: viewModel.decks) { oldValue, newValue in
-//                    print("The deck list changed!")
-//                    var counter = 0
-//                    for index in viewModel.decks.indices {
-//                        viewModel.decks[index].deckOrder = counter
-//                        print("Deck Name: \(viewModel.decks[index].name), List Order: \(viewModel.decks[index].deckOrder)")
-//                        counter += 1
-//                    }
-//                    print("--------------------------------")
-//                }
+                .onChange(of: fetchedDecks) { oldValue, newValue in
+                    print("The deck list changed!")
+                    var counter = 0
+                    for index in fetchedDecks.indices {
+                        fetchedDecks[index].deckOrder = counter
+                        print("Deck Name: \(fetchedDecks[index].name), List Order: \(fetchedDecks[index].deckOrder)")
+                        counter += 1
+                    }
+                    print("--------------------------------")
+                }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
                     ActionSheet(
@@ -164,35 +167,81 @@ struct DeckListView: View {
                             .background(Color.white)
                             .cornerRadius(5)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .stroke(Color.gray, lineWidth: 2)
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.gray, lineWidth: 2)
+                                    
+                                    HStack {
+                                        Spacer()
+                                        if !newDeckName.isEmpty {
+                                            Button(action: {
+                                                newDeckName = ""
+                                            }) {
+                                                Image(systemName: "delete.left")
+                                                    .foregroundColor(Color(UIColor.opaqueSeparator))
+                                            }
+                                            .padding(.trailing, 15)
+                                        }
+                                    }
+                                }
                             )
                             .padding(.horizontal)
+                            .padding(.horizontal)
                         
-                        Spacer().frame(height:25)
+                        if !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.red)
+                                .padding(10)
+                        } else {
+                            Spacer().frame(height:60)
+                        }
+                        
                         Button {
                             
-                            // Logics to edit the deck on db
                             guard let deckToEdit = deckToEdit else {
                                 print("Error: deckToEdit is nil")
                                 return
                             }
-                            // 編集するデッキのインデックスを取得
-                            if let index = viewModel.decks.firstIndex(where: { $0.id == deckToEdit }) {
-                                // 編集した名前でデッキ名を更新
-                                viewModel.decks[index].name = newDeckName
-                                
-                                print("DeckToEdit: \(String(describing: deckToEdit))")
-                                print("New Name: \(viewModel.decks[index].name)")
-                            } else {
-                                print("Error: Deck not found")
-                            }
                             
-                            showEditSheet = false
+                            if viewModel.checkIfNameExists(newDeckName, fetchedDecks: fetchedDecks) {
+                                // Assign an error message
+                                errorMessage = "\(newDeckName) has already existed."
+                                
+                                // Clear the text field
+                                newDeckName = ""
+                                
+                                // Remove the error message in 3 seconds
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    errorMessage = ""
+                                }
+                            } else {
+                                Task {
+                                    do {
+                                        _ = try await DeckService.shared.editDeck(deckId: deckToEdit, name: newDeckName)
+                                        
+                                        // Empty the deck list first
+                                        fetchedDecks = []
+                                        // Fetch the decks to update the list
+                                        fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
+                          
+                                        showEditSheet = false
+                                    } catch {
+                                        errorMessage = "Error in editing the deck. Try again later."
+                                        print("Error in editing the deck: \(error.localizedDescription)")
+                                        
+                                        // Remove the error message in 3 seconds
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                            errorMessage = ""
+                                        }
+                                    }
+                                }
+                            }
                         } label: {
                             Text("Save")
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .frame(width:150, height:15)
                         .padding()
                         .background(.blue)
                         .foregroundColor(.white)
@@ -207,7 +256,6 @@ struct DeckListView: View {
                 }
             }
             .background(selectedColor)
-            .toolbar(.visible, for: .tabBar)
             .navigationBarBackButtonHidden()
         }
     }

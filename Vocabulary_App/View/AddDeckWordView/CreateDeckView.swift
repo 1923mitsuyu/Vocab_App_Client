@@ -23,27 +23,32 @@ struct CreateDeckView: View {
                 HStack {
                     TextField("Deck name here", text: $deckName)
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .frame(width: 280, height: 30)
+                        .frame(width: 250, height: 30)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.gray, lineWidth: 2)
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.gray, lineWidth: 2)
+                                
+                                HStack {
+                                    Spacer()
+                                    if !deckName.isEmpty {
+                                        Button(action: {
+                                            deckName = ""
+                                        }) {
+                                            Image(systemName: "delete.left")
+                                                .foregroundColor(Color(UIColor.opaqueSeparator))
+                                        }
+                                        .padding(.trailing, 15)
+                                    }
+                                }
+                            }
                         )
-                        .padding(.leading,30)
                         .onChange(of:deckName) {
                             print("The entered deck name:\(deckName)")
                         }
-                       
-                    Button(action: {
-                        deckName = ""
-                    }) {
-                        Image(systemName: "delete.left")
-                            .foregroundColor(Color(UIColor.opaqueSeparator))
-                    }
-                    .padding(.top, 4)
-                    .opacity(deckName.isEmpty ? 0 : 1)
                 }
              
                 if !errorMessage.isEmpty {
