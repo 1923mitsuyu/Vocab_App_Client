@@ -6,7 +6,6 @@ class PlayStudyViewModel : ObservableObject {
     @Published var words: [Word] = sampleWords
     @Published var writtenAnswer: String = ""
     @Published var selectionDeck = 0
-//    @Published var randomInt : Int = 0
     @Published var usedWordsIndex : [Int] = []
     @Published var wrongWordsIndex : [Int] = []
     

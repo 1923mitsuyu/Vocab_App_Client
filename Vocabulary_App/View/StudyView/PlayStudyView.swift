@@ -6,7 +6,7 @@ import SwiftUI
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
-    @State var wordList : [Word] = []
+    @State var fetchedWords : [Word] = []
     @State var randomNum : Int = 0
     @State var translation : String = ""
     @Binding var selectedDeck: Int
@@ -19,10 +19,12 @@ struct PlayStudyView: View {
     @State private var moveToNewWord : Bool = false
     @State private var modifiedExample : String = ""
     @State private var isAlertActive : Bool = false
-    @FocusState var focus: Bool
+    @State private var selectedDeckId : Int = 0
     @State private var correctAnswer : String = ""
     @Binding var selectedColor: Color
     @Binding var userId : Int
+    @Binding var fetchedDecks: [Deck]
+    @FocusState var focus: Bool
     
     var body: some View {
         
@@ -68,7 +70,7 @@ struct PlayStudyView: View {
                 // Question with a blank to fill in
                 VStack {
                     ScrollView {
-                        if !wordList.isEmpty {
+                        if !fetchedWords.isEmpty {
                             Text(modifiedExample)
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
                                 .multilineTextAlignment(.leading)
@@ -97,7 +99,7 @@ struct PlayStudyView: View {
                         .padding(.top,10)
                   
                     ScrollView {
-                        if !wordList.isEmpty {
+                        if !fetchedWords.isEmpty {
                             Text(translation)
                                 .font(.system(size: 16, weight: .bold, design: .rounded))
                                 .padding(.top,2)
@@ -153,10 +155,10 @@ struct PlayStudyView: View {
                                 viewModel.usedWordsIndex.append(randomNum)
                                 
                                 // Check if all the words in the deck have been used
-                                if viewModel.checkIfAllWordsUsed(wordsList: wordList) {
+                                if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
                                     print("Finished all the words in the deck")
                                     // Calculate the progress percentage
-                                    progress = viewModel.calculateProgress(selectedDeck, wordsList: wordList)
+                                    progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
                                     // Wait for one second and jump to the result view
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                                         isResuktViewActive = true
@@ -173,16 +175,16 @@ struct PlayStudyView: View {
                                     Task {
                                         do {
                                             // Generate a new integer for the next question
-                                            randomNum = try await viewModel.generateRandomQuestion(wordsList: wordList)
+                                            randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
                                             
-                                            if !wordList.isEmpty {
+                                            if !fetchedWords.isEmpty {
                                                 // Generate a sentence with a blank for questions
-                                                let example = wordList[randomNum].example
+                                                let example = fetchedWords[randomNum].example
                                                 // example : I borrowed a book from the library
                                                 modifiedExample = viewModel.hideTargetWordInExample(example)
-                                                translation = wordList[randomNum].translation
+                                                translation = fetchedWords[randomNum].translation
                                                 
-                                                correctAnswer = viewModel.extractWordFromBrackets(example: wordList[randomNum].example) ?? "No matched word"
+                                                correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
                                                 
                                             } else {
                                                 print("Error in wordList: No words found")
@@ -192,7 +194,7 @@ struct PlayStudyView: View {
                                             print("Error in generateRandomQuestion: \(error)")
                                         }
                                         // Calculate the progress percentage
-                                        progress = viewModel.calculateProgress(selectedDeck, wordsList: wordList)
+                                        progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
                                         
                                     }
                                     
@@ -211,7 +213,7 @@ struct PlayStudyView: View {
                             }
                             .padding(.bottom, 20)
                             .navigationDestination(isPresented: $isResuktViewActive) {
-                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId)
+                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                             }
                             
                         }
@@ -255,16 +257,16 @@ struct PlayStudyView: View {
                                  Task {
                                      do {
                                          // Generate a new integer for the next question
-                                         randomNum = try await viewModel.generateRandomQuestion(wordsList: wordList)
+                                         randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
                                          
-                                         if !wordList.isEmpty {
+                                         if !fetchedWords.isEmpty {
                                              // Generate a sentence with a blank for questions
-                                             let example = wordList[randomNum].example
+                                             let example = fetchedWords[randomNum].example
                                              // example : I borrowed a book from the library
                                              modifiedExample = viewModel.hideTargetWordInExample(example)
-                                             translation = wordList[randomNum].translation
+                                             translation = fetchedWords[randomNum].translation
                                              
-                                             correctAnswer = viewModel.extractWordFromBrackets(example: wordList[randomNum].example) ?? "No matched word"
+                                             correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
                                              
                                    
                                          } else {
@@ -291,9 +293,8 @@ struct PlayStudyView: View {
                              }
                              .padding(.bottom, 20)
                              .navigationDestination(isPresented: $isResuktViewActive) {
-                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), wordList: $wordList, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId)
+                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                              }
-                             
                          }
                          .background(Color.red.opacity(0.9))
                          .transition(
@@ -308,7 +309,7 @@ struct PlayStudyView: View {
                 else {
                     Button {
                         // Check if the inputted answer is correct
-                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect(selectedDeck, wordsList: wordList, randomNum: randomNum)
+                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect(selectedDeck, wordsList: fetchedWords, randomNum: randomNum)
                         
                         // Dismiss the keyboard
                         self.focus = false
@@ -316,7 +317,7 @@ struct PlayStudyView: View {
                         // When the answer is correct
                         if isAnswerCorrect {
                            // Increment correct time
-                            wordList[randomNum].correctTimes += 1
+                            fetchedWords[randomNum].correctTimes += 1
                             
                             // Show the pop up and hide the check button
                             withAnimation {
@@ -335,7 +336,7 @@ struct PlayStudyView: View {
                             
                             print("The wrong words are:")
                             for index in viewModel.wrongWordsIndex {
-                                print("\(wordList[index].word)")
+                                print("\(fetchedWords[index].word)")
                             }
                         }
                     } label: {
@@ -357,29 +358,36 @@ struct PlayStudyView: View {
                     
                 Task {
                     do {
-                        // Filter the list of words based on the selected deck
-                        wordList = try await viewModel.filterWords(for: viewModel.decks[selectedDeck].id, in: viewModel.words)
+            
+                        print("The index of the selected deck \(selectedDeck)")
+                       
+                        selectedDeckId = fetchedDecks[selectedDeck].id
+                        print("The id of the selected deck \(selectedDeckId)")
+                        
+                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+                        
+                        print("The number of words in the deck: \(fetchedWords.count)")
                         
                         // Check if the target deck is empty
-                        if wordList.isEmpty {
+                        if fetchedWords.isEmpty {
                             isAlertActive = true
                             return
                         }
                         
-                        randomNum = try await viewModel.generateRandomQuestion(wordsList: wordList)
+                        randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
                         
                         print("Random int: \(randomNum)")
                      
                       
-                        if !wordList.isEmpty {
+                        if !fetchedWords.isEmpty {
                             // Generate a sentence with a blank for questions
-                            let example = wordList[randomNum].example
+                            let example = fetchedWords[randomNum].example
                             modifiedExample = viewModel.hideTargetWordInExample(example)
-                            translation = wordList[randomNum].translation
-                            print("question: \(wordList[randomNum].example)")
-                            print("translation: \(wordList[randomNum].translation)")
+                            translation = fetchedWords[randomNum].translation
+                            print("question: \(fetchedWords[randomNum].example)")
+                            print("translation: \(fetchedWords[randomNum].translation)")
                             
-                        correctAnswer = viewModel.extractWordFromBrackets(example: wordList[randomNum].example) ?? "No matched word"
+                        correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
                             
                         } else {
                             print("Error in wordList: No words found")
@@ -406,6 +414,12 @@ struct PlayStudyView: View {
 #Preview {
     // Create a sample instance of PlayStudyViewModel with a sample deck index
     let sampleViewModel = PlayStudyViewModel()
+    let mockDecks = [
+            Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+            Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+        ]
+    
     // Pass the sample ViewModel and selectedDeck binding to the preview
-    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1))
+    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1), fetchedDecks: .constant(mockDecks))
 }
+

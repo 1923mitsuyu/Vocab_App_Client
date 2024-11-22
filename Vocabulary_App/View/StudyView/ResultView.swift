@@ -4,7 +4,7 @@ struct ResultView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
     @ObservedObject var viewModel2: DeckWordViewModel
-    @Binding var wordList : [Word]
+    @Binding var fetchedWords : [Word]
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @State private var isMainViewActive: Bool = false
@@ -15,6 +15,7 @@ struct ResultView: View {
     @Binding var wrongWordIndex: [Int]
     @Binding var selectedColor: Color
     @Binding var userId : Int
+    @Binding var fetchedDecks: [Deck]
     
     // Helper function to get unique indices while preserving order
     func unique<T: Equatable>(array: [T]) -> [T] {
@@ -49,8 +50,8 @@ struct ResultView: View {
                 // Using unique to preserve the order of indices and remove duplicates
                 ForEach(unique(array: wrongWordIndex), id: \.self) { index in
                     HStack {
-                        Text("\(wordList[index].word) :")
-                        Text(wordList[index].definition)
+                        Text("\(fetchedWords[index].word) :")
+                        Text(fetchedWords[index].definition)
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .onTapGesture {
@@ -87,14 +88,14 @@ struct ResultView: View {
                                         .padding(.horizontal, 10)
                                     
                                     ScrollView {
-                                        Text("\(wordList[index].translation)")
+                                        Text("\(fetchedWords[index].translation)")
                                             .font(.system(size: 20, weight: .bold, design: .rounded))
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .padding(.horizontal, 10)
                                     }
                                 }
                                 .onAppear {
-                                    modifiedExample = viewModel2.removeBrackets(wordList[index].example)
+                                    modifiedExample = viewModel2.removeBrackets(fetchedWords[index].example)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: 370)
                                 .padding(.horizontal,5)
@@ -147,7 +148,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: $selectedColor, userId: $userId)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                 }
             }
         }
@@ -163,14 +164,20 @@ struct ResultView: View {
     ]
     @Previewable @State var sampleWrongWordIndex: [Int] = [0]
     @Previewable @State var sampleSelectedDeck: Int = 2
+    
+    let mockDecks = [
+            Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+            Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+        ]
 
     ResultView(
         viewModel: PlayStudyViewModel(),
         viewModel2: DeckWordViewModel(),
-        wordList: $sampleWordList,
+        fetchedWords: $sampleWordList,
         selectedDeck: $sampleSelectedDeck,
         wrongWordIndex: $sampleWrongWordIndex,
         selectedColor: .constant(.teal),
-        userId: .constant(1)
+        userId: .constant(1),
+        fetchedDecks: .constant(mockDecks)
     )
 }

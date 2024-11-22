@@ -1,8 +1,13 @@
 import SwiftUI
 
+// TO DO LIST
+// 1. ユーザーのDeckを全て取得して、Picker内に表示する
+// 2. 選んだDeckのIDを取得して、PlayStudyViewに渡す
+
 struct StudyHomeView: View {
     
     @StateObject var viewModel = PlayStudyViewModel()
+    @State private var fetchedDecks : [Deck] = []
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]
     @Binding var selectedColor: Color
@@ -22,8 +27,8 @@ struct StudyHomeView: View {
                     .padding(.bottom,10)
                 
                 Picker("Choose a deck", selection: $viewModel.selectionDeck) {
-                    ForEach(viewModel.decks.indices, id: \.self) { index in
-                        Text(viewModel.decks[index].name).tag(index)
+                    ForEach(fetchedDecks.indices, id: \.self) { index in
+                        Text(fetchedDecks[index].name).tag(index)
                     }
                 }
                 .onChange(of: viewModel.selectionDeck) {
@@ -46,13 +51,24 @@ struct StudyHomeView: View {
                 .background(.blue)
                 .cornerRadius(10)
                 .navigationDestination(isPresented: $isPlayStudyActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                 }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(selectedColor)
             .navigationBarBackButtonHidden()
+            .onAppear {
+                Task {
+                    do {
+                        // Fetch all decks for the users and set them into the picker
+                        fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
+                    } catch {
+                        print("Error in fetching all decks: \(error.localizedDescription)")
+                    }
+                }
+                
+            }
         }
     }
 }

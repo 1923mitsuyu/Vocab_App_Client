@@ -101,7 +101,7 @@ struct ReviewAndAddView: View {
                                 print("The number of words in the deck: \(words.count)")
                                 
                                 // Call a func to add a new word
-                                _ = try await WordService.shared.addWords(word: word, definition: definition, example: definition, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
+                                _ = try await WordService.shared.addWords(word: word, definition: definition, example: example, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
                                 
                                 // Reset all the text fields once the process is complete 
                                 word = ""
