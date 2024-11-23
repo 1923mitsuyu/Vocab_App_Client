@@ -79,10 +79,10 @@ struct ReviewAndAddView: View {
                          
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.blue)
                     .frame(width:100)
                     .padding()
-                    .background(.blue)
-                    .foregroundColor(.white)
+                    .background(.white)
                     .cornerRadius(8)
                     
                     Spacer().frame(width: 30)
@@ -121,16 +121,16 @@ struct ReviewAndAddView: View {
                         Text("Save")
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.blue)
                     .frame(width:100)
                     .padding()
-                    .background(.blue)
-                    .foregroundColor(.white)
+                    .background(.white)
                     .cornerRadius(8)
                 }
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
             .navigationBarBackButtonHidden()
             .onAppear {
                 print("Selected Deck: \(selectedDeck)")

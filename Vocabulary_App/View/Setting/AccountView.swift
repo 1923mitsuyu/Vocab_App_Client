@@ -35,14 +35,14 @@ struct AccountView: View {
                     Text("Log Out")
                 }
                 .frame(width:130, height:50)
-                .foregroundStyle(.white)
-                .background(.blue)
+                .foregroundStyle(.blue)
+                .background(.white)
                 .cornerRadius(10)
                 
                 Spacer().frame(height:40)
             }
             .font(.system(size: 20, weight: .semibold, design: .rounded))
-            .background(selectedColor)
+            .background(.blue.gradient)
             .navigationDestination(isPresented: $isLoginViewActive) {
                 LoginView()
             }

@@ -120,7 +120,7 @@ struct LoginView: View {
                     })
                     .disabled(userName.isEmpty || password.isEmpty)
                     .padding()
-                    .foregroundStyle(.black)
+                    .foregroundStyle(userName.isEmpty || password.isEmpty ? .white : .blue)
                     .background(userName.isEmpty || password.isEmpty ? .gray : .white)
                     .cornerRadius(20)
                     .alert(item: $activeAlert) { alert in

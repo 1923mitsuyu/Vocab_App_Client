@@ -69,8 +69,8 @@ struct WordInputView: View {
                     }
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
-                    .foregroundStyle(.white)
-                    .background(.blue)
+                    .foregroundStyle(.blue)
+                    .background(.white)
                     .cornerRadius(10)
                 
                     Spacer().frame(width: 20)
@@ -91,8 +91,8 @@ struct WordInputView: View {
                     .disabled(word.isEmpty || definition.isEmpty)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
-                    .foregroundStyle(.white)
-                    .background(word.isEmpty || definition.isEmpty ? .gray : .blue)
+                    .foregroundStyle(.blue)
+                    .background(word.isEmpty || definition.isEmpty ? .gray : .white)
                     .cornerRadius(10)
                     .alert(isPresented: $activeAlert) {
                         Alert(
@@ -106,7 +106,7 @@ struct WordInputView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
             .onTapGesture {
                 isFocused = false
             }

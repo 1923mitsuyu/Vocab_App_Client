@@ -49,11 +49,7 @@ struct WordListView: View {
                     .padding(.top,5)
                 }
                 .padding(.bottom, -20)
-             
-
-//                @Binding var selectedDeck : Int
-//                @Binding var fetchedDecks : [Deck]
-                
+                             
                 List {
                     ForEach(fetchedWords) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
@@ -112,7 +108,7 @@ struct WordListView: View {
                     }
                 }
             }
-            .background(selectedColor)
+            .background(.blue.gradient)
         }
     }
         
@@ -124,8 +120,18 @@ struct WordListView: View {
             reorderedWords[index].word_order = index
             print("Deck Name: \(reorderedWords[index].word), Word Order: \(reorderedWords[index].word_order)")
         }
-    
+        
         fetchedWords = reorderedWords
+        
+        // Call a editing func to update the deck order
+//        Task {
+//            do {
+//                _ = try await WordService.shared.updateWordOrder()
+//                
+//            } catch {
+//                print("Error in updating the word order: \(error.localizedDescription)")
+//            }
+//        }
     }
 }
 

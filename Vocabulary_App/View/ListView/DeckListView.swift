@@ -115,6 +115,16 @@ struct DeckListView: View {
                         counter += 1
                     }
                     print("--------------------------------")
+                    
+                    // Call a editing func to update the deck order
+//                    Task {
+//                        do {
+//                            _ = try await DeckService.shared.updateDeckOrder()
+//
+//                        } catch {
+//                            print("Error in updating the deck order: \(error.localizedDescription)")
+//                        }
+//                    }
                 }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
@@ -269,7 +279,7 @@ struct DeckListView: View {
                     .background(.blue.opacity(0.5))
                 }
             }
-            .background(selectedColor)
+            .background(.blue.gradient)
             .navigationBarBackButtonHidden()
         }
     }

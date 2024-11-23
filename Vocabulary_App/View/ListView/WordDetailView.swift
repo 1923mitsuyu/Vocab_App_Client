@@ -196,7 +196,7 @@ struct WordDetailView: View {
               
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
         }
     }
 }

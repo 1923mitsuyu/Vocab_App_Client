@@ -155,6 +155,54 @@ class WordService {
         
     }
     
+    func updateCorrectCount(wordId: Int, correctTimes: Int) async throws {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/modifyCorrectCount") else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["wordId": wordId, "correctTimes": correctTimes]
+        print("Parameters being sent:", parameters)
+        
+        // Create a URL request
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Encoding parameters as JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            print("JSON Encoding Error: \(error)")
+            throw NetworkError.invalidResponse
+        }
+        
+        // Perform network request using async/await
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Log raw server response for debugging
+        if let rawResponse = String(data: data, encoding: .utf8) {
+            print("Raw server response:", rawResponse)
+        }
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into SignUpResponse object to get the message
+        do {
+            let editWordResponse = try JSONDecoder().decode(EditWordResponse.self, from: data)
+            
+            print(editWordResponse.message)
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
+        
+    }
+    
     func deleteWord(wordId: Int, deckId: Int) async throws {
         // Correct URL to use wordId for deletion
         guard let url = URL(string: "http://localhost:3000/v1/removeWord") else {

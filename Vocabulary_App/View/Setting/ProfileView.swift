@@ -40,7 +40,7 @@ struct ProfileView: View {
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .scrollContentBackground(.hidden)
             }
-            .background(selectedColor)
+            .background(.blue.gradient)
         }
         .navigationTitle("Profile")
     }

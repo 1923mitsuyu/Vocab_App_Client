@@ -1,15 +1,11 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Popupが出た時に、UIが動かないようにする
-
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
-    @State var fetchedWords : [Word] = []
+    @Binding var fetchedWords : [Word] 
     @State var randomNum : Int = 0
     @State var translation : String = ""
-    @Binding var selectedDeck: Int
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isResultViewActive: Bool = false
     @State private var isAnswerCorrect: Bool = false
@@ -21,6 +17,9 @@ struct PlayStudyView: View {
     @State private var isAlertActive : Bool = false
     @State private var selectedDeckId : Int = 0
     @State private var correctAnswer : String = ""
+    @State private var updatedCorrectTimes : Int = 0
+    @State private var currentWordId : Int = 0
+    @Binding var selectedDeck: Int
     @Binding var selectedColor: Color
     @Binding var userId : Int
     @Binding var fetchedDecks: [Deck]
@@ -316,12 +315,22 @@ struct PlayStudyView: View {
                         
                         // When the answer is correct
                         if isAnswerCorrect {
-                           // Increment correct time
-                            fetchedWords[randomNum].correctTimes += 1
+                            // Increment the correct times count
+                            updatedCorrectTimes = fetchedWords[randomNum].correctTimes + 1
+                            currentWordId = fetchedWords[randomNum].id
                             
-                            // Show the pop up and hide the check button
-                            withAnimation {
-                                showPopup = true
+                            // Call a editing func to update correctTimes variable
+                            Task {
+                                do {
+                                    _ = try await WordService.shared.updateCorrectCount(wordId: currentWordId, correctTimes: updatedCorrectTimes)
+                                    
+                                    // Show the pop up and hide the check button
+                                    withAnimation {
+                                        showPopup = true
+                                    }
+                                } catch {
+                                    print("Error in updating correct times: \(error.localizedDescription)")
+                                }
                             }
                         }
                         // When the answer is incorrect
@@ -347,8 +356,8 @@ struct PlayStudyView: View {
                     }
                     .disabled(viewModel.writtenAnswer.isEmpty)
                     .padding()
-                    .foregroundStyle(.white)
-                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .blue)
+                    .foregroundStyle(viewModel.writtenAnswer.isEmpty ? .white : .blue)
+                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .white)
                     .cornerRadius(20)
                 }
                 
@@ -357,25 +366,15 @@ struct PlayStudyView: View {
             .onAppear {
                 Task {
                     do {
-                        print("The index of the selected deck \(selectedDeck)")
-                       
-                        selectedDeckId = fetchedDecks[selectedDeck].id
-                        print("The id of the selected deck \(selectedDeckId)")
-                        
-                        fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
-                        
-                        print("The number of words in the deck: \(fetchedWords.count)")
-                        
-                        // Check if the target deck is empty
+                        // Check if the selected deck is empty
                         if fetchedWords.isEmpty {
                             isAlertActive = true
                             return
                         }
                         
+                        // Generate the very first random number
                         randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
                         
-                        print("Random int: \(randomNum)")
-                     
                         if !fetchedWords.isEmpty {
                             // Generate a sentence with a blank for questions
                             let example = fetchedWords[randomNum].example
@@ -384,7 +383,7 @@ struct PlayStudyView: View {
                             print("question: \(fetchedWords[randomNum].example)")
                             print("translation: \(fetchedWords[randomNum].translation)")
                             
-                        correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
+                            correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
                             
                         } else {
                             print("Error in wordList: No words found")
@@ -401,13 +400,12 @@ struct PlayStudyView: View {
                 })
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
         }
-//        .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
     }
-
 }
+
 #Preview {
     // Create a sample instance of PlayStudyViewModel with a sample deck index
     let sampleViewModel = PlayStudyViewModel()
@@ -416,7 +414,9 @@ struct PlayStudyView: View {
             Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
         ]
     
+    let mockWords = [    Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    
     // Pass the sample ViewModel and selectedDeck binding to the preview
-    PlayStudyView(viewModel: sampleViewModel, selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1), fetchedDecks: .constant(mockDecks))
+    PlayStudyView(viewModel: sampleViewModel, fetchedWords: .constant(mockWords), selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1), fetchedDecks: .constant(mockDecks))
 }
 

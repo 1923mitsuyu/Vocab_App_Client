@@ -70,17 +70,22 @@ struct ExampleInputView: View {
                                 .frame(width: 330, height: 80)
                                 .cornerRadius(5)
                                 .focused($isFocused)
-                                .padding(.leading, 10)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.gray, lineWidth: 2)
+                                }
                                 .overlay(alignment: .topLeading) {
+                                
                                     if example.isEmpty {
                                         Text("Example sentence here")
                                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                                             .allowsHitTesting(false)
                                             .foregroundColor(Color(uiColor: .placeholderText))
-                                            .padding(.leading, 15)
+                                            .padding(.leading, 10)
                                             .padding(.top, 8)
                                     }
                                 }
+                                .padding(.leading, 10)
                             
                             Spacer().frame(width: 5)
                             
@@ -121,18 +126,22 @@ struct ExampleInputView: View {
                             .font(.system(size: 17, weight: .semibold, design: .rounded))
                             .frame(width: 330, height: 80)
                             .cornerRadius(5)
-                            .padding(.leading,10)
                             .focused($isFocused)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.gray, lineWidth: 2)
+                            }
                             .overlay(alignment: .topLeading) {
                                 if translation.isEmpty {
                                     Text("Example translation here")
                                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .allowsHitTesting(false)
                                         .foregroundColor(Color(uiColor: .placeholderText))
-                                        .padding(.leading,15)
+                                        .padding(.leading, 10)
                                         .padding(.top, 8)
                                 }
                             }
+                            .padding(.leading,10)
                         
                         Button(action: {
                             translation = ""
@@ -173,8 +182,8 @@ struct ExampleInputView: View {
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width:150, height: 50)
-                        .foregroundStyle(.white)
-                        .background(.blue)
+                        .foregroundStyle(.blue)
+                        .background(.white)
                         .cornerRadius(10)
                         
                         Spacer().frame(width: 30)
@@ -190,8 +199,8 @@ struct ExampleInputView: View {
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .frame(width:150, height: 50)
-                        .foregroundStyle(.white)
-                        .background(example.isEmpty || translation.isEmpty ? .gray : .blue)
+                        .foregroundStyle(example.isEmpty || translation.isEmpty ? .white : .blue)
+                        .background(example.isEmpty || translation.isEmpty ? .gray : .white)
                         .cornerRadius(10)
                         .alert(isPresented: $activeAlert) {
                             Alert(
@@ -205,7 +214,7 @@ struct ExampleInputView: View {
                 }
                 .ignoresSafeArea(.keyboard, edges: .all)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(selectedColor)
+                .background(.blue.gradient)
                 .navigationBarBackButtonHidden()
                 .onTapGesture {
                     isFocused = false
@@ -215,11 +224,10 @@ struct ExampleInputView: View {
     }
 }
 
-
 #Preview {
     ExampleInputView(
-        example: .constant("I like apples but I do not eat them often."),
-        translation: .constant("りんごは好きだけど、あまり食べない。"),
+        example: .constant(""),
+        translation: .constant(""),
         currentStep: .constant(3), selectedColor: .constant(.teal)
     )
 }

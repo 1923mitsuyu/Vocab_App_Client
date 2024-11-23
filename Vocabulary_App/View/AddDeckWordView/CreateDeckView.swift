@@ -23,7 +23,7 @@ struct CreateDeckView: View {
                 HStack {
                     TextField("Deck name here", text: $deckName)
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .frame(width: 250, height: 30)
+                        .frame(width: 270, height: 30)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5)
@@ -104,10 +104,10 @@ struct CreateDeckView: View {
                 }
                 .disabled(deckName.isEmpty)
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
-                .frame(width:100)
+                .frame(width:140)
                 .padding()
-                .background(deckName.isEmpty ? .gray : .blue)
-                .foregroundColor(.white)
+                .foregroundColor(deckName.isEmpty ? .white : .blue)
+                .background(deckName.isEmpty ? .gray : .white)
                 .cornerRadius(8)
                 .alert(isPresented: $activeAlert) {
                     Alert(
@@ -118,11 +118,10 @@ struct CreateDeckView: View {
                 .navigationDestination(isPresented: $isDeckListActive) {
                     DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
                 }
-                
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
         }
     }
 }

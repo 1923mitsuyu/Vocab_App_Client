@@ -98,7 +98,7 @@ struct SignUpView: View {
                     })
                     .disabled(userName.isEmpty || password.isEmpty)
                     .padding()
-                    .foregroundStyle(.black)
+                    .foregroundStyle(userName.isEmpty || password.isEmpty ? .white : .blue)
                     .background(userName.isEmpty || password.isEmpty ? .gray : .white)
                     .cornerRadius(20)
                     .alert(item: $activeAlert) { alert in
@@ -106,7 +106,6 @@ struct SignUpView: View {
                         case .inValidPassword:
                             let errorMessages = errorMessage.joined(separator: "\n")
                             return Alert(title: Text("Invalid password"), message: Text(errorMessages))
-                            
                         case .serverError:
                             return Alert(title: Text(serverErrorMessage))
                         }

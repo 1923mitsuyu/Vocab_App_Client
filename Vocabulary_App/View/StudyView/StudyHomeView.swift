@@ -8,6 +8,10 @@ struct StudyHomeView: View {
     @State private var studyDates: [Date] = [Date()]
     @Binding var selectedColor: Color
     @Binding var userId : Int
+    @State private var isLoading = false
+    @State private var selectedDeckId : Int = 0
+    @State var fetchedWords : [Word] = []
+    @State private var errorMessage : String = ""
     
     var body: some View {
         NavigationStack {
@@ -37,22 +41,50 @@ struct StudyHomeView: View {
                 .padding(.bottom,30)
                 
                 Button {
-                    isPlayStudyActive = true
+                    isLoading = true
+                    Task {
+                        do {
+                            selectedDeckId = fetchedDecks[viewModel.selectionDeck].id
+                            fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                isPlayStudyActive = true
+                                isLoading = false
+                            }
+                        } catch {
+                            errorMessage = "Error fetching words. Try again later."
+                            isLoading = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                                errorMessage = ""
+                               
+                            }
+                            print("Error fetching words: \(error)")
+                        }
+                    }
                 } label: {
-                    Text("Start")
+                    if isLoading {
+                            ProgressView()
+                    } else {
+                        Text("Start")
+                    }
                 }
-                .font(.system(size: 23, weight: .semibold, design: .rounded))
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
                 .frame(width: 300, height: 50)
-                .foregroundStyle(.white)
-                .background(.blue)
+                .foregroundStyle(.blue)
+                .background(.white)
                 .cornerRadius(10)
-                .navigationDestination(isPresented: $isPlayStudyActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
-                }
+                
+                Text(errorMessage)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.red)
+                    .padding(.top,5)
+                
+                NavigationLink("", destination:  PlayStudyView(viewModel: PlayStudyViewModel(), fetchedWords: $fetchedWords, selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks), isActive: $isPlayStudyActive)
+    
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(selectedColor)
+            .background(.blue.gradient)
             .navigationBarBackButtonHidden()
             .onAppear {
                 Task {
@@ -63,7 +95,6 @@ struct StudyHomeView: View {
                         print("Error in fetching all decks: \(error.localizedDescription)")
                     }
                 }
-                
             }
         }
     }

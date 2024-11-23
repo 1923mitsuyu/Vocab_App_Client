@@ -121,11 +121,12 @@ struct ResultView: View {
                 } label: {
                     Text("Home")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white)
+
                 }
+                .foregroundStyle(.blue)
                 .frame(width: 100, height: 20)
                 .padding()
-                .background(.blue)
+                .background(.white)
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isMainViewActive) {
@@ -139,22 +140,21 @@ struct ResultView: View {
                 } label: {
                     Text("Study Again")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white)
-                    
                 }
+                .foregroundStyle(.blue)
                 .frame(width: 120, height: 20)
                 .padding()
-                .background(.blue)
+                .background(.white)
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), selectedDeck: $selectedDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                 }
             }
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
-        .background(selectedColor)
+        .background(.blue.gradient)
     }
 }
 
