@@ -1,9 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. ユーザーのDeckを全て取得して、Picker内に表示する
-// 2. 選んだDeckのIDを取得して、PlayStudyViewに渡す
-
 struct StudyHomeView: View {
     
     @StateObject var viewModel = PlayStudyViewModel()

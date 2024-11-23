@@ -155,20 +155,23 @@ class WordService {
         
     }
     
-    func deleteWord(wordId: Int, userId: Int) async throws -> Bool {
+    func deleteWord(wordId: Int, deckId: Int) async throws {
         // Correct URL to use wordId for deletion
-        guard let url = URL(string: "http://localhost:3000/v1/removeWord/\(wordId)") else {
+        guard let url = URL(string: "http://localhost:3000/v1/removeWord") else {
             throw URLError(.badURL)
         }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["wordId": wordId, "deckId": deckId]
+        print("Parameters being sent:", parameters)
         
         // Create the request
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Include the userId in the body or headers if required for authorization
-        let body = ["userId": userId]
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         
         // Execute the request
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -178,11 +181,14 @@ class WordService {
             throw URLError(.badServerResponse)
         }
         
-        // Optionally parse the response if needed (assuming it returns a success message)
-        // If the response body contains a success message, you can decode that, or just return success based on status code
-        let success = (httpResponse.statusCode == 200 || httpResponse.statusCode == 204)
-        
-        return success
+        do {
+            let deleteWordResponse = try JSONDecoder().decode(DeleteWordResponse.self, from: data)
+            
+            print(deleteWordResponse.message)
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
     }
 }
 

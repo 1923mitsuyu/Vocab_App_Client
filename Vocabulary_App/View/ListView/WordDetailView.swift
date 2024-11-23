@@ -20,6 +20,9 @@ struct WordDetailView: View {
     @Binding var selectedColor: Color
     @Binding var fetchedWords : [Word]
     @Binding var selectedDeckId : Int
+    @Binding var currentStep: Int
+    @Binding var selectedDeck : Int
+    @Binding var fetchedDecks : [Deck]
     
     var body: some View {
         NavigationStack {
@@ -166,8 +169,8 @@ struct WordDetailView: View {
                             // Logics here to delete the word
                             Task {
                                 do {
-                                    // 1を本当のIDに修正
-                                    _ = try await WordService.shared.deleteWord(wordId: word.id, userId: 1)
+                                    print("The selected deck id is: \(selectedDeckId)")
+                                    _ = try await WordService.shared.deleteWord(wordId: word.id, deckId: selectedDeckId)
                                     
                                     // Reset the word
                                     fetchedWords = []
@@ -176,7 +179,7 @@ struct WordDetailView: View {
                                     fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
                                     
                                     // Logics here to jump to the word view if deletion succeeds
-                                    isWordListViewActive = true
+                                    // isWordListViewActive = true
                                     
                                 } catch {
                                     print("Error in deleting the word: \(error.localizedDescription)")
@@ -186,6 +189,9 @@ struct WordDetailView: View {
                         secondaryButton: .cancel()
                     )
                 }
+//                .navigationDestination(isPresented: $isWordListViewActive) {
+//                    WordListView(viewModel: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId, currentStep: $currentStep, selectedDeck: $selectedDeck, selectedColor: $selectedColor, fetchedDecks: $fetchedDecks)
+//                }
                 Spacer().frame(height: 20)
               
             }
@@ -197,7 +203,12 @@ struct WordDetailView: View {
 
 #Preview {
     
+    let mockDecks = [
+            Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+            Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+        ]
+    
     let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べますが、今朝は食べませんでした。違うものを食べたかったんです。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
     
-    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1))
+    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(1), selectedDeck: .constant(1), fetchedDecks: .constant(mockDecks))
 }

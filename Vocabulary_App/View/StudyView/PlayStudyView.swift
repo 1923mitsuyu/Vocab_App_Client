@@ -11,7 +11,7 @@ struct PlayStudyView: View {
     @State var translation : String = ""
     @Binding var selectedDeck: Int
     @State private var isStudyHomeViewActive: Bool = false
-    @State private var isResuktViewActive: Bool = false
+    @State private var isResultViewActive: Bool = false
     @State private var isAnswerCorrect: Bool = false
     @State private var showAlert : Bool = false
     @State private var showPopup : Bool = false
@@ -161,7 +161,7 @@ struct PlayStudyView: View {
                                     progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
                                     // Wait for one second and jump to the result view
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                                        isResuktViewActive = true
+                                        isResultViewActive = true
                                     }
                                 }
                                 else {
@@ -212,7 +212,7 @@ struct PlayStudyView: View {
                                     .cornerRadius(20)
                             }
                             .padding(.bottom, 20)
-                            .navigationDestination(isPresented: $isResuktViewActive) {
+                            .navigationDestination(isPresented: $isResultViewActive) {
                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                             }
                             
@@ -292,7 +292,7 @@ struct PlayStudyView: View {
                                      .cornerRadius(20)
                              }
                              .padding(.bottom, 20)
-                             .navigationDestination(isPresented: $isResuktViewActive) {
+                             .navigationDestination(isPresented: $isResultViewActive) {
                                  ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
                              }
                          }
@@ -355,10 +355,8 @@ struct PlayStudyView: View {
                 Spacer()
             }
             .onAppear {
-                    
                 Task {
                     do {
-            
                         print("The index of the selected deck \(selectedDeck)")
                        
                         selectedDeckId = fetchedDecks[selectedDeck].id
@@ -378,7 +376,6 @@ struct PlayStudyView: View {
                         
                         print("Random int: \(randomNum)")
                      
-                      
                         if !fetchedWords.isEmpty {
                             // Generate a sentence with a blank for questions
                             let example = fetchedWords[randomNum].example

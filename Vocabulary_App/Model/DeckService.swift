@@ -141,36 +141,47 @@ class DeckService {
         } catch {
             throw NetworkError.decodingError
         }
-        
     }
 
-    func deleteDeck(id: Int, userId: Int) async throws -> Bool {
+    func deleteDeck(deckId: Int, userId: Int) async throws {
        
-        guard let url = URL(string: "http://localhost:3000/v1/removeDeck/\(id)") else {
+        guard let url = URL(string: "http://localhost:3000/v1/removeDeck") else {
             throw URLError(.badURL)
         }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["deckId": deckId, "userId": userId]
+        print("Parameters being sent:", parameters)
         
         // Create the request
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Include the userId in the body or headers if required for authorization
-        let body = ["userId": userId]
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         
         // Execute the request
         let (data, response) = try await URLSession.shared.data(for: request)
+        
+        if let rawResponse = String(data: data, encoding: .utf8) {
+            print("Raw server response:", rawResponse)
+        }
         
         // Check the response status
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
         
-        // Optionally parse the response
-        let isDeleted = try JSONDecoder().decode(Bool.self, from: data)
-        
-        return isDeleted
+        // Decode the response data into SignUpResponse object to get the message
+        do {
+            let deckResponse = try JSONDecoder().decode(DeckResponse.self, from: data)
+            
+            print(deckResponse.message)
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
     }
 }
         

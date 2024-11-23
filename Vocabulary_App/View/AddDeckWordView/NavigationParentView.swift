@@ -27,7 +27,7 @@ struct NavigationParentView: View {
         NavigationStack {
             VStack {
                 if currentStep == 0 {
-                    WordListView(viewModel: DeckWordViewModel(), deck: deck, fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId, currentStep: $currentStep, selectedDeck: $selectedDeck, selectedColor: $selectedColor, fetchedDecks: $fetchedDecks)
+                    WordListView(viewModel: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId, currentStep: $currentStep, selectedDeck: $selectedDeck, selectedColor: $selectedColor, fetchedDecks: $fetchedDecks)
                 } else if currentStep == 1 {
                     WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep, selectedColor: $selectedColor, initialSelectedDeck: $initialSelectedDeck)
                 } else if currentStep == 2 {

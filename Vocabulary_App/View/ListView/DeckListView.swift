@@ -150,7 +150,8 @@ struct DeckListView: View {
                             
                             Task {
                                 do {
-                                    _ = try await DeckService.shared.deleteDeck(id: deckToDelete, userId: userId)
+                                    print("The deck id to be deleted is: \(deckToDelete)")
+                                    _ = try await DeckService.shared.deleteDeck(deckId: deckToDelete, userId: userId)
                                     
                                     // Reset the word
                                     fetchedDecks = []
