@@ -74,14 +74,17 @@ struct WordListView: View {
                             .default(Text("By Name(Ascending)")) {
                                 selectedSortOption = "Name"
                                 fetchedWords.sort { $0.word < $1.word }
+                                saveNewOrder()
                             },
                             .default(Text("By Name (Descending)")) {
                                 selectedSortOption = "Name"
                                 fetchedWords.sort { $0.word > $1.word }
+                                saveNewOrder()
                             },
                             .default(Text("By Date Added")) {
                                 selectedSortOption = "Date Added"
-                                fetchedWords.sort { $0.word_order < $1.word_order }
+                                fetchedWords.sort { $0.id < $1.id }
+                                saveNewOrder()
                             },
                             .cancel()
                         ]
@@ -103,6 +106,8 @@ struct WordListView: View {
                         
                         print("The number of words in the deck: \(fetchedWords.count)")
                         
+                        fetchedWords = fetchedWords.sorted { $0.word_order < $1.word_order }
+                        
                     } catch {
                         print("Error in fetching words: \(error)")
                     }
@@ -123,15 +128,36 @@ struct WordListView: View {
         
         fetchedWords = reorderedWords
         
+        let updatedOrder = fetchedWords.map { ["wordId": $0.id, "word_order": $0.word_order] }
+        
+        print("updatedOrder \(updatedOrder)")
+        
         // Call a editing func to update the deck order
-//        Task {
-//            do {
-//                _ = try await WordService.shared.updateWordOrder()
-//                
-//            } catch {
-//                print("Error in updating the word order: \(error.localizedDescription)")
-//            }
-//        }
+        Task {
+            do {
+                _ = try await WordService.shared.updateWordOrder(updatedOrder)
+                
+            } catch {
+                print("Error in updating the word order: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func saveNewOrder() {
+        for index in fetchedWords.indices {
+            fetchedWords[index].word_order = index
+            print("Word: \(fetchedWords[index].word), Word Order: \(fetchedWords[index].word_order)")
+        }
+        
+        let updatedOrder = fetchedWords.map { ["wordId": $0.id, "word_order": $0.word_order] }
+        
+        Task {
+            do {
+                _ = try await WordService.shared.updateWordOrder(updatedOrder)
+            } catch {
+                print("Error in updating the word order: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

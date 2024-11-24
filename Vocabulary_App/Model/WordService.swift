@@ -202,7 +202,7 @@ class WordService {
         }
     }
     
-    func updateDeckOrder(_ words: [[String: Any]]) async throws {
+    func updateWordOrder(_ words: [[String: Any]]) async throws {
         
         guard let url = URL(string: "http://localhost:3000/v1/modifyWordOrders") else {
             throw NetworkError.invalidURL
@@ -235,9 +235,9 @@ class WordService {
         
         // Decode the response data into SignUpResponse object to get the message
         do {
-            let deckResponse = try JSONDecoder().decode(WordResponse.self, from: data)
+            let wordResponse = try JSONDecoder().decode(EditWordResponse.self, from: data)
             
-            print(deckResponse.message)
+            print(wordResponse.message)
             
         } catch {
             throw NetworkError.decodingError

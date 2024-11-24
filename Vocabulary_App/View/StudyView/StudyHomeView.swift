@@ -41,9 +41,18 @@ struct StudyHomeView: View {
                 .padding(.bottom,30)
                 
                 Button {
+                    if fetchedDecks.count == 0 {
+                        errorMessage = "Please add a deck first."
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                            errorMessage = ""
+                        }
+                        return;
+                    }
+                    
                     isLoading = true
                     Task {
                         do {
+                           
                             selectedDeckId = fetchedDecks[viewModel.selectionDeck].id
                             fetchedWords = try await WordService.shared.getWords(deckId: selectedDeckId)
 
@@ -77,7 +86,7 @@ struct StudyHomeView: View {
                 Text(errorMessage)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .foregroundStyle(.red)
-                    .padding(.top,5)
+                    .padding(.top,15)
                 
                 NavigationLink("", destination:  PlayStudyView(viewModel: PlayStudyViewModel(), fetchedWords: $fetchedWords, selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks), isActive: $isPlayStudyActive)
     
