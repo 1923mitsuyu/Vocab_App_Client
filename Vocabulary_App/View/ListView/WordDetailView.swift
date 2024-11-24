@@ -84,19 +84,20 @@ struct WordDetailView: View {
                             }
                             
                             Section(header: Text("Example").font(.headline)) {
-                                TextField("", text: $newExample)
-                                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                    .padding(.vertical, 4)
+                                TextEditor(text: $newExample)
+                                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                        .frame(width: 330, height: 60)
+                                     
                             }
                             
                             Section(header: Text("Translation").font(.headline)) {
-                                TextField("", text: $newTranslation)
+                                TextEditor(text: $newTranslation)
                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                    .padding(.vertical, 4)
+                                    .frame(width: 330, height: 60)
                             }
                         }
                         // Remove the gap at the bottom of the list
-                        .frame(height:430)
+                        .frame(height:550)
                      
                         Button {
                             // Logics here to edit the word info from the db

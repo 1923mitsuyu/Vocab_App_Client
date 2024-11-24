@@ -75,7 +75,6 @@ struct ExampleInputView: View {
                                         .stroke(Color.gray, lineWidth: 2)
                                 }
                                 .overlay(alignment: .topLeading) {
-                                
                                     if example.isEmpty {
                                         Text("Example sentence here")
                                             .font(.system(size: 15, weight: .semibold, design: .rounded))

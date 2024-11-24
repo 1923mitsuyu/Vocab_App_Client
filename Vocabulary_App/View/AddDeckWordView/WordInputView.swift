@@ -91,7 +91,7 @@ struct WordInputView: View {
                     .disabled(word.isEmpty || definition.isEmpty)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .frame(width:150, height: 50)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(word.isEmpty || definition.isEmpty ? .white : .blue)
                     .background(word.isEmpty || definition.isEmpty ? .gray : .white)
                     .cornerRadius(10)
                     .alert(isPresented: $activeAlert) {

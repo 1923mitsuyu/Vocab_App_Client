@@ -100,7 +100,7 @@ struct DeckListView: View {
                             fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
                             decksCount = fetchedDecks.count
                             print("The number of decks in the deck: \(decksCount)")
-                                  
+                            fetchedDecks = fetchedDecks.sorted { $0.deckOrder < $1.deckOrder }
                         } catch {
                             print("Error in fetching all decks: \(error.localizedDescription)")
                         }
@@ -114,17 +114,20 @@ struct DeckListView: View {
                         print("Deck Name: \(fetchedDecks[index].name), List Order: \(fetchedDecks[index].deckOrder)")
                         counter += 1
                     }
-                    print("--------------------------------")
+             
+                    let updatedOrder = fetchedDecks.map { ["deckId": $0.id, "deckOrder": $0.deckOrder] }
                     
-                    // Call a editing func to update the deck order
-//                    Task {
-//                        do {
-//                            _ = try await DeckService.shared.updateDeckOrder()
-//
-//                        } catch {
-//                            print("Error in updating the deck order: \(error.localizedDescription)")
-//                        }
-//                    }
+                    print("updatedOrder \(updatedOrder)") // ok 
+                                        
+                    // Call the editing func to update the deck order
+                    Task {
+                        do {
+                            _ = try await DeckService.shared.updateDeckOrder(updatedOrder)
+
+                        } catch {
+                            print("Error in updating the deck order: \(error.localizedDescription)")
+                        }
+                    }
                 }
                 .scrollContentBackground(.hidden)
                 .actionSheet(isPresented: $isPickerPresented) {
@@ -141,7 +144,7 @@ struct DeckListView: View {
                             },
                             .default(Text("By Date Added")) {
                                 selectedSortOption = "Date Added"
-                                fetchedDecks.sort { $0.deckOrder < $1.deckOrder }
+                                fetchedDecks.sort { $0.id < $1.id }
                             },
                             .cancel()
                         ]
