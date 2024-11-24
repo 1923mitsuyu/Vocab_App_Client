@@ -4,13 +4,14 @@ struct ResultView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
     @ObservedObject var viewModel2: DeckWordViewModel
-    @Binding var fetchedWords : [Word]
+    @State private var selectedTab = 1
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isPlayStudyViewActive: Bool = false
     @State private var isMainViewActive: Bool = false
     @State private var showSheet: Bool = false
     @State private var selectedWordIndex: Int? = nil
     @State private var modifiedExample : String = ""
+    @Binding var fetchedWords : [Word]
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
     @Binding var selectedColor: Color
@@ -130,7 +131,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isMainViewActive) {
-                    MainView(userId: $userId)
+                    MainView(userId: $userId, selectedTab: $selectedTab)
                 }
                 
                 Spacer().frame(width: 30)

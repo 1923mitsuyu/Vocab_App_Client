@@ -12,6 +12,7 @@ struct CreateDeckView: View {
     @Binding var decksCount : Int
     @Binding var fetchedDecks : [Deck]
     @State var errorMessage : String = ""
+    @State private var selectedTab: Int = 2
     
     var body: some View {
         NavigationStack {
@@ -92,6 +93,8 @@ struct CreateDeckView: View {
                                 // Jump back to the word list
                                 isDeckListActive = true
                                 
+                                selectedTab = 2
+                                
                             } catch {
                                 // Assign an error message
                                 errorMessage = "The error. \(deckName) was not created."
@@ -116,7 +119,8 @@ struct CreateDeckView: View {
                     )
                 }
                 .navigationDestination(isPresented: $isDeckListActive) {
-                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId)
+//                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId, selectedTab: $selectedTab)
+                    MainView(userId: $userId, selectedTab: $selectedTab)
                 }
                 Spacer()
             }

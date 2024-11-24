@@ -3,7 +3,7 @@ import SwiftUI
 struct PlayStudyView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
-    @Binding var fetchedWords : [Word] 
+    @State private var selectedTab: Int = 1
     @State var randomNum : Int = 0
     @State var translation : String = ""
     @State private var isStudyHomeViewActive: Bool = false
@@ -19,6 +19,7 @@ struct PlayStudyView: View {
     @State private var correctAnswer : String = ""
     @State private var updatedCorrectTimes : Int = 0
     @State private var currentWordId : Int = 0
+    @Binding var fetchedWords : [Word]
     @Binding var selectedDeck: Int
     @Binding var selectedColor: Color
     @Binding var userId : Int
@@ -39,7 +40,7 @@ struct PlayStudyView: View {
                             .foregroundStyle(.white)
                     }
                     .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                        MainView(userId: $userId)
+                        MainView(userId: $userId, selectedTab: $selectedTab)
                     }
                     
                     Spacer().frame(width:20)

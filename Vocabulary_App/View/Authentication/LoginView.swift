@@ -6,6 +6,7 @@ import SwiftUI
 
 struct LoginView: View {
     
+    @State private var selectedTab = 1
     @State private var userName: String = ""
     @State private var password: String = ""
     @State private var isLoggedIn: Bool = false
@@ -17,7 +18,7 @@ struct LoginView: View {
     @State private var errorMessage : String = "Sign Up Failed. Try Again."
     @State private var userId : Int = 0
     @FocusState var focus: Bool
-    
+        
     enum ActiveAlert: Identifiable {
         case emptyFields
         case invalidPassword
@@ -131,7 +132,7 @@ struct LoginView: View {
                             return Alert(title:Text("Invalid password"))
                         }
                     }
-                    .navigationDestination(isPresented: $isMainViewActive) { MainView(userId: $userId) }
+                    .navigationDestination(isPresented: $isMainViewActive) { MainView(userId: $userId, selectedTab: $selectedTab) }
                     
                     Spacer().frame(height: 30)
                     

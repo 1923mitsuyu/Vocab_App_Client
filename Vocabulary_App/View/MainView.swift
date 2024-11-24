@@ -5,9 +5,11 @@ struct MainView: View {
     @State private var selectedDeck: Int = 0
     @State private var selectedColor : Color = .cyan
     @Binding var userId : Int
+    @Binding var selectedTab: Int
     
-    init(userId: Binding<Int>) {
+    init(userId: Binding<Int>, selectedTab: Binding<Int>) {
         self._userId = userId
+        self._selectedTab = selectedTab
         UITabBar.appearance().unselectedItemTintColor = UIColor.black
         let appearance: UITabBarAppearance = UITabBarAppearance()
         appearance.backgroundColor = .white
@@ -17,21 +19,24 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            TabView {
+            TabView(selection: $selectedTab) {
                 StudyHomeView(selectedColor: $selectedColor, userId: $userId)
                     .tabItem {
                         Label("Study", systemImage: "brain.head.profile")
                     }
+                    .tag(1)
                 
                 DeckListView(selectedDeck: selectedDeck,selectedColor: $selectedColor, userId: $userId)
                     .tabItem {
                         Label("Deck", systemImage: "list.dash")
                     }
+                    .tag(2)
                 
                 AccountView(selectedColor: $selectedColor)
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle")
                     }
+                    .tag(3)
             }
             .navigationBarBackButtonHidden()
             .accentColor(.black)
@@ -40,5 +45,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(userId: .constant(1))
+    MainView(userId: .constant(1), selectedTab: .constant(1))
 }
