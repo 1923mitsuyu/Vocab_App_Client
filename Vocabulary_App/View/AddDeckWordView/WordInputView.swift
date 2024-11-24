@@ -3,10 +3,10 @@ import SwiftUI
 struct WordInputView: View {
     
     @ObservedObject var viewModel: DeckWordViewModel
+    @State private var activeAlert: Bool = false
     @Binding var word: String
     @Binding var definition: String
     @Binding var currentStep: Int
-    @State private var activeAlert: Bool = false
     @Binding var selectedColor: Color
     @Binding var initialSelectedDeck : Int
     @FocusState var isFocused: Bool

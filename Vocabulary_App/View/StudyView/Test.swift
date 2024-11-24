@@ -10,6 +10,7 @@ struct WordOrderView: View {
     @State private var arrangedWords: [String] = []
     @State private var tappedWordIndex: Int? = nil
     @State private var progress : Double = 0.00
+    @State private var translation : String = "練習は完璧を作る、でも誰も完璧ではない。じゃあ、なぜ練習するの?"
     var body: some View {
         
         let columns = [
@@ -22,14 +23,14 @@ struct WordOrderView: View {
                 
                 HStack{
                     Button {
-//                        isStudyHomeViewActive = true
+                        //                        isStudyHomeViewActive = true
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.white)
                     }
-//                    .navigationDestination(isPresented: $isStudyHomeViewActive) {
-//                      MainView(userId: $userId)
-//                    }
+                    //                    .navigationDestination(isPresented: $isStudyHomeViewActive) {
+                    //                      MainView(userId: $userId)
+                    //                    }
                     
                     Spacer().frame(width:20)
                     
@@ -52,8 +53,21 @@ struct WordOrderView: View {
                 Text("Complete the sentence")
                     .font(.system(size: 23, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 15)
                     .padding(.leading, 17)
+                
+                VStack {
+                    Text("- 日本語訳 - ")
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading,14)
+                        .padding(.bottom,5)
+                    
+                    Text(translation)
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 10)
+                }
+                
                 // 整列された単語を表示するスペース
                 HStack {
                     ForEach(arrangedWords, id: \.self) { word in
@@ -68,24 +82,26 @@ struct WordOrderView: View {
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 
-                LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(options.indices, id: \.self) { index in
-                        if !arrangedWords.contains(options[index]) {
-                            Text(options[index])
-                                .padding()
-                                .frame(minWidth: 100) // カードの最小幅を設定
-                                .background(Capsule().fill(Color.blue.opacity(0.7)))
-                                .foregroundColor(.white)
-                                .onTapGesture {
-                                    moveWordToSpace(index: index)
-                                }
-                                .offset(y: tappedWordIndex == index ? -50 : 0) // アニメーションで上に飛ばす
-                                .animation(.spring(), value: tappedWordIndex)
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(options.indices, id: \.self) { index in
+                            if !arrangedWords.contains(options[index]) {
+                                Text(options[index])
+                                    .padding()
+                                    .frame(minWidth: 100) // カードの最小幅を設定
+                                    .background(Capsule().fill(Color.blue.opacity(0.7)))
+                                    .foregroundColor(.white)
+                                    .onTapGesture {
+                                        moveWordToSpace(index: index)
+                                    }
+                                    .offset(y: tappedWordIndex == index ? -50 : 0) // アニメーションで上に飛ばす
+                                    .animation(.spring(), value: tappedWordIndex)
+                            }
                         }
                     }
+                    .padding()
+                    Spacer()
                 }
-                .padding()
-                Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)

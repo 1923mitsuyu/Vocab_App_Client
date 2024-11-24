@@ -61,7 +61,7 @@ struct DeckListView: View {
              
                 List($fetchedDecks,editActions: .move) { $deck in
                     NavigationLink(
-                        destination: NavigationParentView(deck: deck, selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
+                        destination: NavigationParentView(selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
                             .onAppear {
                                 if let index = fetchedDecks.firstIndex(where: { $0.id == deck.id }) {
                                     selectedDeck = index
@@ -250,6 +250,8 @@ struct DeckListView: View {
                                         fetchedDecks = []
                                         // Fetch the decks to update the list
                                         fetchedDecks = try await DeckService.shared.getDecks(userId: userId)
+                                        
+                                        fetchedDecks = fetchedDecks.sorted { $0.deckOrder < $1.deckOrder }
                           
                                         // Dismiss the sheet
                                         showEditSheet = false

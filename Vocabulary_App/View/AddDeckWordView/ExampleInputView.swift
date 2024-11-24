@@ -5,13 +5,13 @@ import SwiftUI
 
 struct ExampleInputView: View {
     
+    @State private var isReviewAndAddActive: Bool = false
+    @State private var activeAlert: Bool = false
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
-    @State private var isReviewAndAddActive: Bool = false
-    @State private var activeAlert: Bool = false
-    @FocusState var isFocused: Bool
     @Binding var selectedColor: Color
+    @FocusState var isFocused: Bool
     
     var body: some View {
         NavigationStack {

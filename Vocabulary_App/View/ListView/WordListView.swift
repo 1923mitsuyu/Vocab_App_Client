@@ -12,13 +12,13 @@ struct WordListView: View {
     @State private var isPickerPresented : Bool = false
     @State private var selectedSortOption : String = "Name"
     @State private var isChecked = false
+    @State var initialSelectedDeck : Int = 0
     @Binding var selectedDeckId : Int
     @Binding var currentStep: Int
     @Binding var selectedDeck : Int
     @Binding var selectedColor: Color
     @Binding var fetchedDecks : [Deck]
-    @State var initialSelectedDeck : Int = 0
-        
+   
     var body: some View {
         NavigationStack {
             VStack {

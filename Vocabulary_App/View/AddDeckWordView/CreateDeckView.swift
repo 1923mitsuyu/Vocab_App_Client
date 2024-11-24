@@ -3,16 +3,16 @@ import SwiftUI
 struct CreateDeckView: View {
     
     @ObservedObject var viewModel: DeckWordViewModel
+    @State private var selectedTab: Int = 2
     @State private var deckName: String = ""
     @State private var activeAlert: Bool = false
     @State private var isDeckListActive: Bool = false
     @State var selectedDeck: Int
+    @State var errorMessage : String = ""
     @Binding var selectedColor: Color
     @Binding var userId : Int
     @Binding var decksCount : Int
     @Binding var fetchedDecks : [Deck]
-    @State var errorMessage : String = ""
-    @State private var selectedTab: Int = 2
     
     var body: some View {
         NavigationStack {
@@ -119,7 +119,6 @@ struct CreateDeckView: View {
                     )
                 }
                 .navigationDestination(isPresented: $isDeckListActive) {
-//                    DeckListView(viewModel: DeckWordViewModel(), selectedDeck: selectedDeck, selectedColor: $selectedColor, userId: $userId, selectedTab: $selectedTab)
                     MainView(userId: $userId, selectedTab: $selectedTab)
                 }
                 Spacer()

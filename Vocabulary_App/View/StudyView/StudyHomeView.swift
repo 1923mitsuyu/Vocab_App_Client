@@ -6,12 +6,12 @@ struct StudyHomeView: View {
     @State private var fetchedDecks : [Deck] = []
     @State var isPlayStudyActive: Bool = false
     @State private var studyDates: [Date] = [Date()]
-    @Binding var selectedColor: Color
-    @Binding var userId : Int
     @State private var isLoading = false
     @State private var selectedDeckId : Int = 0
     @State var fetchedWords : [Word] = []
     @State private var errorMessage : String = ""
+    @Binding var selectedColor: Color
+    @Binding var userId : Int
     
     var body: some View {
         NavigationStack {
