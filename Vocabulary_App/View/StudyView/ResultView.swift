@@ -17,7 +17,7 @@ struct ResultView: View {
     @Binding var selectedColor: Color
     @Binding var userId : Int
     @Binding var fetchedDecks: [Deck]
-    
+
     // Helper function to get unique indices while preserving order
     func unique<T: Equatable>(array: [T]) -> [T] {
         var uniqueArray = [T]()
@@ -156,8 +156,23 @@ struct ResultView: View {
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
         .background(.blue.gradient)
+        .onAppear {
+            Task {
+                do {
+                    // Change the format to JSON here
+                    let updatedOrder = fetchedWords.map { ["wordId": $0.id, "correctTimes": $0.correctTimes] }
+                    
+                    // Update correct times variable in a batch 
+                    _ = try await WordService.shared.updateCorrectCount(updatedOrder)
+                    
+                } catch {
+                    print("Error in updating correct times: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
+
 
 #Preview {
     @Previewable @State var sampleWordList: [Word] = [

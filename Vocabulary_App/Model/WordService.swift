@@ -155,15 +155,11 @@ class WordService {
         
     }
     
-    func updateCorrectCount(wordId: Int, correctTimes: Int) async throws {
+    func updateCorrectCount(_ words: [[String: Any]]) async throws {
         
         guard let url = URL(string: "http://localhost:3000/v1/modifyCorrectCount") else {
             throw NetworkError.invalidURL
         }
-        
-        // Set parameters
-        let parameters: [String: Any] = ["wordId": wordId, "correctTimes": correctTimes]
-        print("Parameters being sent:", parameters)
         
         // Create a URL request
         var request = URLRequest(url: url)
@@ -172,7 +168,7 @@ class WordService {
         
         // Encoding parameters as JSON
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+            request.httpBody = try JSONSerialization.data(withJSONObject: words)
         } catch {
             print("JSON Encoding Error: \(error)")
             throw NetworkError.invalidResponse
