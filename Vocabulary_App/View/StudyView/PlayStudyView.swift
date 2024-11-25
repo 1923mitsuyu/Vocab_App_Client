@@ -32,6 +32,7 @@ struct PlayStudyView: View {
             VStack {
                 Spacer().frame(height: 10)
                 
+                // Progress Bar
                 HStack{
                     Button {
                         isStudyHomeViewActive = true
@@ -56,7 +57,7 @@ struct PlayStudyView: View {
                     }
                     .cornerRadius(10)
                     .frame(width: 320)
-                                
+                    
                 }
                 .padding(.bottom,5)
                 .padding(.trailing,10)
@@ -97,7 +98,7 @@ struct PlayStudyView: View {
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .frame(maxWidth: 360, alignment: .leading)
                         .padding(.top,10)
-                  
+                    
                     ScrollView {
                         if !fetchedWords.isEmpty {
                             Text(translation)
@@ -133,236 +134,59 @@ struct PlayStudyView: View {
                     .focused(self.$focus)
                     .keyboardType(.alphabet)
                     .disabled(showPopup)
+                
+                Button {
+                    isAnswerCorrect = false
                     
-                if showPopup {
+                    // Check if the inputted answer is correct
+                    isAnswerCorrect = viewModel.checkIfAnswerIsCorrect(selectedDeck, wordsList: fetchedWords, randomNum: randomNum)
+                    
                     // When the answer is correct
                     if isAnswerCorrect {
-                        VStack {
-                            HStack {
-                                Image(systemName: "checkmark.circle")
-                                    .font(.title)
-                                
-                                Text("Good Job!")
-                                    .font(.system(size: 23, weight: .semibold, design: .rounded))
-                            }
-                            .frame(maxWidth: .infinity)
-                            .cornerRadius(15)
-                            .padding(.horizontal)
-                            .padding(.vertical, 20)
-                            
-                            Button {
-                                // Assign the new integer to the array
-                                viewModel.usedWordsIndex.append(randomNum)
-                                
-                                // Check if all the words in the deck have been used
-                                if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
-                                    print("Finished all the words in the deck")
-                                    // Calculate the progress percentage
-                                    progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
-                                    // Wait for one second and jump to the result view
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                                        isResultViewActive = true
-                                    }
-                                }
-                                else {
-                                    for index in viewModel.usedWordsIndex {
-                                        print("The used word's index is: \(index)")
-                                    }
-                                    
-                                    // Remove the text in the text field
-                                    viewModel.resetTextField()
-                                    
-                                    Task {
-                                        do {
-                                            // Generate a new integer for the next question
-                                            randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-                                            
-                                            if !fetchedWords.isEmpty {
-                                                // Generate a sentence with a blank for questions
-                                                let example = fetchedWords[randomNum].example
-                                                // example : I borrowed a book from the library
-                                                modifiedExample = viewModel.hideTargetWordInExample(example)
-                                                translation = fetchedWords[randomNum].translation
-                                                
-                                                correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
-                                                
-                                            } else {
-                                                print("Error in wordList: No words found")
-                                            }
-                                            
-                                        } catch {
-                                            print("Error in generateRandomQuestion: \(error)")
-                                        }
-                                        // Calculate the progress percentage
-                                        progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
-                                        
-                                    }
-                                    
-                                    withAnimation {
-                                        showPopup = false
-                                    }
-                                    
-                                    isAnswerCorrect = false
-                                }
-                            } label: {
-                                Text("Continue")
-                                    .font(.system(size: 23, weight: .semibold, design: .rounded))
-                                    .frame(maxWidth: 200, maxHeight: 60)
-                                    .background(.white)
-                                    .cornerRadius(20)
-                            }
-                            .padding(.bottom, 20)
-                            .navigationDestination(isPresented: $isResultViewActive) {
-                                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
-                            }
-                            
-                        }
-                        .background(Color.green.opacity(0.9))
-                        .transition(
-                            .asymmetric(
-                                insertion: .opacity.combined(with: .move(edge: .bottom)),
-                                removal: .opacity.combined(with: .move(edge: .bottom))
-                            )
-                        )
-                        .animation(.easeInOut(duration: 0.3), value: showPopup)
-                        .zIndex(1)
-                        
+                        // Increment the correct times count
+                        fetchedWords[randomNum].correctTimes += 1
+                        currentWordId = fetchedWords[randomNum].id
+                        showPopup = true
+                        // Dismiss the keyboard
+                        self.focus = false
                     }
-                     // When the answer is incorrect
-                     else {
-                         VStack {
-                             HStack {
-                                 Image(systemName: "xmark.circle")
-                                     .font(.title)
-                                 
-                                 Text("Good Try!")
-                                     .font(.system(size: 23, weight: .semibold, design: .rounded))
-                             }
-                             .frame(maxWidth: .infinity)
-                             .cornerRadius(15)
-                             .padding(.horizontal)
-                             .padding(.vertical, 20)
-                                       
-                             HStack {
-                                 Text("Correct Answer:")
-                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                 Text(correctAnswer) // here
-                                     .font(.system(size: 20, weight: .semibold, design: .rounded))
-                             }
-                                 
-                             Button {
-                                 // Remove the text in the text field
-                                 viewModel.resetTextField()
-                                 
-                                 Task {
-                                     do {
-                                         // Generate a new integer for the next question
-                                         randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-                                         
-                                         if !fetchedWords.isEmpty {
-                                             // Generate a sentence with a blank for questions
-                                             let example = fetchedWords[randomNum].example
-                                             // example : I borrowed a book from the library
-                                             modifiedExample = viewModel.hideTargetWordInExample(example)
-                                             translation = fetchedWords[randomNum].translation
-                                             
-                                             correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
-                                             
-                                   
-                                         } else {
-                                             print("Error in wordList: No words found")
-                                         }
-                                         
-                                     } catch {
-                                         print("Error in generating random question: \(error.localizedDescription)")
-                                     }
-                                 }
-                                  
-                                 withAnimation {
-                                     showPopup = false
-                                 }
-                                 
-                                 isAnswerCorrect = false
-                                 
-                             } label: {
-                                 Text("Got it")
-                                     .font(.system(size: 23, weight: .semibold, design: .rounded))
-                                     .frame(maxWidth: 200, maxHeight: 60)
-                                     .background(.white)
-                                     .cornerRadius(20)
-                             }
-                             .padding(.bottom, 20)
-                             .navigationDestination(isPresented: $isResultViewActive) {
-                                 ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
-                             }
-                         }
-                         .background(Color.red.opacity(0.9))
-                         .transition(
-                                 .asymmetric(
-                                     insertion: .opacity.combined(with: .move(edge: .bottom)),
-                                     removal: .opacity.combined(with: .move(edge: .bottom))
-                                 )
-                             )
-                         .zIndex(1)
-                     }
-                }
-                else {
-                    Button {
-                        // Check if the inputted answer is correct
-                        isAnswerCorrect = viewModel.checkIfAnswerIsCorrect(selectedDeck, wordsList: fetchedWords, randomNum: randomNum)
-                        
+                    // When the answer is incorrect
+                    else {
+                        // Assign the word into the array
+                        viewModel.wrongWordsIndex.append(randomNum)
+                        // Show the pop up and hide the check button
+                        showPopup = true
                         // Dismiss the keyboard
                         self.focus = false
                         
-                        // When the answer is correct
-                        if isAnswerCorrect {
-                            // Increment the correct times count
-                            updatedCorrectTimes = fetchedWords[randomNum].correctTimes + 1
-                            currentWordId = fetchedWords[randomNum].id
-                            
-                            // Call a editing func to update correctTimes variable
-                            Task {
-                                do {
-                                    _ = try await WordService.shared.updateCorrectCount(wordId: currentWordId, correctTimes: updatedCorrectTimes)
-                                    
-                                    // Show the pop up and hide the check button
-                                    withAnimation {
-                                        showPopup = true
-                                    }
-                                } catch {
-                                    print("Error in updating correct times: \(error.localizedDescription)")
-                                }
-                            }
+                        print("The wrong words are:")
+                        for index in viewModel.wrongWordsIndex {
+                            print("\(fetchedWords[index].word)")
                         }
-                        // When the answer is incorrect
-                        else {
-                            // Assign the word into the array
-                            viewModel.wrongWordsIndex.append(randomNum)
-                            
-                            // Show the pop up and hide the check button
-                            withAnimation {
-                                showPopup = true
-                            }
-                            
-                            print("The wrong words are:")
-                            for index in viewModel.wrongWordsIndex {
-                                print("\(fetchedWords[index].word)")
-                            }
-                        }
-                    } label: {
-                        Text("Check")
-                            .font(.system(size: 23, weight: .semibold, design: .rounded))
-                            .frame(width: 300, height:25)
-                        
                     }
-                    .disabled(viewModel.writtenAnswer.isEmpty)
-                    .padding()
-                    .foregroundStyle(viewModel.writtenAnswer.isEmpty ? .white : .blue)
-                    .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .white)
-                    .cornerRadius(20)
+                } label: {
+                    Text("Check")
+                        .font(.system(size: 23, weight: .semibold, design: .rounded))
+                        .frame(width: 300, height:25)
+                    
                 }
+                .disabled(viewModel.writtenAnswer.isEmpty)
+                .padding()
+                .foregroundStyle(viewModel.writtenAnswer.isEmpty ? .white : .blue)
+                .background(viewModel.writtenAnswer.isEmpty ? .gray.opacity(0.8) : .white)
+                .cornerRadius(20)
                 
                 Spacer()
+            }
+            .sheet(isPresented: $showPopup) {
+                CustomSheetView(viewModel: viewModel, correctAnswer: $correctAnswer, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks, isAnswerCorrect: $isAnswerCorrect, isResultViewActive: $isResultViewActive, randomNum: $randomNum, progress: $progress, modifiedExample: $modifiedExample, translation: $translation, onDismiss: {
+                    withAnimation {
+                        showPopup = false
+                    }
+                })
+                .interactiveDismissDisabled(true)
+                .presentationDetents([.fraction(0.35)])
+                .presentationDragIndicator(.hidden)
             }
             .onAppear {
                 Task {
@@ -397,13 +221,17 @@ struct PlayStudyView: View {
             }
             .alert(isPresented: $isAlertActive) {
                 Alert(title: Text("Error"), message: Text("The target deck is empty. Please add words to the deck."), dismissButton: .default(Text("OK")) {
-                        isStudyHomeViewActive = true
+                    isStudyHomeViewActive = true
                 })
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.blue.gradient)
+            .navigationDestination(isPresented: $isResultViewActive) {
+                ResultView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
+            }
         }
         .navigationBarBackButtonHidden()
+        .animation(.easeInOut(duration: 0.3), value: showPopup)
     }
 }
 
@@ -421,3 +249,169 @@ struct PlayStudyView: View {
     PlayStudyView(viewModel: sampleViewModel, fetchedWords: .constant(mockWords), selectedDeck: .constant(0), selectedColor: .constant(.teal), userId: .constant(1), fetchedDecks: .constant(mockDecks))
 }
 
+struct CustomSheetView: View {
+
+    @ObservedObject var viewModel: PlayStudyViewModel
+    @Binding var correctAnswer: String
+    @Binding var fetchedWords : [Word]
+    @Binding var selectedDeck: Int
+    @Binding var selectedColor: Color
+    @Binding var userId : Int
+    @Binding var fetchedDecks: [Deck]
+    @Binding var isAnswerCorrect: Bool
+    @Binding var isResultViewActive: Bool
+    @Binding var randomNum : Int
+    @Binding var progress : Double
+    @Binding var modifiedExample : String
+    @Binding var translation : String
+    var onDismiss: () -> Void
+    
+    var body: some View {
+        // When the answer is correct
+        if isAnswerCorrect {
+            VStack {
+                HStack {
+                    Image(systemName: "checkmark.circle")
+                        .font(.title)
+                    
+                    Text("Good Job!")
+                        .font(.system(size: 28, weight: .semibold, design: .rounded))
+                }
+                .frame(maxWidth: .infinity)
+                .cornerRadius(15)
+                .padding(.horizontal)
+                .padding(.top, 20)
+                .padding(.bottom, 30)
+                
+                Button {
+                    // Assign the new integer to the array
+                    viewModel.usedWordsIndex.append(randomNum)
+                    
+                    // Check if all the words in the deck have been used
+                    if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
+                        print("Finished all the words in the deck")
+                        // Calculate the progress percentage
+                        progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
+                        
+                        // Wait for one second and jump to the result view
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                            // Remove the sheet
+                            onDismiss()
+                            // Navigate to the Result View
+                            isResultViewActive = true
+                        }
+                    }
+                    else {
+                        for index in viewModel.usedWordsIndex {
+                            print("The used word's index is: \(index)")
+                        }
+                        
+                        // Remove the text in the text field
+                        viewModel.resetTextField()
+                        
+                        Task {
+                            do {
+                                // Generate a new integer for the next question
+                                randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
+                                
+                                if !fetchedWords.isEmpty {
+                                    // Generate a sentence with a blank for questions
+                                    let example = fetchedWords[randomNum].example
+                                    // example : I borrowed a book from the library
+                                    modifiedExample = viewModel.hideTargetWordInExample(example)
+                                    translation = fetchedWords[randomNum].translation
+                                    
+                                    correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
+                                    
+                                    // Remove the sheet
+                                    onDismiss()
+                                    
+                                } else {
+                                    print("Error in wordList: No words found")
+                                }
+                                
+                            } catch {
+                                print("Error in generateRandomQuestion: \(error)")
+                            }
+                            // Calculate the progress percentage
+                            progress = viewModel.calculateProgress(selectedDeck, wordsList: fetchedWords)
+                            
+                        }
+                    }
+                } label: {
+                    Text("Continue")
+                        .font(.system(size: 23, weight: .semibold, design: .rounded))
+                        .frame(maxWidth: 200, maxHeight: 60)
+                        .background(.white)
+                        .cornerRadius(20)
+                }
+                .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.green.opacity(0.9))
+        }
+        // When the answer is incorrect
+        else {
+            VStack {
+                HStack {
+                    Image(systemName: "xmark.circle")
+                        .font(.title)
+                    
+                    Text("Good Try!")
+                        .font(.system(size: 28, weight: .semibold, design: .rounded))
+                }
+                .frame(maxWidth: .infinity)
+                .cornerRadius(15)
+                .padding(.horizontal)
+                .padding(.vertical, 15)
+                
+                HStack {
+                    Text("Correct Answer:")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Text(correctAnswer) // here
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                }
+                .padding(.bottom,35)
+                
+                Button {
+                    // Remove the text in the text field
+                    viewModel.resetTextField()
+                    
+                    Task {
+                        do {
+                            // Generate a new integer for the next question
+                            randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
+                            
+                            if !fetchedWords.isEmpty {
+                                // Generate a sentence with a blank for questions
+                                let example = fetchedWords[randomNum].example
+                                // example : I borrowed a book from the library
+                                modifiedExample = viewModel.hideTargetWordInExample(example)
+                                translation = fetchedWords[randomNum].translation
+                                
+                                correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
+                                
+                                // Remove the sheet
+                                onDismiss()
+                                
+                            } else {
+                                print("Error in wordList: No words found")
+                            }
+                            
+                        } catch {
+                            print("Error in generating random question: \(error.localizedDescription)")
+                        }
+                    }
+                } label: {
+                    Text("Got it")
+                        .font(.system(size: 23, weight: .semibold, design: .rounded))
+                        .frame(maxWidth: 200, maxHeight: 60)
+                        .background(.white)
+                        .cornerRadius(20)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.red.opacity(0.9))
+        }
+    }
+}
