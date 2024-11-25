@@ -1,9 +1,5 @@
 import SwiftUI
 
-// TO DO LIST 
-// 1. Users turn to the next page to see more decks (pagination) : Priority 2
-// 2. Users can tick off boxes that shows up when tapping one of the words in the list and then, they can delete the selected words : Priority 3
-
 struct WordListView: View {
     
     @ObservedObject var viewModel : DeckWordViewModel
@@ -48,8 +44,7 @@ struct WordListView: View {
                     .padding(.trailing, 30)
                     .padding(.top,5)
                 }
-                .padding(.bottom, -20)
-                             
+        
                 List {
                     ForEach(fetchedWords) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)

@@ -1,8 +1,5 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Users turn to the next page to see more decks (pagination) : Priority 2
-
 struct DeckListView: View {
     
     @StateObject var viewModel = DeckWordViewModel()
@@ -56,7 +53,6 @@ struct DeckListView: View {
                     .foregroundStyle(.white)
                     .padding(.trailing, 30)
                 }
-                .padding(.bottom, -15)
                 .padding(.top, 20)
              
                 List($fetchedDecks,editActions: .move) { $deck in
