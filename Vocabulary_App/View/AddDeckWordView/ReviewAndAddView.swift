@@ -103,12 +103,12 @@ struct ReviewAndAddView: View {
                                 // Call a func to add a new word
                                 _ = try await WordService.shared.addWords(word: word, definition: definition, example: example, translation: translation, correctTimes: 0, word_order: words.count + 1, deckId: selectedDeckId)
                                 
-                                // Reset all the text fields once the process is complete 
+                                // Reset all the text fields once the process is complete
                                 word = ""
                                 definition = ""
                                 example = ""
                                 translation = ""
-                                
+        
                                 // Navigate to WordListView
                                 currentStep = 0
                                 
@@ -144,7 +144,7 @@ struct ReviewAndAddView: View {
     ReviewAndAddView(
         viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
-        example: .constant("I tend to procrastinate and start to work on assessments in the last minutes before they are due."),
+        example: .constant("I tend to {{procrastinate}} and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
         selectedColor: .constant(.teal),

@@ -6,12 +6,30 @@ import SwiftUI
 struct ExampleInputView: View {
     
     @State private var isReviewAndAddActive: Bool = false
-    @State private var activeAlert: Bool = false
+    @State private var activeAlert: ActiveAlert? = nil
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
     @Binding var selectedColor: Color
     @FocusState var isFocused: Bool
+
+    enum ActiveAlert: Identifiable {
+        case emptyFields
+        case missingBrackets
+        
+        var id: Int {
+            switch self {
+            case .emptyFields:
+                return 1
+            case .missingBrackets:
+                return 2
+            }
+        }
+    }
+    
+    func checkBracketExists(sentence: String) -> Bool {
+        return sentence.contains("{{") && sentence.contains("}}")
+    }
     
     var body: some View {
         NavigationStack {
@@ -189,7 +207,10 @@ struct ExampleInputView: View {
                         
                         Button {
                             if example.isEmpty || translation.isEmpty {
-                                activeAlert = true
+                                activeAlert = .emptyFields
+                            } else if !checkBracketExists(sentence: example) {
+                                print("Missing brackets in the example")
+                                activeAlert = .missingBrackets
                             } else {
                                 currentStep = 3
                             }
@@ -201,11 +222,19 @@ struct ExampleInputView: View {
                         .foregroundStyle(example.isEmpty || translation.isEmpty ? .white : .blue)
                         .background(example.isEmpty || translation.isEmpty ? .gray : .white)
                         .cornerRadius(10)
-                        .alert(isPresented: $activeAlert) {
-                            Alert(
-                                title: Text("Error"),
-                                message: Text("Please fill in the first two blanks")
-                            )
+                        .alert(item: $activeAlert) { alert in
+                            switch alert {
+                            case .emptyFields:
+                                return Alert(
+                                    title: Text("Error"),
+                                    message: Text("Please fill in the first two blanks")
+                                )
+                            case .missingBrackets:
+                                return Alert(
+                                    title: Text("Error"),
+                                    message: Text("Please include the target word inside the brackets. eg. I {{like}} apples.")
+                                )
+                            }
                         }
                         .disabled(example.isEmpty || translation.isEmpty)
                     }
@@ -225,8 +254,12 @@ struct ExampleInputView: View {
 
 #Preview {
     ExampleInputView(
-        example: .constant(""),
-        translation: .constant(""),
+        example: .constant("I have been {{studying}} English for about three years."),
+        translation: .constant("英語を約三年間勉強しています。"),
         currentStep: .constant(3), selectedColor: .constant(.teal)
     )
 }
+
+
+
+
