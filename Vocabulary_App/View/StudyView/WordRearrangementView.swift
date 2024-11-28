@@ -1,28 +1,33 @@
 import SwiftUI
 
 // TO DO LIST
-// 1. Fix the bug of removing all the same word from the choices
-// 2. Make height of the answer space adjastable
-// 3. Move all funcs into viewModel
+// 1. Fix the bug of removing all the same word from the choice.
+// 2. Fix the bug of having empty box in the choices
+// 3. The long sentence wil be cut off in the red sheet 
+// 4. Move all funcs into viewModel
+// 5. 次の問題生成 -> 別パターンの質問に遷移を直す
 
 struct WordRearrangementView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
     @ObservedObject var viewModel2: DeckWordViewModel
-    @State private var sentence : String =  ""
-    @State private var translation : String = ""
     @State private var options : [String] = []
     @State private var word : String = ""
     @State private var arrangedWords: [String] = []
     @State private var tappedWordIndex: Int? = nil
     @State private var joinedSentence : String = ""
-    @State private var modifiedExample : String = ""
-    @State private var isAnswerCorrect : Bool = false
-    @State private var showSheet : Bool = false
-    @State private var randomNum: Int = 0
-    @State private var isResultViewActive: Bool = false
-    @State private var progress : Double = 0.00
-    @State private var fetchedWords : [Word] = [Word(id: 0, word: "Study", definition: "勉強する", example: "I {{study}} at the library every day.", translation: "私は図書館で勉強します。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), Word(id: 1, word: "Swim", definition: "泳ぐ", example: "I go {{swimming}} on the weekends.", translation: "私は週末に泳ぎに行きます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), Word(id: 2, word: "Finish", definition: "終わらせる", example: "I just {{finished}} dinner at home.", translation: "さっき晩御飯を食べました。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    @Binding var progress : Double
+    @Binding var modifiedExample : String
+    @Binding var isAnswerCorrect : Bool
+    @Binding var showPopup : Bool
+    @Binding var translation : String
+    @Binding var randomNum: Int
+    @Binding var isResultViewActive: Bool
+    @Binding var fetchedWords : [Word]
+    @Binding var selectedDeck: Int
+    @Binding var userId : Int
+    @Binding var fetchedDecks: [Deck]
+    @Binding var isFillInTheBlank : Bool
     
     let itemsPerRow = 4
     var onDismiss: () -> Void
@@ -63,43 +68,7 @@ struct WordRearrangementView: View {
         
         NavigationStack {
             VStack{
-                Spacer().frame(height: 10)
-                
-                HStack{
-                    Button {
-                        //isStudyHomeViewActive = true
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.white)
-                    }
-                    //  .navigationDestination(isPresented: $isStudyHomeViewActive) {
-                    //      MainView(userId: $userId)
-                    //  }
-                    
-                    Spacer().frame(width:20)
-                    
-                    ZStack(alignment: .leading) {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 300, height: 15)
-                        
-                        Rectangle()
-                            .fill(Color.blue)
-                            .frame(width: CGFloat(progress) * 3, height: 20)
-                    }
-                    .cornerRadius(10)
-                    .frame(width: 320)
-                    
-                }
-                .padding(.bottom,5)
-                .padding(.trailing,10)
-                
-                Text("Complete the sentence")
-                    .font(.system(size: 23, weight: .bold, design: .rounded))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 15)
-                    .padding(.leading, 17)
-                
+            
                 VStack(alignment: .leading) {
                     Text("- 日本語訳 - ")
                         .font(.system(size: 17, weight: .bold, design: .rounded))
@@ -200,7 +169,7 @@ struct WordRearrangementView: View {
                     }
                     
                     // Show the pop-up
-                    showSheet = true
+                    showPopup = true
                     
                 } label: {
                     Text("Check")
@@ -213,6 +182,9 @@ struct WordRearrangementView: View {
                 .background(arrangedWords.isEmpty ? .gray.opacity(0.8) : .white)
                 .cornerRadius(20)
                 
+            }
+            .navigationDestination(isPresented: $isResultViewActive) {
+                ResultView(viewModel: viewModel, viewModel2: viewModel2, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, userId: $userId, fetchedDecks: $fetchedDecks)
             }
             .onAppear {
                 Task {
@@ -240,7 +212,7 @@ struct WordRearrangementView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showSheet) {
+            .sheet(isPresented: $showPopup) {
                 if isAnswerCorrect {
                     VStack {
                         HStack {
@@ -259,7 +231,7 @@ struct WordRearrangementView: View {
                         Button {
                             if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
                                 print("Finished all the words in the deck")
-                             
+                                                
                                 // Wait for one second and jump to the result view
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                                     // Remove the sheet
@@ -286,8 +258,13 @@ struct WordRearrangementView: View {
                                         // Split the sentence into the array
                                         options = sliceSuffleSentence(sentence: modifiedExample)
                                         
-                                        // Move to a new word
-                                        showSheet = false
+                                        // Remove the sheet
+                                        onDismiss()
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            isFillInTheBlank.toggle()
+                                        }
+                                        
                                     } catch {
                                         print("Error in generating a new word: \(error.localizedDescription)")
                                     }
@@ -348,8 +325,13 @@ struct WordRearrangementView: View {
                                     // Split the sentence into the array
                                     options = sliceSuffleSentence(sentence: modifiedExample)
                                     
-                                    // Move to a new word
-                                    showSheet = false
+                                    // Remove the sheet
+                                    onDismiss()
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        isFillInTheBlank.toggle()
+                                    }
+                                    
                                 } catch {
                                     print("Error in generating a new word: \(error.localizedDescription)")
                                 }
@@ -370,9 +352,7 @@ struct WordRearrangementView: View {
                     .background(.red.opacity(0.9))
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.bottom,30)
-            .background(.blue.gradient)
         }
     }
     
@@ -394,7 +374,32 @@ struct WordRearrangementView: View {
 }
 
 #Preview {
-    WordRearrangementView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), onDismiss: {})
+    
+    let mockDecks = [
+        Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
+        Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
+    ]
+    
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: mockDecks[0].id)]
+    
+    WordRearrangementView(
+        viewModel: PlayStudyViewModel(),
+        viewModel2: DeckWordViewModel(),
+        progress: .constant(1),
+        modifiedExample: .constant("Hello"),
+        isAnswerCorrect: .constant(false),
+        showPopup: .constant(false),
+        translation: .constant("私は毎朝リンゴを食べます。"),
+        randomNum: .constant(0),
+        isResultViewActive: .constant(false),
+        fetchedWords: .constant(mockWords),
+        selectedDeck: .constant(1),
+        userId: .constant(1),
+        fetchedDecks:.constant(mockDecks),
+        isFillInTheBlank: .constant(false),
+        onDismiss: {}
+    )
 }
+
 
 
