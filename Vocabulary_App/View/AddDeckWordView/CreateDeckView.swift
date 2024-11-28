@@ -9,7 +9,6 @@ struct CreateDeckView: View {
     @State private var isDeckListActive: Bool = false
     @State var selectedDeck: Int
     @State var errorMessage : String = ""
-    @Binding var selectedColor: Color
     @Binding var userId : Int
     @Binding var decksCount : Int
     @Binding var fetchedDecks : [Deck]
@@ -137,5 +136,5 @@ struct CreateDeckView: View {
         ]
     
     let sampleViewModel = DeckWordViewModel()
-    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1, selectedColor: .constant(.teal), userId: .constant(1), decksCount: .constant(1), fetchedDecks: .constant(mockDecks))
+    CreateDeckView(viewModel: sampleViewModel, selectedDeck: 1, userId: .constant(1), decksCount: .constant(1), fetchedDecks: .constant(mockDecks))
 }

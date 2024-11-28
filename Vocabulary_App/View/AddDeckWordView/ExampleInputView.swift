@@ -10,7 +10,6 @@ struct ExampleInputView: View {
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
-    @Binding var selectedColor: Color
     @FocusState var isFocused: Bool
 
     enum ActiveAlert: Identifiable {
@@ -69,18 +68,18 @@ struct ExampleInputView: View {
                     
                     Spacer().frame(height: 20)
                     
-                    VStack(alignment: .leading) {
-//                        Button {
-//                            print("Button pressed")
-//                        } label: {
-//                            Text("{ }")
-//                                .font(.system(size: 15, weight: .semibold, design: .rounded))
-//                        }
-//                        .foregroundStyle(.black)
-//                        .frame(width: 30, height: 30)
-//                        .background(.white)
-//                        .cornerRadius(7)
-//                        .padding(.leading,10)
+                    VStack(alignment: .trailing) {
+                        Button {
+                            print("Button pressed")
+                        } label: {
+                            Text("{ }")
+                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        }
+                        .foregroundStyle(.black)
+                        .frame(width: 30, height: 30)
+                        .background(.white)
+                        .cornerRadius(7)
+                        .padding(.trailing,28)
                         
                         HStack {
                             TextEditor(text: $example)
@@ -90,7 +89,7 @@ struct ExampleInputView: View {
                                 .focused($isFocused)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 5)
-                                        .stroke(Color.gray, lineWidth: 2)
+                                        .stroke(Color.gray, lineWidth: 3)
                                 }
                                 .overlay(alignment: .topLeading) {
                                     if example.isEmpty {
@@ -256,7 +255,7 @@ struct ExampleInputView: View {
     ExampleInputView(
         example: .constant("I have been {{studying}} English for about three years."),
         translation: .constant("英語を約三年間勉強しています。"),
-        currentStep: .constant(3), selectedColor: .constant(.teal)
+        currentStep: .constant(3)
     )
 }
 

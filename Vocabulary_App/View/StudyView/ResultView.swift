@@ -14,7 +14,6 @@ struct ResultView: View {
     @Binding var fetchedWords : [Word]
     @Binding var selectedDeck: Int
     @Binding var wrongWordIndex: [Int]
-    @Binding var selectedColor: Color
     @Binding var userId : Int
     @Binding var fetchedDecks: [Deck]
 
@@ -149,7 +148,7 @@ struct ResultView: View {
                 .cornerRadius(10)
                 .padding(.vertical, 20)
                 .navigationDestination(isPresented: $isPlayStudyViewActive) {
-                    PlayStudyView(viewModel: PlayStudyViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks)
+                    PlayStudyView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks)
                 }
             }
         }
@@ -192,7 +191,6 @@ struct ResultView: View {
         fetchedWords: $sampleWordList,
         selectedDeck: $sampleSelectedDeck,
         wrongWordIndex: $sampleWrongWordIndex,
-        selectedColor: .constant(.teal),
         userId: .constant(1),
         fetchedDecks: .constant(mockDecks)
     )

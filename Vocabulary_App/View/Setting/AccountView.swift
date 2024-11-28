@@ -7,7 +7,6 @@ import SwiftUI
 struct AccountView: View {
     
     @State private var isLoginViewActive : Bool = false
-    @Binding var selectedColor: Color
     
     var body: some View {
         NavigationStack {
@@ -19,11 +18,11 @@ struct AccountView: View {
                 
                 List {
                     Section {
-                        NavigationLink("Profile", destination: ProfileView(selectedColor: $selectedColor))
+                        NavigationLink("Profile", destination: ProfileView())
                     }
                     
                     Section {
-                        NavigationLink("Setting", destination: SettingView(selectedColor: $selectedColor))
+                        NavigationLink("Setting", destination: SettingView())
                     }
                 }
                 .scrollContentBackground(.hidden)
@@ -51,5 +50,5 @@ struct AccountView: View {
 }
 
 #Preview {
-    AccountView(selectedColor: .constant(.teal))
+    AccountView()
 }

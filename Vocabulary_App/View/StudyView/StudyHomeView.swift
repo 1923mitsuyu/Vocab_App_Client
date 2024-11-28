@@ -10,7 +10,6 @@ struct StudyHomeView: View {
     @State private var selectedDeckId : Int = 0
     @State var fetchedWords : [Word] = []
     @State private var errorMessage : String = ""
-    @Binding var selectedColor: Color
     @Binding var userId : Int
     
     var body: some View {
@@ -88,7 +87,7 @@ struct StudyHomeView: View {
                     .foregroundStyle(.red)
                     .padding(.top,15)
                 
-                NavigationLink("", destination:  PlayStudyView(viewModel: PlayStudyViewModel(), fetchedWords: $fetchedWords, selectedDeck: $viewModel.selectionDeck, selectedColor: $selectedColor, userId: $userId, fetchedDecks: $fetchedDecks), isActive: $isPlayStudyActive)
+                NavigationLink("", destination:  PlayStudyView(viewModel: PlayStudyViewModel(), viewModel2: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeck: $viewModel.selectionDeck,userId: $userId, fetchedDecks: $fetchedDecks), isActive: $isPlayStudyActive)
     
                 Spacer()
             }
@@ -165,5 +164,5 @@ struct MonthlyCalendarView: View {
 
 
 #Preview {
-    StudyHomeView(viewModel: PlayStudyViewModel(), selectedColor: .constant(.teal), userId: .constant(1))
+    StudyHomeView(viewModel: PlayStudyViewModel(), userId: .constant(1))
 }

@@ -8,7 +8,6 @@ struct ReviewAndAddView: View {
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
-    @Binding var selectedColor: Color
     @Binding var selectedDeck : Int
     @Binding var selectedDeckId : Int
 
@@ -147,7 +146,6 @@ struct ReviewAndAddView: View {
         example: .constant("I tend to {{procrastinate}} and start to work on assessments in the last minutes before they are due."),
         translation: .constant("私は後回しにすることが多く、締め切り直前に課題に取り掛かります。"),
         currentStep: .constant(3),
-        selectedColor: .constant(.teal),
         selectedDeck: .constant(1),
         selectedDeckId: .constant(1)
     )

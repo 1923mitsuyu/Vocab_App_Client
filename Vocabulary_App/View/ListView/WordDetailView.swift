@@ -17,7 +17,6 @@ struct WordDetailView: View {
     @State private var showAlert: Bool = false
     @State private var modifiedExample : String = ""
     @State private var isWordListViewActive : Bool = false
-    @Binding var selectedColor: Color
     @Binding var fetchedWords : [Word]
     @Binding var selectedDeckId : Int
     @Binding var currentStep: Int
@@ -211,5 +210,5 @@ struct WordDetailView: View {
     
     let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べますが、今朝は食べませんでした。違うものを食べたかったんです。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
     
-    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(1), selectedDeck: .constant(1), fetchedDecks: .constant(mockDecks))
+    WordDetailView(word: Word(id: 0, word: "Hello", definition: "こんにちは", example: "Hello, how are you? - I am doing good! How are you doing?", translation: "こんにちは、元気?", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id), viewModel: DeckWordViewModel(), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(1), selectedDeck: .constant(1), fetchedDecks: .constant(mockDecks))
 }

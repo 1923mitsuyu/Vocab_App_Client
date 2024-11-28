@@ -2,10 +2,7 @@ import Foundation
 import SwiftUI
 
 class DeckWordViewModel : ObservableObject {
-    
-    @Published var decks: [Deck] = sampleDecks
-    @Published var words: [Word] = sampleWords
-    
+        
     // Filter words based on the selected deck
     func filterWords(for deckId: Int, in wordList: [Word]) -> [Word] {
         return wordList.filter { $0.deckId == deckId }
@@ -33,9 +30,9 @@ class DeckWordViewModel : ObservableObject {
         return false
     }
     
-    func checkIfWordExists (_ targetWord: String) -> Bool {
+    func checkIfWordExists (_ targetWord: String, wordsList: [Word]) -> Bool {
 
-        for word in words {
+        for word in wordsList {
             let wordInDeck = word.word.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             let targetNewWord = targetWord.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             if wordInDeck == targetNewWord { return true }

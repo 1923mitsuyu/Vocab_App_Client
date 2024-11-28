@@ -7,8 +7,8 @@ struct WordInputView: View {
     @Binding var word: String
     @Binding var definition: String
     @Binding var currentStep: Int
-    @Binding var selectedColor: Color
     @Binding var initialSelectedDeck : Int
+    @Binding var fetchedWords : [Word]
     @FocusState var isFocused: Bool
     
     var body: some View {
@@ -76,11 +76,9 @@ struct WordInputView: View {
                     Spacer().frame(width: 20)
                     
                     Button {
-                        if word.isEmpty || definition.isEmpty {
-                            activeAlert = true
-                        }
-                        else if viewModel.checkIfWordExists(word){
+                        if viewModel.checkIfWordExists(word, wordsList: fetchedWords){
                             print("The word \(word) already exists.")
+                            activeAlert = true
                         }
                         else {
                             currentStep = 2
@@ -97,7 +95,7 @@ struct WordInputView: View {
                     .alert(isPresented: $activeAlert) {
                         Alert(
                             title: Text("Error"),
-                            message: Text("Please fill in the both blanks"),
+                            message: Text("\(word) has already existed."),
                             dismissButton: .default(Text("OK"))
                         )
                     }
@@ -154,11 +152,16 @@ struct TextFieldModifier: ViewModifier {
             .padding(.horizontal)
     }
 }
+
 #Preview {
+    
+    let mockWords = [    Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    
     WordInputView(
         viewModel: DeckWordViewModel(), word: .constant("Procrastinate"),
         definition: .constant("後回しにする"),
-        currentStep: .constant(1), selectedColor: .constant(.teal),
-        initialSelectedDeck: .constant(1)
+        currentStep: .constant(1),
+        initialSelectedDeck: .constant(1),
+        fetchedWords: .constant(mockWords)
     )
 }

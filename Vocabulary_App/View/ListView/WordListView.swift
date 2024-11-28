@@ -12,7 +12,6 @@ struct WordListView: View {
     @Binding var selectedDeckId : Int
     @Binding var currentStep: Int
     @Binding var selectedDeck : Int
-    @Binding var selectedColor: Color
     @Binding var fetchedDecks : [Deck]
    
     var body: some View {
@@ -48,7 +47,7 @@ struct WordListView: View {
                 List {
                     ForEach(fetchedWords) { word in
                         let color = viewModel.customiseButtonColour(correctTimes: word.correctTimes)
-                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), selectedColor: $selectedColor, fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId,currentStep: $currentStep, selectedDeck: $selectedDeck, fetchedDecks:$fetchedDecks)) {
+                        NavigationLink(destination: WordDetailView(word: word, viewModel: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId,currentStep: $currentStep, selectedDeck: $selectedDeck, fetchedDecks:$fetchedDecks)) {
                             Rectangle()
                                 .fill(color)
                                 .frame(width:20, height:20)
@@ -164,5 +163,5 @@ struct WordListView: View {
     let mockWords = [    Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
 
     
-    WordListView(viewModel: DeckWordViewModel(), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(0), selectedDeck: .constant(1), selectedColor: .constant(.teal), fetchedDecks: .constant(mockDecks))
+    WordListView(viewModel: DeckWordViewModel(), fetchedWords: .constant(mockWords), selectedDeckId: .constant(1), currentStep: .constant(0), selectedDeck: .constant(1), fetchedDecks: .constant(mockDecks))
 }

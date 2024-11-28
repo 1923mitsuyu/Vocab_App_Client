@@ -2,12 +2,7 @@ import SwiftUI
 
 struct SettingView: View {
     
-    
-    
     @State private var reminderIsOn = false
-    @State private var isHovering = false
-    @Binding var selectedColor: Color
-    let colors: [Color] = [.blue, .teal, .indigo, .green, .purple, .orange]
     
     var body: some View {
         VStack {
@@ -38,25 +33,10 @@ struct SettingView: View {
         }
         .frame(maxWidth:.infinity, maxHeight:.infinity)
         .background(.blue.gradient)
-        .animation(.easeInOut, value: selectedColor)
     }
 }
 
 #Preview {
-    SettingView(selectedColor: .constant(.blue))
+    SettingView()
 }
 
-//                Section(header: Text("Background Color").font(.headline)){
-//                    HStack {
-//                        ForEach(colors, id: \.self) { color in
-//                            Circle()
-//                                .fill(color)
-//                                .frame(width: 33, height: 40)
-//                                .onTapGesture {
-//                                    selectedColor = color
-//                                }
-//                                .overlay(Circle().stroke(.white, lineWidth: 2))
-//                                .padding(5)
-//                        }
-//                    }
-//                }

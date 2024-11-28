@@ -15,7 +15,6 @@ struct DeckListView: View {
     @State private var showDeleteAlert : Bool = false
     @State private var decksCount : Int = 0
     @State private var errorMessage : String = ""
-    @Binding var selectedColor: Color
     @Binding var userId : Int
     @State private var initialSelectedDeck : Int = 0
     
@@ -32,7 +31,6 @@ struct DeckListView: View {
                         CreateDeckView(
                             viewModel: viewModel,
                             selectedDeck: selectedDeck,
-                            selectedColor: $selectedColor,
                             userId: $userId,
                             decksCount: $decksCount,
                             fetchedDecks: $fetchedDecks
@@ -57,7 +55,7 @@ struct DeckListView: View {
              
                 List($fetchedDecks,editActions: .move) { $deck in
                     NavigationLink(
-                        destination: NavigationParentView(selectedDeck: $selectedDeck, selectedColor: $selectedColor,fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
+                        destination: NavigationParentView(selectedDeck: $selectedDeck, fetchedDecks: $fetchedDecks, initialSelectedDeck: $initialSelectedDeck)
                             .onAppear {
                                 if let index = fetchedDecks.firstIndex(where: { $0.id == deck.id }) {
                                     selectedDeck = index
@@ -295,6 +293,6 @@ struct CreateDeckView_Previews: PreviewProvider {
        ]
     
     static var previews: some View {
-        DeckListView(viewModel: DeckWordViewModel(), selectedColor: .constant(.teal), userId: .constant(1))
+        DeckListView(viewModel: DeckWordViewModel(), userId: .constant(1))
     }
 }

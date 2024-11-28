@@ -10,7 +10,6 @@ struct ProfileView: View {
             dateFormatter.dateFormat = "dd/MM/yyyy"
             return dateFormatter.date(from: "15/07/1998") ?? Date()
         }()
-    @Binding var selectedColor: Color
     private var formattedDateOfBirth: String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy"
@@ -47,5 +46,5 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(selectedColor: .constant(.teal))
+    ProfileView()
 }

@@ -2,14 +2,12 @@ import Foundation
 
 class PlayStudyViewModel : ObservableObject {
     
-    @Published var decks: [Deck] = sampleDecks
-    @Published var words: [Word] = sampleWords
     @Published var writtenAnswer: String = ""
     @Published var selectionDeck = 0
     @Published var usedWordsIndex : [Int] = []
     @Published var wrongWordsIndex : [Int] = []
     
-    func calculateProgress(_ chosenDeck : Int, wordsList : [Word] )-> Double {
+    func calculateProgress(wordsList : [Word] )-> Double {
         let totalNumberOfWords = wordsList.count
         let numberOfUsedWords = usedWordsIndex.count
         return totalNumberOfWords > 0 ? (Double(numberOfUsedWords) / Double(totalNumberOfWords) * 100) : 0
@@ -80,7 +78,7 @@ class PlayStudyViewModel : ObservableObject {
         
         let maxQuestion = wordsList.count
         
-        print("length: \(maxQuestion)")
+        print("Max Number: \(maxQuestion)")
         
         // Generate a random integer
         var randomNum = Int.random(in: 0..<maxQuestion)

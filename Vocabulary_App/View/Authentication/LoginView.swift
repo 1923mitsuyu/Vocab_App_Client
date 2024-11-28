@@ -17,6 +17,7 @@ struct LoginView: View {
     @State private var isError : Bool = false
     @State private var errorMessage : String = "Sign Up Failed. Try Again."
     @State private var userId : Int = 0
+    @State private var isResetPasswordViewActive : Bool = false
     @FocusState var focus: Bool
         
     enum ActiveAlert: Identifiable {
@@ -79,8 +80,8 @@ struct LoginView: View {
                     Spacer().frame(height:15)
                     
                     Button(action: {
-                        // Call a function to reset the password
-                        print("Reset the password")
+                        // Navigate to the page where users enter their email address
+                        isResetPasswordViewActive = true
                     }) {
                         Text("Forgot your password? Tap here!")
                             .foregroundStyle(.black)
@@ -88,6 +89,7 @@ struct LoginView: View {
                             .underline()
                             .padding(.bottom,15)
                     }
+                    .navigationDestination(isPresented: $isResetPasswordViewActive) { ResetPasswordView() }
                     
                     Button(action: {
                         // Check if either of the values (username and password) is empty

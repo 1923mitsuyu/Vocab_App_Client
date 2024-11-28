@@ -11,13 +11,11 @@ struct NavigationParentView: View {
     @State private var note: String = ""
     @State private var selectedDeckId : Int = 0
     @Binding var selectedDeck: Int
-    @Binding var selectedColor: Color
     @Binding var fetchedDecks : [Deck]
     @Binding var initialSelectedDeck : Int
     
-    init(selectedDeck: Binding<Int>,selectedColor: Binding<Color>, fetchedDecks: Binding<[Deck]>,initialSelectedDeck: Binding<Int>) {
+    init(selectedDeck: Binding<Int>, fetchedDecks: Binding<[Deck]>,initialSelectedDeck: Binding<Int>) {
         self._selectedDeck = selectedDeck
-        self._selectedColor = selectedColor
         self._fetchedDecks = fetchedDecks
         self._initialSelectedDeck = initialSelectedDeck
     }
@@ -26,11 +24,11 @@ struct NavigationParentView: View {
         NavigationStack {
             VStack {
                 if currentStep == 0 {
-                    WordListView(viewModel: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId, currentStep: $currentStep, selectedDeck: $selectedDeck, selectedColor: $selectedColor, fetchedDecks: $fetchedDecks)
+                    WordListView(viewModel: DeckWordViewModel(), fetchedWords: $fetchedWords, selectedDeckId: $selectedDeckId, currentStep: $currentStep, selectedDeck: $selectedDeck, fetchedDecks: $fetchedDecks)
                 } else if currentStep == 1 {
-                    WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep, selectedColor: $selectedColor, initialSelectedDeck: $initialSelectedDeck)
+                    WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep, initialSelectedDeck: $initialSelectedDeck, fetchedWords: $fetchedWords)
                 } else if currentStep == 2 {
-                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep, selectedColor: $selectedColor)
+                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
                 } else if currentStep == 3 {
                     ReviewAndAddView(
                         viewModel: DeckWordViewModel(), word: $word,
@@ -38,7 +36,6 @@ struct NavigationParentView: View {
                         example: $example,
                         translation: $translation,
                         currentStep: $currentStep,
-                        selectedColor: $selectedColor,
                         selectedDeck: $selectedDeck,
                         selectedDeckId: $selectedDeckId
                     )
@@ -54,5 +51,5 @@ struct NavigationParentView: View {
             Deck(id: 1, name: "Deck 1", deckOrder: 1, userId: 1),
             Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
         ]
-    NavigationParentView(selectedDeck: .constant(1), selectedColor: .constant(.teal), fetchedDecks: .constant(mockDecks), initialSelectedDeck: .constant(1))
+    NavigationParentView(selectedDeck: .constant(1), fetchedDecks: .constant(mockDecks), initialSelectedDeck: .constant(1))
 }
