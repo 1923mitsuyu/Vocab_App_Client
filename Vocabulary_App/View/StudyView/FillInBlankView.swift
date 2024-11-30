@@ -4,16 +4,16 @@ struct FillInBlankView: View {
 
     @ObservedObject var viewModel: PlayStudyViewModel
     @ObservedObject var viewModel2: DeckWordViewModel
+    @State private var modifiedExample : String = ""
+    @State var translation : String = ""
     @Binding var selectedTab: Int
     @Binding var randomNum : Int
-    @Binding var translation : String
     @Binding var isStudyHomeViewActive: Bool
     @Binding var isResultViewActive: Bool
     @Binding var isAnswerCorrect: Bool
     @Binding var showAlert : Bool
     @Binding var showPopup : Bool
     @Binding var progress : Double
-    @Binding var modifiedExample : String
     @Binding var isAlertActive : Bool
     @Binding var correctAnswer : String
     @Binding var updatedCorrectTimes : Int
@@ -102,27 +102,28 @@ struct FillInBlankView: View {
 
                     // When the answer is correct
                     if isAnswerCorrect {
+                        
+                        // Assign the new integer to the array
+                        viewModel.usedWordsIndex.append(randomNum)
+                        print("The used word's index is: \(viewModel.usedWordsIndex)")
+                        
                         // Increment the correct times count
                         fetchedWords[randomNum].correctTimes += 1
-                        // currentWordId = fetchedWords[randomNum].id
-                        showPopup = true
-                        // Dismiss the keyboard
-                        self.focus = false
+                        
+                        // Calculate the progress percentage
+                        progress = viewModel.calculateProgress(wordsList: fetchedWords)
                     }
                     // When the answer is incorrect
                     else {
                         // Assign the word into the array
                         viewModel.wrongWordsIndex.append(randomNum)
-                        // Show the pop up and hide the check button
-                        showPopup = true
-                        // Dismiss the keyboard
-                        self.focus = false
-
-                        print("The wrong words are:")
-                        for index in viewModel.wrongWordsIndex {
-                            print("\(fetchedWords[index].word)")
-                        }
+                        print("The wrong word index:\(viewModel.wrongWordsIndex)")
                     }
+                    
+                    // Dismiss the keyboard
+                    self.focus = false
+                    showPopup = true
+                    
                 } label: {
                     Text("Check")
                         .font(.system(size: 23, weight: .semibold, design: .rounded))
@@ -148,14 +149,19 @@ struct FillInBlankView: View {
                 .presentationDragIndicator(.hidden)
             }
             .onAppear {
+                
+                // Reset the text in the text field every time this view comes in
+                viewModel.resetTextField()
+                
+                // Check if the selected deck is empty
+                if fetchedWords.isEmpty {
+                    isAlertActive = true
+                    return
+                }
+                
                 Task {
                     do {
-                        // Check if the selected deck is empty
-                        if fetchedWords.isEmpty {
-                            isAlertActive = true
-                            return
-                        }
-
+                    
                         // Generate the very first random number
                         randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
 
@@ -206,14 +212,12 @@ struct FillInBlankView: View {
         viewModel2: DeckWordViewModel(),
         selectedTab: .constant(2),
         randomNum: .constant(0),
-        translation: .constant("こんばんは"),
         isStudyHomeViewActive: .constant(false),
         isResultViewActive: .constant(false),
         isAnswerCorrect: .constant(false),
         showAlert:.constant(false),
         showPopup: .constant(false),
         progress:.constant(1.0),
-        modifiedExample: .constant("Hello"),
         isAlertActive: .constant(false),
         correctAnswer: .constant("Hello"),
         updatedCorrectTimes: .constant(1),
@@ -260,10 +264,6 @@ struct CustomSheetView: View {
                 .padding(.bottom, 30)
 
                 Button {
-                    // Assign the new integer to the array
-                    viewModel.usedWordsIndex.append(randomNum)
-                        print("The used word's index is: \(viewModel.usedWordsIndex)")
-
                     // Check if all the words in the deck have been used
                     if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
                         print("Finished all the words in the deck")
@@ -279,40 +279,11 @@ struct CustomSheetView: View {
                         }
                     }
                     else {
-
-                        // Remove the text in the text field
-                        viewModel.resetTextField()
-
-                        Task {
-                            do {
-                                // Generate a new integer for the next question
-                                randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-
-                                if !fetchedWords.isEmpty {
-                                    // Generate a sentence with a blank for questions
-                                    let example = fetchedWords[randomNum].example
-                                    // example : I borrowed a book from the library
-                                    modifiedExample = viewModel.hideTargetWordInExample(example)
-                                    translation = fetchedWords[randomNum].translation
-
-                                    correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
-
-                                    // Remove the sheet
-                                    onDismiss()
+                        // Remove the sheet
+                        onDismiss()
                                     
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        isFillInTheBlank.toggle()
-                                    }
-
-                                } else {
-                                    print("Error in wordList: No words found")
-                                }
-
-                            } catch {
-                                print("Error in generateRandomQuestion: \(error)")
-                            }
-                            // Calculate the progress percentage
-                            progress = viewModel.calculateProgress(wordsList: fetchedWords)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            isFillInTheBlank.toggle()
                         }
                     }
                 } label: {
@@ -333,7 +304,7 @@ struct CustomSheetView: View {
                 HStack {
                     Image(systemName: "xmark.circle")
                         .font(.title)
-
+                    
                     Text("Good Try!")
                         .font(.system(size: 28, weight: .semibold, design: .rounded))
                 }
@@ -341,7 +312,7 @@ struct CustomSheetView: View {
                 .cornerRadius(15)
                 .padding(.horizontal)
                 .padding(.vertical, 15)
-
+                
                 HStack {
                     Text("Correct Answer:")
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -349,39 +320,13 @@ struct CustomSheetView: View {
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
                 .padding(.bottom,35)
-
+                
                 Button {
-                    // Remove the text in the text field
-                    viewModel.resetTextField()
-
-                    Task {
-                        do {
-                            // Generate a new integer for the next question
-                            randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-
-                            if !fetchedWords.isEmpty {
-                                // Generate a sentence with a blank for questions
-                                let example = fetchedWords[randomNum].example
-                                // example : I borrowed a book from the library
-                                modifiedExample = viewModel.hideTargetWordInExample(example)
-                                translation = fetchedWords[randomNum].translation
-
-                                correctAnswer = viewModel.extractWordFromBrackets(example: fetchedWords[randomNum].example) ?? "No matched word"
-
-                                // Remove the sheet
-                                onDismiss()
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    isFillInTheBlank.toggle()
-                                }
-
-                            } else {
-                                print("Error in wordList: No words found")
-                            }
-
-                        } catch {
-                            print("Error in generating random question: \(error.localizedDescription)")
-                        }
+                    // Remove the sheet
+                    onDismiss()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isFillInTheBlank.toggle()
                     }
                 } label: {
                     Text("Got it")

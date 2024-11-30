@@ -1,26 +1,17 @@
 import SwiftUI
 
-// TO DO LIST
-// 1. Fix the bug of removing all the same word from the choice.
-// 2. Fix the bug of having empty box in the choices
-// 3. The long sentence wil be cut off in the red sheet 
-// 4. Move all funcs into viewModel
-// 5. 次の問題生成 -> 別パターンの質問に遷移を直す
-
 struct WordRearrangementView: View {
     
     @ObservedObject var viewModel: PlayStudyViewModel
     @ObservedObject var viewModel2: DeckWordViewModel
+    @State private var modifiedExample : String = ""
+    @State private var translation : String = ""
     @State private var options : [String] = []
     @State private var word : String = ""
-    @State private var arrangedWords: [String] = []
-    @State private var tappedWordIndex: Int? = nil
     @State private var joinedSentence : String = ""
     @Binding var progress : Double
-    @Binding var modifiedExample : String
     @Binding var isAnswerCorrect : Bool
     @Binding var showPopup : Bool
-    @Binding var translation : String
     @Binding var randomNum: Int
     @Binding var isResultViewActive: Bool
     @Binding var fetchedWords : [Word]
@@ -28,38 +19,12 @@ struct WordRearrangementView: View {
     @Binding var userId : Int
     @Binding var fetchedDecks: [Deck]
     @Binding var isFillInTheBlank : Bool
-    
+    @Binding var isAlertActive : Bool
+    @Binding var isStudyHomeViewActive: Bool
+   
     let itemsPerRow = 4
     var onDismiss: () -> Void
     
-    func sliceSuffleSentence(sentence : String) -> [String]{
-        let array = sentence.components(separatedBy: " ").shuffled()
-        return array
-    }
-    
-    func putArrayBackToString(array : [String]) -> String{
-        return array.joined(separator: " ")
-    }
-    
-    func checkAnswer(userAnswer: String) -> Bool{
-        print("Checking ans.....")
-        
-        let userWords = userAnswer.split(separator: " ").map { String($0) }
-        let correctWords = modifiedExample.split(separator: " ").map { String($0) }
-        
-        if userWords.count != correctWords.count {
-            return false
-        }
-        
-        for (userWord, correctWord) in zip(userWords, correctWords) {
-            print("userWord: \(userWord), correctWord: \(correctWord)")
-            if userWord != correctWord {
-                return false
-            }
-        }
-        return true
-    }
-        
     var body: some View {
         
         let columns = [
@@ -68,7 +33,6 @@ struct WordRearrangementView: View {
         
         NavigationStack {
             VStack{
-            
                 VStack(alignment: .leading) {
                     Text("- 日本語訳 - ")
                         .font(.system(size: 17, weight: .bold, design: .rounded))
@@ -84,22 +48,22 @@ struct WordRearrangementView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         let minNumLines = 2
-                        let nLines = max(minNumLines, (arrangedWords.count + itemsPerRow - 1) / itemsPerRow)
+                        let nLines = max(minNumLines, (viewModel.arrangedWords.count + itemsPerRow - 1) / itemsPerRow)
                         ForEach(0..<nLines, id: \.self) { row in
                             HStack(spacing: 5) {
                                 ForEach(0..<itemsPerRow, id: \.self) { column in
                                     let index = row * itemsPerRow + column
                                     ZStack {
-                                        if index < arrangedWords.count {
-                                            let targetWord = arrangedWords[index]
+                                        if index < viewModel.arrangedWords.count {
+                                            let targetWord = viewModel.arrangedWords[index]
                                             Text(targetWord)
                                                 .foregroundColor(.white)
                                                 .padding()
                                                 .background(Rectangle().fill(Color.green.opacity(0.8)))
                                                 .cornerRadius(10)
                                                 .onTapGesture {
-                                                    moveWordOutOfSpace(index: index)
-                                                    print("arranged words: \(arrangedWords)")
+                                                    viewModel.moveWordOutOfSpace(index: index)
+                                                    print("arranged words: \(viewModel.arrangedWords)")
                                                 }
                                         }
                                     }
@@ -114,12 +78,12 @@ struct WordRearrangementView: View {
                     .padding(10)
                 }
                 
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 10)
                 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(options.indices, id: \.self) { index in
-                            if !arrangedWords.contains(options[index]) {
+                            if !viewModel.tappedWordsIndex.contains(index) {
                                 Text(options[index])
                                     .padding()
                                     .frame(minWidth: 100)
@@ -128,12 +92,15 @@ struct WordRearrangementView: View {
                                     .foregroundColor(.white)
                                     .onTapGesture {
                                         if !options.isEmpty{
-                                            moveWordToSpace(index: index)
-                                            print("arranged words: \(arrangedWords)")
+                                            viewModel.moveWordToSpace(index: index, options: options)
+                                            
+                                            viewModel.storeTappedWordsIndex(index: index)
+                                            
+                                            print("arranged words: \(viewModel.arrangedWords)")
                                         }
                                     }
-                                    .offset(y: tappedWordIndex == index ? -50 : 0)
-                                    .animation(.spring(), value: tappedWordIndex)
+                                    .offset(y: viewModel.tappedWordIndex == index ? -50 : 0)
+                                    .animation(.spring(), value: viewModel.tappedWordIndex)
                             }
                             else {
                                 Text("")
@@ -151,10 +118,10 @@ struct WordRearrangementView: View {
                 
                 Button {
                     // Join each split word into one string
-                    joinedSentence = putArrayBackToString(array: arrangedWords)
-                    print("The joined Sentecd:\(joinedSentence)")
+                    joinedSentence = viewModel.putArrayBackToString()
+                    print("The joined Sentecd: \(joinedSentence)")
                     // Check if the answer is correct
-                    isAnswerCorrect = checkAnswer(userAnswer: joinedSentence)
+                    isAnswerCorrect = viewModel.checkAnswer(userAnswer: joinedSentence, modifiedExample: modifiedExample)
                     print("Correct Answer?: \(isAnswerCorrect)")
                     
                     if isAnswerCorrect {
@@ -176,23 +143,31 @@ struct WordRearrangementView: View {
                         .font(.system(size: 23, weight: .semibold, design: .rounded))
                         .frame(width: 300, height:25)
                 }
-                .disabled(arrangedWords.isEmpty)
+                .disabled(viewModel.arrangedWords.isEmpty)
                 .padding()
-                .foregroundStyle(arrangedWords.isEmpty ? .white : .blue)
-                .background(arrangedWords.isEmpty ? .gray.opacity(0.8) : .white)
+                .foregroundStyle(viewModel.arrangedWords.isEmpty ? .white : .blue)
+                .background(viewModel.arrangedWords.isEmpty ? .gray.opacity(0.8) : .white)
                 .cornerRadius(20)
                 
+            }
+            .alert(isPresented: $isAlertActive) {
+                Alert(title: Text("Error"), message: Text("The target deck is empty. Please add words to the deck."), dismissButton: .default(Text("OK")) {
+                    isStudyHomeViewActive = true
+                })
             }
             .navigationDestination(isPresented: $isResultViewActive) {
                 ResultView(viewModel: viewModel, viewModel2: viewModel2, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, wrongWordIndex: $viewModel.wrongWordsIndex, userId: $userId, fetchedDecks: $fetchedDecks)
             }
             .onAppear {
+                // Reset the answer every time this view comes in
+                viewModel.arrangedWords = []
+                viewModel.tappedWordsIndex = []
+                if fetchedWords.isEmpty {
+                    isAlertActive = true
+                    return
+                }
+                
                 Task {
-                    if fetchedWords.isEmpty {
-                        // isAlertActive = true
-                        return
-                    }
-                    
                     do {
                         // Generate a random int to get ready for the first random question
                         randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
@@ -200,11 +175,11 @@ struct WordRearrangementView: View {
                         // Remove the bracket and set the first question
                         let original_example = fetchedWords[randomNum].example
                         modifiedExample = viewModel2.removeBrackets(original_example)
-                       
+                        
                         translation = fetchedWords[randomNum].translation
                         
                         // Split the sentence into the array
-                        options = sliceSuffleSentence(sentence: modifiedExample)
+                        options = viewModel.sliceSuffleSentence(sentence: modifiedExample)
                         print("Splitted Sentence: \(options)")
                         
                     } catch {
@@ -231,7 +206,7 @@ struct WordRearrangementView: View {
                         Button {
                             if viewModel.checkIfAllWordsUsed(wordsList: fetchedWords) {
                                 print("Finished all the words in the deck")
-                                                
+                                
                                 // Wait for one second and jump to the result view
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                                     // Remove the sheet
@@ -240,34 +215,12 @@ struct WordRearrangementView: View {
                                     isResultViewActive = true
                                 }
                                 
-                            } else {
-                                Task {
-                                    do {
-                                        // Reset the answer
-                                        arrangedWords = []
-                                        
-                                        // Generate a new word
-                                        randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-                                        
-                                        // Remove the bracket and set the first question
-                                        let original_example = fetchedWords[randomNum].example
-                                        modifiedExample = viewModel2.removeBrackets(original_example)
-                                    
-                                        translation = fetchedWords[randomNum].translation
-                                        
-                                        // Split the sentence into the array
-                                        options = sliceSuffleSentence(sentence: modifiedExample)
-                                        
-                                        // Remove the sheet
-                                        onDismiss()
-                                        
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            isFillInTheBlank.toggle()
-                                        }
-                                        
-                                    } catch {
-                                        print("Error in generating a new word: \(error.localizedDescription)")
-                                    }
+                            } else {                                
+                                // Remove the sheet
+                                onDismiss()
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    isFillInTheBlank.toggle()
                                 }
                             }
                         } label: {
@@ -302,39 +255,24 @@ struct WordRearrangementView: View {
                         VStack {
                             Text("Correct Answer")
                                 .padding(.bottom,10)
-                            Text(modifiedExample)
+                            
+                            ScrollView {
+                                Text(modifiedExample)
+                                    .multilineTextAlignment(.leading)
+                                    .lineLimit(nil)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(.horizontal,10)
+                            }
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .padding(.bottom,35)
                         
                         Button {
-                            Task {
-                                do {
-                                    // Reset the answer
-                                    arrangedWords = []
-                                    
-                                    // Generate a new word
-                                    randomNum = try await viewModel.generateRandomQuestion(wordsList: fetchedWords)
-                                    
-                                    // Remove the bracket and set the first question
-                                    let original_example = fetchedWords[randomNum].example
-                                    modifiedExample = viewModel2.removeBrackets(original_example)
-                                    
-                                    translation = fetchedWords[randomNum].translation
-                                    
-                                    // Split the sentence into the array
-                                    options = sliceSuffleSentence(sentence: modifiedExample)
-                                    
-                                    // Remove the sheet
-                                    onDismiss()
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        isFillInTheBlank.toggle()
-                                    }
-                                    
-                                } catch {
-                                    print("Error in generating a new word: \(error.localizedDescription)")
-                                }
+                            // Remove the sheet
+                            onDismiss()
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                isFillInTheBlank.toggle()
                             }
                             
                         } label: {
@@ -355,22 +293,6 @@ struct WordRearrangementView: View {
             .padding(.bottom,30)
         }
     }
-    
-    // 単語をスペースに移動する処理
-    private func moveWordToSpace(index: Int) {
-        word = options[index]
-        arrangedWords.append(word)
-        tappedWordIndex = index
-        
-        // 少し遅らせて選択をリセット
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            tappedWordIndex = nil
-        }
-    }
-    
-    private func moveWordOutOfSpace(index: Int) {
-        arrangedWords.remove(at: index)
-    }
 }
 
 #Preview {
@@ -380,16 +302,14 @@ struct WordRearrangementView: View {
         Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
     ]
     
-    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: mockDecks[0].id)]
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat and eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: mockDecks[0].id)]
     
     WordRearrangementView(
         viewModel: PlayStudyViewModel(),
         viewModel2: DeckWordViewModel(),
         progress: .constant(1),
-        modifiedExample: .constant("Hello"),
         isAnswerCorrect: .constant(false),
         showPopup: .constant(false),
-        translation: .constant("私は毎朝リンゴを食べます。"),
         randomNum: .constant(0),
         isResultViewActive: .constant(false),
         fetchedWords: .constant(mockWords),
@@ -397,6 +317,8 @@ struct WordRearrangementView: View {
         userId: .constant(1),
         fetchedDecks:.constant(mockDecks),
         isFillInTheBlank: .constant(false),
+        isAlertActive:.constant(false),
+        isStudyHomeViewActive:.constant(false),
         onDismiss: {}
     )
 }

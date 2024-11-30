@@ -6,7 +6,6 @@ struct PlayStudyView: View {
     @ObservedObject var viewModel2: DeckWordViewModel
     @State private var selectedTab: Int = 1
     @State var randomNum : Int = 0
-    @State var translation : String = ""
     @State private var isStudyHomeViewActive: Bool = false
     @State private var isResultViewActive: Bool = false
     @State private var isAnswerCorrect: Bool = false
@@ -68,10 +67,10 @@ struct PlayStudyView: View {
                     .padding(.leading, 17)
                 
                 if isFillInTheBlank {
-                    FillInBlankView(viewModel: viewModel, viewModel2: viewModel2, selectedTab: $selectedTab, randomNum: $randomNum, translation: $translation, isStudyHomeViewActive: $isStudyHomeViewActive, isResultViewActive: $isResultViewActive, isAnswerCorrect: $isAnswerCorrect, showAlert: $showAlert, showPopup: $showPopup, progress: $progress, modifiedExample: $modifiedExample, isAlertActive: $isAlertActive, correctAnswer: $correctAnswer, updatedCorrectTimes: $updatedCorrectTimes, isFillInTheBlank: $isFillInTheBlank, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks)
+                    FillInBlankView(viewModel: viewModel, viewModel2: viewModel2, selectedTab: $selectedTab, randomNum: $randomNum, isStudyHomeViewActive: $isStudyHomeViewActive, isResultViewActive: $isResultViewActive, isAnswerCorrect: $isAnswerCorrect, showAlert: $showAlert, showPopup: $showPopup, progress: $progress, isAlertActive: $isAlertActive, correctAnswer: $correctAnswer, updatedCorrectTimes: $updatedCorrectTimes, isFillInTheBlank: $isFillInTheBlank, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks)
                         
                 } else {
-                    WordRearrangementView(viewModel: viewModel, viewModel2: viewModel2, progress: $progress, modifiedExample: $modifiedExample, isAnswerCorrect: $isAnswerCorrect, showPopup: $showPopup,translation: $translation, randomNum: $randomNum, isResultViewActive: $isResultViewActive, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks, isFillInTheBlank: $isFillInTheBlank, onDismiss: {
+                    WordRearrangementView(viewModel: viewModel, viewModel2: viewModel2, progress: $progress, isAnswerCorrect: $isAnswerCorrect, showPopup: $showPopup, randomNum: $randomNum, isResultViewActive: $isResultViewActive, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks, isFillInTheBlank: $isFillInTheBlank, isAlertActive: $isAlertActive,isStudyHomeViewActive: $isStudyHomeViewActive, onDismiss: {
                         withAnimation {
                             showPopup = false
                         }
@@ -94,7 +93,7 @@ struct PlayStudyView: View {
             Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
         ]
     
-    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat and eat an {{apple}} every morning.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
     
     // Pass the sample ViewModel and selectedDeck binding to the preview
     PlayStudyView(viewModel: sampleViewModel, viewModel2: DeckWordViewModel(), fetchedWords: .constant(mockWords), selectedDeck: .constant(0), userId: .constant(1), fetchedDecks: .constant(mockDecks))

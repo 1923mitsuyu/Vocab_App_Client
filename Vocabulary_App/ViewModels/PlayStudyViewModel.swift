@@ -6,18 +6,71 @@ class PlayStudyViewModel : ObservableObject {
     @Published var selectionDeck = 0
     @Published var usedWordsIndex : [Int] = []
     @Published var wrongWordsIndex : [Int] = []
+    @Published var arrangedWords: [String] = []
+    @Published var tappedWordIndex: Int? = nil
+    @Published var tappedWordsIndex : [Int] = []
+    
+    func sliceSuffleSentence(sentence : String) -> [String]{
+        let trimmedSentence = sentence.trimmingCharacters(in: .whitespacesAndNewlines)
+        var array = trimmedSentence.components(separatedBy: " ")
+        print("The splitted array before it gets shuffled: \(array)")
+        array = array.shuffled()
+        return array
+    }
+    
+    func putArrayBackToString() -> String{
+        return arrangedWords.joined(separator: " ")
+    }
+    
+    func checkAnswer(userAnswer: String, modifiedExample: String) -> Bool{
+        print("Checking ans.....")
+        
+        let userWords = userAnswer.split(separator: " ").map { String($0) }
+        let correctWords = modifiedExample.split(separator: " ").map { String($0) }
+        
+        if userWords.count != correctWords.count {
+            return false
+        }
+        
+        for (userWord, correctWord) in zip(userWords, correctWords) {
+            print("userWord: \(userWord), correctWord: \(correctWord)")
+            if userWord != correctWord {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    func storeTappedWordsIndex(index: Int){
+        tappedWordsIndex.append(index)
+        print("Tapped Words: \(tappedWordsIndex)")
+    }
+    
+    // 単語をスペースに移動させる処理
+    func moveWordToSpace(index: Int, options:[String]) {
+        let word = options[index]
+        arrangedWords.append(word)
+        tappedWordIndex = index
+        
+        print("Chosen words: \(arrangedWords)")
+        // 少し遅らせて選択をリセット
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.tappedWordIndex = nil
+        }
+    }
+    
+    // 単語をスペースから外に移動させる処理
+    func moveWordOutOfSpace(index: Int) {
+        arrangedWords.remove(at: index)
+        tappedWordsIndex.remove(at: index)
+    }
     
     func calculateProgress(wordsList : [Word] )-> Double {
         let totalNumberOfWords = wordsList.count
         let numberOfUsedWords = usedWordsIndex.count
         return totalNumberOfWords > 0 ? (Double(numberOfUsedWords) / Double(totalNumberOfWords) * 100) : 0
     }
-    
-    // Filter words based on the selected deck
-    func filterWords(for deckId: Int, in wordList: [Word]) async throws -> [Word] {
-        return wordList.filter { $0.deckId == deckId }
-    }
-    
     
     func hideTargetWordInExample(_ example: String) -> String {
         // 正規表現で {{}} 内の部分を見つける
@@ -50,7 +103,6 @@ class PlayStudyViewModel : ObservableObject {
         do {
             // 正規表現を作成
             let regex = try NSRegularExpression(pattern: pattern, options: [])
-            
             // 文字列内で一致する部分を検索
             let range = NSRange(location: 0, length: example.utf16.count)
             if let match = regex.firstMatch(in: example, options: [], range: range) {
