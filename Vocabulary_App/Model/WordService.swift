@@ -18,11 +18,98 @@ struct DeleteWordResponse: Decodable {
     let message: String
 }
 
+struct ExampleGeneratedResponse: Decodable {
+    let message: String
+    let content: [String]
+}
+
 class WordService {
     
     static let shared = WordService()
     private init() {}
     
+    func generateSentence(word: String, definition: String) async throws -> String {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/generateContent") else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["word": word, "definition": definition]
+        print("Parameters being sent:", parameters)
+        
+        // Create a URL request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Encoding parameters as JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            throw NetworkError.invalidResponse
+        }
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into SignUpResponse object to get the message
+        do {
+            let wordResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
+            let sentence = wordResponse.content[0]
+            return sentence
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
+        
+    }
+    
+    func generateTranslation(example: String) async throws -> String {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/generateTranslation") else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["example": example]
+        print("Parameters being sent:", parameters)
+        
+        // Create a URL request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Encoding parameters as JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            throw NetworkError.invalidResponse
+        }
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into SignUpResponse object to get the message
+        do {
+            let wordResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
+            let translation = wordResponse.content[0]
+            return translation
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
+        
+    }
+        
     func getWords(deckId: Int) async throws -> [Word] {
         
         guard let url = URL(string: "http://localhost:3000/v1/fetchWords/\(deckId)") else {

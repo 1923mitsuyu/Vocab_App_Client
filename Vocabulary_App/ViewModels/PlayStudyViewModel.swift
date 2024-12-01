@@ -53,7 +53,6 @@ class PlayStudyViewModel : ObservableObject {
         arrangedWords.append(word)
         tappedWordIndex = index
         
-        print("Chosen words: \(arrangedWords)")
         // 少し遅らせて選択をリセット
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.tappedWordIndex = nil

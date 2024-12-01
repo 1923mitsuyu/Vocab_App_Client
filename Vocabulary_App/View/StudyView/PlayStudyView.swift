@@ -24,10 +24,8 @@ struct PlayStudyView: View {
     @FocusState var focus: Bool
     
     var body: some View {
-        
         NavigationStack {
             VStack {
-                
                 Spacer().frame(height: 20)
                 
                 // Progress Bar
@@ -66,9 +64,11 @@ struct PlayStudyView: View {
                     .padding(.vertical, 5)
                     .padding(.leading, 17)
                 
+                // First type of question
                 if isFillInTheBlank {
                     FillInBlankView(viewModel: viewModel, viewModel2: viewModel2, selectedTab: $selectedTab, randomNum: $randomNum, isStudyHomeViewActive: $isStudyHomeViewActive, isResultViewActive: $isResultViewActive, isAnswerCorrect: $isAnswerCorrect, showAlert: $showAlert, showPopup: $showPopup, progress: $progress, isAlertActive: $isAlertActive, correctAnswer: $correctAnswer, updatedCorrectTimes: $updatedCorrectTimes, isFillInTheBlank: $isFillInTheBlank, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks)
-                        
+                
+                // Second type of question
                 } else {
                     WordRearrangementView(viewModel: viewModel, viewModel2: viewModel2, progress: $progress, isAnswerCorrect: $isAnswerCorrect, showPopup: $showPopup, randomNum: $randomNum, isResultViewActive: $isResultViewActive, fetchedWords: $fetchedWords, selectedDeck: $selectedDeck, userId: $userId, fetchedDecks: $fetchedDecks, isFillInTheBlank: $isFillInTheBlank, isAlertActive: $isAlertActive,isStudyHomeViewActive: $isStudyHomeViewActive, onDismiss: {
                         withAnimation {

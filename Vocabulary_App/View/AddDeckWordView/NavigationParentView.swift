@@ -28,7 +28,7 @@ struct NavigationParentView: View {
                 } else if currentStep == 1 {
                     WordInputView(viewModel: DeckWordViewModel(), word: $word, definition: $definition, currentStep: $currentStep, initialSelectedDeck: $initialSelectedDeck, fetchedWords: $fetchedWords)
                 } else if currentStep == 2 {
-                    ExampleInputView(example: $example, translation: $translation, currentStep: $currentStep)
+                    ExampleInputView(word: $word, definition: $definition, example: $example, translation: $translation, currentStep: $currentStep)
                 } else if currentStep == 3 {
                     ReviewAndAddView(
                         viewModel: DeckWordViewModel(), word: $word,

@@ -7,11 +7,13 @@ struct ExampleInputView: View {
     
     @State private var isReviewAndAddActive: Bool = false
     @State private var activeAlert: ActiveAlert? = nil
+    @Binding var word : String
+    @Binding var definition : String
     @Binding var example: String
     @Binding var translation: String
     @Binding var currentStep: Int
     @FocusState var isFocused: Bool
-
+    
     enum ActiveAlert: Identifiable {
         case emptyFields
         case missingBrackets
@@ -120,7 +122,14 @@ struct ExampleInputView: View {
                     Spacer().frame(height: 10)
                     
                     Button {
-                        print("Button tapped")
+                        Task {
+                            do {
+                                example = try await WordService.shared.generateSentence(word: word, definition: definition)
+                                print("Response from WordService: \(example)")
+                            } catch {
+                                print("Error in generating sentence: \(error.localizedDescription)")
+                            }
+                        }
                     } label: {
                         Text("Generate an example sentence")
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -173,7 +182,18 @@ struct ExampleInputView: View {
                     Spacer().frame(height: 10)
                     
                     Button {
-                        print("Button tapped")
+                        
+                        if !example.isEmpty {
+                            Task {
+                                do {
+                                    translation = try await WordService.shared.generateTranslation(example: example)
+                                } catch {
+                                    print("Error in generating sentence: \(error.localizedDescription)")
+                                }
+                            }
+                        } else {
+                            print("Please make an example sentence first.")
+                        }
                     } label: {
                         Text("Generate a translation")
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -253,6 +273,7 @@ struct ExampleInputView: View {
 
 #Preview {
     ExampleInputView(
+        word: .constant("Study"), definition: .constant("勉強する"),
         example: .constant("I have been {{studying}} English for about three years."),
         translation: .constant("英語を約三年間勉強しています。"),
         currentStep: .constant(3)
