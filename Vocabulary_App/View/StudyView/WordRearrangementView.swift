@@ -96,7 +96,7 @@ struct WordRearrangementView: View {
             return (result,
                     .init(width: containerWidth, height: currentPosition.y + lineHeight))
         }
-    } // here
+    }
     
     var body: some View {
         

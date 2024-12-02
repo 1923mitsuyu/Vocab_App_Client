@@ -71,25 +71,6 @@ struct ExampleInputView: View {
                     Spacer().frame(height: 20)
                     
                     VStack(alignment: .trailing) {
-                        Button {
-                            Task {
-                                do {
-                                    example = try await WordService.shared.addBrackets(word: word, example: example)
-                                    print("Response from WordService: \(example)")
-                                } catch {
-                                    print("Error in generating sentence: \(error.localizedDescription)")
-                                }
-                            }
-                        } label: {
-                            Text("{ }")
-                                .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        }
-                        .foregroundStyle(.black)
-                        .frame(width: 30, height: 30)
-                        .background(.white)
-                        .cornerRadius(7)
-                        .padding(.trailing,28)
-                        
                         HStack {
                             TextEditor(text: $example)
                                 .font(.system(size: 17, weight: .semibold, design: .rounded))
@@ -128,27 +109,48 @@ struct ExampleInputView: View {
                     
                     Spacer().frame(height: 10)
                     
-                    Button {
-                        Task {
-                            do {
-                                example = try await WordService.shared.generateSentence(word: word, definition: definition)
-                                print("Response from WordService: \(example)")
-                            } catch {
-                                print("Error in generating sentence: \(error.localizedDescription)")
+                    HStack {
+                        Button {
+                            Task {
+                                do {
+                                    example = try await WordService.shared.generateSentence(word: word, definition: definition)
+                                    print("Response from WordService: \(example)")
+                                } catch {
+                                    print("Error in generating sentence: \(error.localizedDescription)")
+                                }
                             }
+                        } label: {
+                            Text("Generate an example sentence")
+                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.black)
+                                .frame(width: 250, height:25)
+                                .padding(.vertical,5)
                         }
-                    } label: {
-                        Text("Generate an example sentence")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.black)
-                            .frame(width: 250, height:25)
-                            .padding(.vertical,5)
+                        .background(
+                            Color.blue
+                                .overlay(.black.opacity(0.1))
+                        )
+                        .cornerRadius(10)
+                     
+                        Button {
+                            Task {
+                                do {
+                                    example = try await WordService.shared.addBrackets(word: word, example: example)
+                                    print("Response from WordService: \(example)")
+                                } catch {
+                                    print("Error in generating sentence: \(error.localizedDescription)")
+                                }
+                            }
+                        } label: {
+                            Text("{ }")
+                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        }
+                        .foregroundStyle(.black)
+                        .frame(width: 30, height: 30)
+                        .background(.white)
+                        .cornerRadius(7)
                     }
-                    .background(
-                        Color.blue
-                            .overlay(.black.opacity(0.2))
-                    )
-                    .cornerRadius(10)
+                    .padding(.leading,30)
                     .padding(.top,8)
                     
                     Spacer().frame(height: 20)
@@ -209,7 +211,7 @@ struct ExampleInputView: View {
                     }
                     .background(
                         Color.blue
-                            .overlay(.black.opacity(0.2))
+                            .overlay(.black.opacity(0.1))
                     )
                     .cornerRadius(10)
                     .padding(.top,8)
