@@ -93,7 +93,7 @@ struct PlayStudyView: View {
             Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
         ]
     
-    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat and eat an {{apple}} every morning.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: sampleDecks[0].id)]
     
     // Pass the sample ViewModel and selectedDeck binding to the preview
     PlayStudyView(viewModel: sampleViewModel, viewModel2: DeckWordViewModel(), fetchedWords: .constant(mockWords), selectedDeck: .constant(0), userId: .constant(1), fetchedDecks: .constant(mockDecks))

@@ -72,7 +72,14 @@ struct ExampleInputView: View {
                     
                     VStack(alignment: .trailing) {
                         Button {
-                            print("Button pressed")
+                            Task {
+                                do {
+                                    example = try await WordService.shared.addBrackets(word: word, example: example)
+                                    print("Response from WordService: \(example)")
+                                } catch {
+                                    print("Error in generating sentence: \(error.localizedDescription)")
+                                }
+                            }
                         } label: {
                             Text("{ }")
                                 .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -182,7 +189,6 @@ struct ExampleInputView: View {
                     Spacer().frame(height: 10)
                     
                     Button {
-                        
                         if !example.isEmpty {
                             Task {
                                 do {

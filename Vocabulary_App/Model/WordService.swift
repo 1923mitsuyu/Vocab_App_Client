@@ -59,8 +59,8 @@ class WordService {
         
         // Decode the response data into SignUpResponse object to get the message
         do {
-            let wordResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
-            let sentence = wordResponse.content[0]
+            let sentenceResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
+            let sentence = sentenceResponse.content[0]
             return sentence
             
         } catch {
@@ -100,9 +100,49 @@ class WordService {
         
         // Decode the response data into SignUpResponse object to get the message
         do {
-            let wordResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
-            let translation = wordResponse.content[0]
+            let translationResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
+            let translation = translationResponse.content[0]
             return translation
+            
+        } catch {
+            throw NetworkError.decodingError
+        }
+    }
+    
+    func addBrackets(word: String, example: String) async throws -> String {
+        
+        guard let url = URL(string: "http://localhost:3000/v1/addBrackets") else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Set parameters
+        let parameters: [String: Any] = ["word": word, "example": example]
+        print("Parameters being sent:", parameters)
+        
+        // Create a URL request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Encoding parameters as JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        } catch {
+            throw NetworkError.invalidResponse
+        }
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for a valid HTTP response
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NetworkError.invalidResponse
+        }
+        
+        // Decode the response data into SignUpResponse object to get the message
+        do {
+            let sentenceResponse = try JSONDecoder().decode(ExampleGeneratedResponse.self, from: data)
+            let bracketSentence = sentenceResponse.content[0]
+            return bracketSentence
             
         } catch {
             throw NetworkError.decodingError

@@ -25,6 +25,79 @@ struct WordRearrangementView: View {
     let itemsPerRow = 4
     var onDismiss: () -> Void
     
+    let words: [String] = [
+            "Short",
+            "A bit longer text",
+            "This is a",
+            "Another label",
+            "SwiftUI"
+        ]
+    
+    struct FlowLayout: Layout {
+        var spacing: CGFloat = 8
+        var leadingPadding: CGFloat = 10
+        var trailingPadding: CGFloat = 10
+        
+        func sizeThatFits(proposal: ProposedViewSize,
+                          subviews: Subviews,
+                          cache: inout ()) -> CGSize {
+            let containerWidth = proposal.width ?? .infinity
+            let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+            return layout(sizes: sizes,
+                          spacing: spacing,
+                          leadingPadding: leadingPadding,
+                          trailingPadding: trailingPadding,
+                          containerWidth: containerWidth).size
+        }
+        
+        func placeSubviews(in bounds: CGRect,
+                           proposal: ProposedViewSize,
+                           subviews: Subviews,
+                           cache: inout ()) {
+            let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+            let offsets =
+                layout(sizes: sizes,
+                       spacing: spacing,
+                       leadingPadding: leadingPadding,
+                       trailingPadding: trailingPadding,
+                       containerWidth: bounds.width).offsets
+            for (offset, subview) in zip(offsets, subviews) {
+                subview.place(at: .init(x: offset.x + bounds.minX,
+                                        y: offset.y + bounds.minY),
+                              proposal: .unspecified)
+            }
+        }
+        
+        private func layout(sizes: [CGSize],
+                            spacing: CGFloat = 8,
+                            leadingPadding: CGFloat = 16,
+                            trailingPadding: CGFloat = 16,
+                            containerWidth: CGFloat) -> (offsets: [CGPoint], size: CGSize) {
+            var result: [CGPoint] = []
+            var currentPosition: CGPoint = .init(x: leadingPadding, y: 0) // 初期位置を修正
+            var lineHeight: CGFloat = 0
+            var maxX: CGFloat = 0
+            
+            for size in sizes {
+                // 改行が必要な場合
+                if currentPosition.x + size.width + trailingPadding > containerWidth {
+                    currentPosition.x = leadingPadding // 左揃え
+                    currentPosition.y += lineHeight + spacing
+                    lineHeight = 0
+                }
+                
+                result.append(currentPosition)
+                currentPosition.x += size.width + spacing
+                maxX = max(maxX, currentPosition.x)
+                lineHeight = max(lineHeight, size.height)
+            }
+            
+            // 最終サイズの計算
+            return (result,
+                    .init(width: containerWidth, height: currentPosition.y + lineHeight))
+        }
+    } // here
+    
     var body: some View {
         
         let columns = [
@@ -33,6 +106,9 @@ struct WordRearrangementView: View {
         
         NavigationStack {
             VStack{
+                
+                Spacer().frame(height:20)
+                
                 VStack(alignment: .leading) {
                     Text("- 日本語訳 - ")
                         .font(.system(size: 17, weight: .bold, design: .rounded))
@@ -44,42 +120,24 @@ struct WordRearrangementView: View {
                 }
                 .padding(.leading,15)
                 .padding(.bottom,20)
-                
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        let minNumLines = 2
-                        let nLines = max(minNumLines, (viewModel.arrangedWords.count + itemsPerRow - 1) / itemsPerRow)
-                        ForEach(0..<nLines, id: \.self) { row in
-                            HStack(spacing: 5) {
-                                ForEach(0..<itemsPerRow, id: \.self) { column in
-                                    let index = row * itemsPerRow + column
-                                    ZStack {
-                                        if index < viewModel.arrangedWords.count {
-                                            let targetWord = viewModel.arrangedWords[index]
-                                            Text(targetWord)
-                                                .foregroundColor(.white)
-                                                .padding()
-                                                .background(Rectangle().fill(Color.green.opacity(0.8)))
-                                                .cornerRadius(10)
-                                                .onTapGesture {
-                                                    viewModel.moveWordOutOfSpace(index: index)
-                                                    print("arranged words: \(viewModel.arrangedWords)")
-                                                }
-                                        }
-                                    }
-                                    .frame(height: 50)
+            
+                ScrollView{
+                    AnyLayout(FlowLayout(spacing: 8, leadingPadding: 10, trailingPadding: 10)) {
+                        ForEach(Array(viewModel.arrangedWords.enumerated()), id: \.1) { index, word in
+                            Text(word)
+                                .padding(20)
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .onTapGesture {
+                                    viewModel.moveWordOutOfSpace(index: index)
+                                    print("Tapped word: \(word), at index: \(index)")
+                                    print("Arranged words: \(viewModel.arrangedWords)")
                                 }
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.blue)
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
                 }
-                
-                Spacer().frame(height: 10)
-                
+            
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(options.indices, id: \.self) { index in
@@ -105,7 +163,7 @@ struct WordRearrangementView: View {
                             else {
                                 Text("")
                                     .padding()
-                                    .frame(minWidth: 100)
+                                    .frame(minWidth: 100, minHeight: 53)
                                     .background(Rectangle().fill(Color.gray.opacity(0.8)))
                                     .cornerRadius(10)
                             }
@@ -113,6 +171,7 @@ struct WordRearrangementView: View {
                     }
                     .padding()
                 }
+                .frame(height:200)
                 
                 Spacer().frame(height: 30)
                 
@@ -215,7 +274,7 @@ struct WordRearrangementView: View {
                                     isResultViewActive = true
                                 }
                                 
-                            } else {                                
+                            } else {
                                 // Remove the sheet
                                 onDismiss()
                                 
@@ -250,7 +309,7 @@ struct WordRearrangementView: View {
                         .cornerRadius(15)
                         .padding(.horizontal)
                         .padding(.top, 20)
-                        .padding(.bottom, 30)
+                        .padding(.bottom, 20)
                         
                         VStack {
                             Text("Correct Answer")
@@ -263,6 +322,7 @@ struct WordRearrangementView: View {
                                     .fixedSize(horizontal: false, vertical: true)
                                     .padding(.horizontal,10)
                             }
+                            .frame(height:40)
                         }
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                         .padding(.bottom,35)
@@ -291,6 +351,8 @@ struct WordRearrangementView: View {
                 }
             }
             .padding(.bottom,30)
+            
+            Spacer()
         }
     }
 }
@@ -302,7 +364,7 @@ struct WordRearrangementView: View {
         Deck(id: 2, name: "Deck 2", deckOrder: 2, userId: 1)
     ]
     
-    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat and eat an {{apple}} every morning but I did not eat it this morning. I just wanted to eat something different.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: mockDecks[0].id)]
+    let mockWords = [Word(id: 0, word: "Apple", definition: "りんご", example: "I eat an {{apple}} every morning but I did not eat it this morning.", translation: "私は毎朝リンゴを食べます。", correctTimes: 0, word_order: 1, deckId: mockDecks[0].id)]
     
     WordRearrangementView(
         viewModel: PlayStudyViewModel(),
@@ -322,6 +384,4 @@ struct WordRearrangementView: View {
         onDismiss: {}
     )
 }
-
-
 
